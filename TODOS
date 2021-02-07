@@ -1,0 +1,19 @@
+- Adding support for integration with AppDB for images
+    + Images are specify with parameter "--appdb <image name/ID in AppDB>"
+    + The client will replace the parameter with "--image imageID" before calling Openstack client (like site and VO)
+
+- Separating CLI functions from library functions, keep them in different files, e.g. sites.py and sites_cli.py
+    + Better understanding and maintaining the code
+
+- Caching keystone token, reuse it for successive Openstack commands without authentication via CheckIn again
+    + Make a dict: key = hash of (site + vo + access token), value = keystone token
+    + Before using Openstack command, check the dict reuse the token if found. If not found, generate new token
+    and add it to the dict.
+    + Applicable only for using as library
+
+- Parallel all-sites Openstack operations
+    + multithreading, each thread for a site
+    + Openstack operations are already isolated in a function, creating a thread should be easy
+
+- oidc-agent integration
+    + get access token from oidc-agent
