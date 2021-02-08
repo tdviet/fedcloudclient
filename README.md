@@ -112,7 +112,7 @@ Python:
         openstack_command)
 
 See a working example [*"demo.py"*](https://github.com/tdviet/fedcloudclient/blob/fedcloud-client/examples/demo.py). 
-The documentation of fedcloudclient API is available at [readthedocs.io](https://fedcloudclient.readthedocs.io/en/fedcloud-client/).
+The documentation of fedcloudclient API is available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
 
 FAQ
 ---
