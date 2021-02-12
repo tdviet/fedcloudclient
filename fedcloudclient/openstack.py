@@ -1,3 +1,4 @@
+import concurrent.futures
 import json
 import os
 from distutils.spawn import find_executable
@@ -5,7 +6,7 @@ from distutils.spawn import find_executable
 import click
 
 # Subprocess is required for invoking openstack client, so ignored bandit check
-import subprocess       # nosec
+import subprocess  # nosec
 
 from fedcloudclient.checkin import get_access_token, DEFAULT_CHECKIN_URL
 from fedcloudclient.sites import find_endpoint_and_project_id, list_sites
@@ -45,7 +46,7 @@ def fedcloud_openstack_full(
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:
-        return 1, ("VO %s not found on site %s" % (vo, site))
+        return 1, ("VO %s not found on site %s\n" % (vo, site))
 
     if protocol is None:
         protocol = checkin_protocol
@@ -66,7 +67,7 @@ def fedcloud_openstack_full(
 
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
-    completed = subprocess.run((OPENSTACK_CLIENT,) + openstack_command + options,   # nosec
+    completed = subprocess.run((OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     error_code = completed.returncode
@@ -228,23 +229,53 @@ def openstack(
         sites = list_sites()
     else:
         sites = [site]
-    for current_site in sites:
-        print("Site: %s, VO: %s" % (current_site, vo))
-        error_code, result = fedcloud_openstack_full(
-            access_token,
-            checkin_protocol,
-            checkin_auth_type,
-            checkin_provider,
-            current_site,
-            vo,
-            openstack_command,
-            False  # No JSON output in shell mode
-        )
-        if error_code != 0:
-            print("Error code: ", error_code)
-            print("Error message: ", result)
-        else:
-            print(result)
+
+    # Multi-thread execution of Openstack commands
+    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+        # Start Openstack operation with each site
+        results = {executor.submit(fedcloud_openstack_full,
+                                   access_token,
+                                   checkin_protocol,
+                                   checkin_auth_type,
+                                   checkin_provider,
+                                   site,
+                                   vo,
+                                   openstack_command,
+                                   False
+                                   ): site for site in sites}
+        # Get results and print them
+        for future in concurrent.futures.as_completed(results):
+            site = results[future]
+            print("Site: %s, VO: %s" % (site, vo))
+            try:
+                error_code, result = future.result()
+            except Exception as exc:
+                print('%s generated an exception: %s' % (site, exc))
+            else:
+                if error_code != 0:
+                    print("Error code: ", error_code)
+                    print("Error message: ", result)
+                else:
+                    print(result)
+
+    # Old sequential execution code for verification
+    # for current_site in sites:
+    #     print("Site: %s, VO: %s" % (current_site, vo))
+    #     error_code, result = fedcloud_openstack_full(
+    #         access_token,
+    #         checkin_protocol,
+    #         checkin_auth_type,
+    #         checkin_provider,
+    #         current_site,
+    #         vo,
+    #         openstack_command,
+    #         False  # No JSON output in shell mode
+    #     )
+    #     if error_code != 0:
+    #         print("Error code: ", error_code)
+    #         print("Error message: ", result)
+    #     else:
+    #         print(result)
 
 
 @click.command()
@@ -350,4 +381,4 @@ def openstack_int(
 
     # Calling Openstack client as subprocess
     # Ignore bandit warning
-    subprocess.run(OPENSTACK_CLIENT, env=my_env)        # nosec
+    subprocess.run(OPENSTACK_CLIENT, env=my_env)  # nosec
