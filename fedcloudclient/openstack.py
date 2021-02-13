@@ -46,7 +46,7 @@ def fedcloud_openstack_full(
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:
-        return 1, ("VO %s not found on site %s\n" % (vo, site))
+        return 11, ("VO %s not found on site %s\n" % (vo, site))
 
     if protocol is None:
         protocol = checkin_protocol
@@ -193,6 +193,11 @@ def check_openstack_client_installation():
     help="Name of the VO",
     envvar="EGI_VO",
 )
+@click.option(
+    '--ignore-missing-vo',
+    help="Ignore sites that does not support the VO",
+    is_flag=True,
+)
 @click.argument(
     "openstack_command",
     required=True,
@@ -209,6 +214,7 @@ def openstack(
         checkin_provider,
         site,
         vo,
+        ignore_missing_vo,
         openstack_command
 ):
     """
@@ -246,16 +252,19 @@ def openstack(
         # Get results and print them
         for future in concurrent.futures.as_completed(results):
             site = results[future]
-            print("Site: %s, VO: %s" % (site, vo))
             try:
                 error_code, result = future.result()
             except Exception as exc:
+                print("Site: %s, VO: %s" % (site, vo))
                 print('%s generated an exception: %s' % (site, exc))
             else:
                 if error_code != 0:
-                    print("Error code: ", error_code)
-                    print("Error message: ", result)
+                    if not ignore_missing_vo or (error_code != 11):
+                        print("Site: %s, VO: %s" % (site, vo))
+                        print("Error code: ", error_code)
+                        print("Error message: ", result)
                 else:
+                    print("Site: %s, VO: %s" % (site, vo))
                     print(result)
 
     # Old sequential execution code for verification
