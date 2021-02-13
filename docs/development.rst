@@ -2,7 +2,7 @@ Using fedcloud client for development
 ======================================
 
 fedcloudclient can be used as a library for developing other services and tools for EGI Federated Cloud. Most of
-functionalities of fedcloudclient can called directly from other codes without side effects. An example of the code
+functionalities of fedcloudclient can be called directly from other codes without side effects. An example of the code
 using fedcloud client is available at `GitHub <https://github.com/tdviet/fedcloudclient/blob/master/examples/demo.py>`_.
 Just copy/download the code, add your access token and execute *"python demo.py"* to see how it works.
 
@@ -35,4 +35,5 @@ Just copy/download the code, add your access token and execute *"python demo.py"
 
 
 Read the `fedcloudclient API references <https://fedcloudclient.readthedocs.io/en/master/fedcloudclient.html>`_
-for more details about each function in fedcloudclient library.
+for more details about each function in fedcloudclient library. Check the output of the equivalent command of
+fedcloudclient and its source code to see how the function is used.
