@@ -177,6 +177,8 @@ remove sites they do not have access, and so on.
     $ fedcloud site save-config
     Saving site configs to directory /home/viet/.fedcloud-site-config
 
+After saving site configurations, users can edit and customize them, e.g. remove unaccessible sites, add new
+VOs and so on.
 
 * **"fedcloud site list"** : List of existing sites in the site configurations
 
@@ -220,7 +222,7 @@ remove sites they do not have access, and so on.
 fedcloud openstack commands
 ***************************
 
-* **"fedcloud openstack --site <SITE> --vo <VO> --checkin-access-token <ACCESS_TOKEN> <OPENSTACK_COMMAND>"** : perform an
+* **"fedcloud openstack --site <SITE> --vo <VO> --checkin-access-token <ACCESS_TOKEN> <OPENSTACK_COMMAND>"** : Execute an
   Openstack command on the site and VO. Examples of Openstack commands are *"image list"*, *"server list"* and can be used
   with additional options for the commands, e.g. *"image list --long"*, *"server list --format json"*. The list of all
   Openstack commands, and their parameters/usages are available
@@ -235,6 +237,8 @@ fedcloud openstack commands
     +--------------------------------------+-------------------------------------------------+--------+
     | 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
     ...
+
+If the site is *ALL_SITES*, the Openstack command will be executed on all sites in EGI Federated Cloud.
 
 * **"fedcloud openstack-int --site <SITE> --vo <VO> --checkin-access-token <ACCESS_TOKEN>"** : Call Openstack client without
   command, so users can work with Openstack site in interactive mode. This is useful when users need to perform multiple

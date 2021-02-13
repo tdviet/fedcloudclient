@@ -11,10 +11,10 @@ Keystone, **fedcloudclient.sites** manages site configuration and finally **fedc
 performing Openstack operations.
 
 A short presentation of the fedcloudclient is available at 
-[Google drive](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing). 
+[Quick start](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing). 
 
 The full documentation, including installation, usage and API description is available 
-at [readthedocs.io](https://fedcloudclient.readthedocs.io/)
+at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
 
 Quick start
 -----------
@@ -32,21 +32,25 @@ or use Docker container:
     $ docker run -it  tdviet/fedcloudclient bash
 
 -   Get a new access token from EGI Check-in according to instructions from
-    FedCloud [Check-in client](https://aai.egi.eu/fedcloud/).
-    
+    FedCloud [Check-in client](https://aai.egi.eu/fedcloud/) and set
+    environment variable.
+
+<!-- -->
+
+    $ export CHECKIN_ACCESS_TOKEN=<ACCESS_TOKEN>
 
 -   Check the expiration time of the access token using *fedcloud*
     command:
 
 <!-- -->
 
-    $ fedcloud token check --checkin-access-token <ACCESS_TOKEN>
+    $ fedcloud token check
 
 -   List the VO memberships of the access token:
 
 <!-- -->
 
-    $ fedcloud token list-vos --checkin-access-token <ACCESS_TOKEN>
+    $ fedcloud token list-vos
 
 -   List the Openstack sites available in EGI Federated Cloud. That may
     take few seconds because all site configurations are retrieved from
@@ -64,23 +68,19 @@ or use Docker container:
 
     $ fedcloud site save-config
 
--   Perform an Openstack command, e.g. list images in fedcloud.egi.eu VO on CYFRONET-CLOUD site (or other
+-   Execute an Openstack command, e.g. list images in fedcloud.egi.eu VO on CYFRONET-CLOUD site (or other
     combination of site and VO you have access):
 
 <!-- -->
 
-    $ fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu --checkin-access-token <ACCESS_TOKEN>
+    $ fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
 
--   Set environment variable for access token, so you don't have to specify access token again and again. 
-    The commands are much simpler now:
+-   Execute an Openstack command on all sites, e.g. list VMs in eosc-synergy.eu VO on all Openstack sites in
+    EGI Federated Cloud
 
 <!-- -->
 
-    $ export CHECKIN_ACCESS_TOKEN=<ACCESS_TOKEN>
-
-    $ fedcloud token check
-
-    $ fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
+    $ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu
 
 -   Learn more commands of *fedcloud* client and experiment with them:
 
@@ -90,10 +90,8 @@ or use Docker container:
 
     $ fedcloud site --help
 
--   Experiment with more Openstack commands, e.g. *"fedcloud openstack
-    server list"*. The full list of Openstack commands are available
-    [here](https://docs.openstack.org/python-openstackclient/latest/cli/command-list.html)
-    or via command *"openstack help"*.
+-   Read the [Quick start](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing)
+    for more information about customizations and advanced usages.
 
 Using fedcloudclient as development library
 -------------------------------------------
@@ -102,6 +100,8 @@ All functionalities offered by the *fedcloud* client can be used as a
 library for development of other tools and services for EGI Federated
 Cloud. For example, performing openstack command as a function in
 Python:
+
+<!-- -->
 
     from fedcloudclient.openstack import fedcloud_openstack
     ....
