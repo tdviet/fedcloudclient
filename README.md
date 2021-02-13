@@ -75,7 +75,7 @@ or use Docker container:
 
     $ fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
 
--   Execute an Openstack command on all sites, e.g. list VMs in eosc-synergy.vo on all Openstack sites in
+-   Execute an Openstack command on all sites, e.g. list VMs in eosc-synergy.eu VO on all Openstack sites in
     EGI Federated Cloud
 
 <!-- -->
