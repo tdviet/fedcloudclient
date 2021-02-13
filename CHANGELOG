@@ -1,4 +1,10 @@
 # Changelog
+## [1.0.2]
+- Add --ignore-missing-vo option
+
+## [1.0.1]
+- Multi-thread execution of Openstack all-sites operation
+- Update documentation
 
 
 ## [1.0.00]

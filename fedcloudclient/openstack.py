@@ -195,7 +195,7 @@ def check_openstack_client_installation():
 )
 @click.option(
     '--ignore-missing-vo',
-    help="Ignore sites that does not support the VO",
+    help="Ignore sites that do not support the VO",
     is_flag=True,
 )
 @click.argument(
