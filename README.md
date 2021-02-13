@@ -14,18 +14,20 @@ A short presentation of the fedcloudclient is available at
 [Quick start](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing). 
 
 The full documentation, including installation, usage and API description is available 
-at [readthedocs.io](https://fedcloudclient.readthedocs.io/)
+at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
 
 Quick start
 -----------
 
 -   Install FedCloud client via *pip*:
 
+<!-- -->
 
     $ pip3 install fedcloudclient
 
 or use Docker container:
 
+<!-- -->
 
     $ docker run -it  tdviet/fedcloudclient bash
 
@@ -33,17 +35,20 @@ or use Docker container:
     FedCloud [Check-in client](https://aai.egi.eu/fedcloud/) and set
     environment variable.
 
-    
+<!-- -->
+
     $ export CHECKIN_ACCESS_TOKEN=<ACCESS_TOKEN>
 
 -   Check the expiration time of the access token using *fedcloud*
     command:
 
-    
+<!-- -->
+
     $ fedcloud token check
 
 -   List the VO memberships of the access token:
 
+<!-- -->
 
     $ fedcloud token list-vos
 
@@ -51,6 +56,7 @@ or use Docker container:
     take few seconds because all site configurations are retrieved from
     [GitHub repository](https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites)
 
+<!-- -->
 
     $ fedcloud site list
 
@@ -58,23 +64,27 @@ or use Docker container:
     *\~/.fedcloud-site-config/* to speed up the client's start in the
     next time:
 
+<!-- -->
 
     $ fedcloud site save-config
 
 -   Execute an Openstack command, e.g. list images in fedcloud.egi.eu VO on CYFRONET-CLOUD site (or other
     combination of site and VO you have access):
 
+<!-- -->
 
     $ fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
 
 -   Execute an Openstack command on all sites, e.g. list VMs in eosc-synergy.vo on all Openstack sites in
     EGI Federated Cloud
 
+<!-- -->
 
     $ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu
 
 -   Learn more commands of *fedcloud* client and experiment with them:
 
+<!-- -->
 
     $ fedcloud --help
 
@@ -90,6 +100,8 @@ All functionalities offered by the *fedcloud* client can be used as a
 library for development of other tools and services for EGI Federated
 Cloud. For example, performing openstack command as a function in
 Python:
+
+<!-- -->
 
     from fedcloudclient.openstack import fedcloud_openstack
     ....
