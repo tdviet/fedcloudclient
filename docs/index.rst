@@ -13,6 +13,7 @@ Welcome to fedcloudclient's documentation!
    intro
    install
    usage
+   development
    fedcloudclient
 
 
