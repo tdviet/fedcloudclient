@@ -91,7 +91,7 @@ or use Docker container:
     $ fedcloud site --help
 
 -   Read the [Quick start](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing)
-    for information about customization and advanced usages.
+    for more information about customizations and advanced usages.
 
 Using fedcloudclient as development library
 -------------------------------------------
