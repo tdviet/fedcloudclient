@@ -37,8 +37,8 @@ test in virtual environment, just execute the following commands. See this
     $ wget https://raw.githubusercontent.com/tdviet/python-requests-bundle-certs/main/scripts/install_certs.sh
     $ bash install_certs.sh
 
-Using fedcloudclient via Docker container:
-******************************************
+Using fedcloudclient via Docker container
+*****************************************
 
 You can use Docker container for testing **fedcloudclient** without installation. EGI Core Trust Anchor certificates
 and site configurations are preinstalled.
