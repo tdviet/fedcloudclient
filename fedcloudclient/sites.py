@@ -61,7 +61,7 @@ def read_default_site_config():
     """
     site_config_data.clear()
     for filename in DEFAULT_SITE_CONFIGS:
-        if filename.lower().startswith('http'):
+        if filename.lower().startswith('https://'):
             req = Request(filename)
         else:
             raise ValueError from None

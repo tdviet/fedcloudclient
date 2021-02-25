@@ -105,11 +105,10 @@ Python:
 
     from fedcloudclient.openstack import fedcloud_openstack
     ....
-    json_object = fedcloud_openstack(
-        checkin_access_token,
-        site,
-        vo,
-        openstack_command)
+    error_code, result = fedcloud_openstack(checkin_access_token,
+                                                 site,
+                                                 vo,
+                                                 openstack_command)
 
 See a working example [*"demo.py"*](https://github.com/tdviet/fedcloudclient/blob/master/examples/demo.py). 
 The documentation of fedcloudclient API is available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
