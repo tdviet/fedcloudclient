@@ -18,7 +18,7 @@ the command. For example:
 
 ::
 
-    $ fedcloud openstack server list --vo fedcloud.egi.eu --site ALL_SITES
+    $ fedcloud openstack server list --vo eosc-synergy.eu --site ALL_SITES
 
 Four modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like
 getting tokens, **fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from
