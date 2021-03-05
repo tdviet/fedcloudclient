@@ -4,6 +4,7 @@ import os
 from distutils.spawn import find_executable
 
 import click
+import liboidcagent as agent
 
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
@@ -194,6 +195,11 @@ def check_openstack_client_installation():
     envvar="EGI_VO",
 )
 @click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
+@click.option(
     '--ignore-missing-vo',
     help="Ignore sites that do not support the VO",
     is_flag=True,
@@ -214,6 +220,7 @@ def openstack(
         checkin_provider,
         site,
         vo,
+        oidc_agent_account,
         ignore_missing_vo,
         openstack_command
 ):
@@ -225,11 +232,21 @@ def openstack(
         print("Error: Openstack command-line client \"openstack\" not found")
         exit(1)
 
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url)
+    access_token = None
+    if oidc_agent_account:
+        try:
+            access_token = agent.get_access_token(oidc_agent_account,
+                                                  min_valid_period=30,
+                                                  application_hint="fedcloudclient")
+        except agent.OidcAgentError as e:
+            print("ERROR oidc-agent: {}".format(e))
+
+    if not access_token:
+        access_token = get_access_token(checkin_access_token,
+                                        checkin_refresh_token,
+                                        checkin_client_id,
+                                        checkin_client_secret,
+                                        checkin_url)
 
     if site == "ALL_SITES":
         sites = list_sites()
@@ -257,6 +274,7 @@ def openstack(
             except Exception as exc:
                 print("Site: %s, VO: %s" % (site, vo))
                 print('%s generated an exception: %s' % (site, exc))
+                print("Error message: %s" % result)
             else:
                 if error_code != 0:
                     if not ignore_missing_vo or (error_code != 11):
