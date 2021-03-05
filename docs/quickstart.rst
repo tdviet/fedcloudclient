@@ -21,8 +21,8 @@ or use Docker container:
     $ docker run -it  tdviet/fedcloudclient bash
 
 
-* Get a new access token from EGI Check-in according to instructions from FedCloud Check-in
-  client and set environment variable.
+* Get a new access token from EGI Check-in according to instructions from `FedCloud Check-in
+  client <https://aai.egi.eu/fedcloud/>`_ and set environment variable.
 
 ::
 
