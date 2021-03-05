@@ -21,8 +21,8 @@ client <https://aai.egi.eu/fedcloud/>`_.
 Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. In shared
 environment, e.g. in Cloud, consider to use `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/>`_ for securing
 refresh/access tokens. The access token from oidc-agent is specified via option *"--oidc-agent-account"*. If multiple
-methods of getting access token are given at the same time, the client will try to get the token from oidc-agent first,
-then from refresh token.
+methods of getting access tokens are given at the same time, the client will try to get the tokens from the oidc-agent
+first, then from refresh tokens.
 
 The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/oidc). Users can set other OIDC identity
 provider via option *"--checkin-url"*. Remember to set identity provider's name *"--checkin-provider"* accordingly

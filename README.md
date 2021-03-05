@@ -179,4 +179,4 @@ FAQ
 > frequently, that may be inconvenient for some users. In shared
 > environment, e.g. VMs in Cloud, access tokens should be used instead
 > of refreshed tokens. If refresh token must be used, consider to use
-> oidc-agent for storing the token. 
+> [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/) for storing the token. 
