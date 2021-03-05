@@ -1,4 +1,3 @@
-from __future__ import print_function
 
 import re
 import time
@@ -230,7 +229,7 @@ def check(
         print("Refresh token is valid to %s UTC" % expiration_time)
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
-            print("Refresh token expires in %d days" % ((expiration_timestamp - current_timestamp)//(24*3600)))
+            print("Refresh token expires in %d days" % ((expiration_timestamp - current_timestamp) // (24 * 3600)))
         else:
             print("Refresh token has expired")
 

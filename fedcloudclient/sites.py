@@ -1,38 +1,17 @@
+import builtins
 from pathlib import Path
 from urllib.request import urlopen, Request
 
 import click
 import yaml
 
-# Default site configs from GitHub
-DEFAULT_SITE_CONFIGS = (
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/100IT.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/BIFI.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CESGA.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CESNET-MCC.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CETA-GRID.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CLOUDIFIN.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CYFRONET-CLOUD.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/DESY-HH.yaml",
-    'https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IFCA-LCG2.yaml',
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IISAS-FedCloud-cloud.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IISAS-GPUCloud.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IN2P3-IRES.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-CATANIA-STACK.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-PADOVA-STACK.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/Kharkov-KIPT-LCG2.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/NCG-INGRID-PT.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/RECAS-BARI.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/SCAI.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/TR-FC1-ULAKBIM.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/UA-BITP.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/UNIV-LILLE.yaml",
-    "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/fedcloud.srce.hr.yaml",
-)
+__REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 
-LOCAL_CONFIG_DIR = ".fedcloud-site-config/"
+__LOCAL_CONFIG_DIR = ".fedcloud-site-config/"
 
-site_config_data = []
+__site_config_data = []
+
+__FILE_SIZE_LIMIT = 1024 * 1024  # Max size for config files
 
 
 def read_site_config():
@@ -43,9 +22,9 @@ def read_site_config():
 
     :return: None
     """
-    if len(site_config_data) > 0:
+    if len(__site_config_data) > 0:
         return
-    config_dir = Path.home() / LOCAL_CONFIG_DIR
+    config_dir = Path.home() / __LOCAL_CONFIG_DIR
     if config_dir.exists():
         read_local_site_config(config_dir)
     else:
@@ -59,17 +38,36 @@ def read_default_site_config():
 
     :return: None
     """
-    site_config_data.clear()
-    for filename in DEFAULT_SITE_CONFIGS:
-        if filename.lower().startswith('https://'):
+    __site_config_data.clear()
+
+    filename = __REMOTE_CONFIG_FILE
+    if filename.lower().startswith('https://'):     # Only read from HTTPS location
+        req = Request(filename)
+    else:
+        raise SystemExit("Error: remote site config must be located at HTTPS")
+
+    # URLs already checked, so ignore bandit test
+    with urlopen(req) as yaml_file:       # nosec
+        if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
+            raise SystemExit("Error: File %s too large" % filename)
+        site_list = yaml.safe_load(yaml_file)
+
+    # site list is read from Internet, so double checks
+    if not isinstance(site_list, builtins.list):
+        raise SystemExit("Error: site list is in a wrong format")
+
+    for filename in site_list:
+        if isinstance(filename, str) and filename.lower().startswith('https://'):
             req = Request(filename)
         else:
-            raise ValueError from None
+            raise SystemExit("Error: remote site config must be located at HTTPS")
 
         # URLs already checked, so ignore bandit test
         with urlopen(req) as yaml_file:       # nosec
+            if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
+                raise SystemExit("Error: File %s too large" % filename)
             site_info = yaml.safe_load(yaml_file)
-            site_config_data.append(site_info)
+            __site_config_data.append(site_info)
 
 
 def read_local_site_config(config_dir):
@@ -81,12 +79,12 @@ def read_local_site_config(config_dir):
 
     :return: None
     """
-    site_config_data.clear()
+    __site_config_data.clear()
     config_dir = Path(config_dir)
     for f in sorted(config_dir.glob('*.yaml')):
         yaml_file = f.open()
         site_info = yaml.safe_load(yaml_file)
-        site_config_data.append(site_info)
+        __site_config_data.append(site_info)
 
 
 def save_site_config(config_dir):
@@ -99,7 +97,7 @@ def save_site_config(config_dir):
     """
     config_dir = Path(config_dir)
     config_dir.mkdir(parents=True, exist_ok=True)
-    for site_info in site_config_data:
+    for site_info in __site_config_data:
         config_file = config_dir / (site_info["gocdb"] + ".yaml")
         with config_file.open("w", encoding="utf-8") as f:
             yaml.dump(site_info, f)
@@ -113,7 +111,7 @@ def list_sites():
     """
     read_site_config()
     result = []
-    for site_info in site_config_data:
+    for site_info in __site_config_data:
         result.append(site_info["gocdb"])
     return result
 
@@ -127,7 +125,7 @@ def find_site_data(site_name):
     """
     read_site_config()
 
-    for site_info in site_config_data:
+    for site_info in __site_config_data:
         if site_info["gocdb"] == site_name:
             return site_info
     return None
@@ -215,7 +213,7 @@ def show_all():
     Print all site configuration
     """
     read_site_config()
-    for site_info in site_config_data:
+    for site_info in __site_config_data:
         site_info_str = yaml.dump(site_info, sort_keys=True)
         print(site_info_str)
 
@@ -227,7 +225,7 @@ def save_config():
     Overwrite local configs if exist
     """
     read_default_site_config()
-    config_dir = Path.home() / LOCAL_CONFIG_DIR
+    config_dir = Path.home() / __LOCAL_CONFIG_DIR
     print("Saving site configs to directory %s" % config_dir)
     save_site_config(config_dir)
 
@@ -238,5 +236,5 @@ def list():
     List site IDs
     """
     read_site_config()
-    for site_info in site_config_data:
+    for site_info in __site_config_data:
         print(site_info["gocdb"])

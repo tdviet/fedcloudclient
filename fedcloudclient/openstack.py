@@ -15,7 +15,7 @@ DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
 DEFAULT_IDENTITY_PROVIDER = "egi.eu"
 
-OPENSTACK_CLIENT = "openstack"
+__OPENSTACK_CLIENT = "openstack"
 
 
 def fedcloud_openstack_full(
@@ -67,7 +67,7 @@ def fedcloud_openstack_full(
 
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
-    completed = subprocess.run((OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
+    completed = subprocess.run((__OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     error_code = completed.returncode
@@ -130,7 +130,7 @@ def check_openstack_client_installation():
     :return: True if available
     """
 
-    return find_executable(OPENSTACK_CLIENT) is not None
+    return find_executable(__OPENSTACK_CLIENT) is not None
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
@@ -267,25 +267,6 @@ def openstack(
                     print("Site: %s, VO: %s" % (site, vo))
                     print(result)
 
-    # Old sequential execution code for verification
-    # for current_site in sites:
-    #     print("Site: %s, VO: %s" % (current_site, vo))
-    #     error_code, result = fedcloud_openstack_full(
-    #         access_token,
-    #         checkin_protocol,
-    #         checkin_auth_type,
-    #         checkin_provider,
-    #         current_site,
-    #         vo,
-    #         openstack_command,
-    #         False  # No JSON output in shell mode
-    #     )
-    #     if error_code != 0:
-    #         print("Error code: ", error_code)
-    #         print("Error message: ", result)
-    #     else:
-    #         print(result)
-
 
 @click.command()
 @click.option(
@@ -390,4 +371,4 @@ def openstack_int(
 
     # Calling Openstack client as subprocess
     # Ignore bandit warning
-    subprocess.run(OPENSTACK_CLIENT, env=my_env)  # nosec
+    subprocess.run(__OPENSTACK_CLIENT, env=my_env)  # nosec
