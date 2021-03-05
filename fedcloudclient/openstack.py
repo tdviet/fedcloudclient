@@ -4,7 +4,6 @@ import os
 from distutils.spawn import find_executable
 
 import click
-import liboidcagent as agent
 
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
@@ -232,21 +231,12 @@ def openstack(
         print("Error: Openstack command-line client \"openstack\" not found")
         exit(1)
 
-    access_token = None
-    if oidc_agent_account:
-        try:
-            access_token = agent.get_access_token(oidc_agent_account,
-                                                  min_valid_period=30,
-                                                  application_hint="fedcloudclient")
-        except agent.OidcAgentError as e:
-            print("ERROR oidc-agent: {}".format(e))
-
-    if not access_token:
-        access_token = get_access_token(checkin_access_token,
-                                        checkin_refresh_token,
-                                        checkin_client_id,
-                                        checkin_client_secret,
-                                        checkin_url)
+    access_token = get_access_token(checkin_access_token,
+                                    checkin_refresh_token,
+                                    checkin_client_id,
+                                    checkin_client_secret,
+                                    checkin_url,
+                                    oidc_agent_account)
 
     if site == "ALL_SITES":
         sites = list_sites()
@@ -347,6 +337,11 @@ def openstack(
     required=True,
     envvar="EGI_VO",
 )
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def openstack_int(
         checkin_client_id,
         checkin_client_secret,
@@ -357,7 +352,8 @@ def openstack_int(
         checkin_auth_type,
         checkin_provider,
         site,
-        vo
+        vo,
+        oidc_agent_account
 ):
     """
     Interactive Openstack client on site and VO
@@ -371,7 +367,8 @@ def openstack_int(
                                     checkin_refresh_token,
                                     checkin_client_id,
                                     checkin_client_secret,
-                                    checkin_url)
+                                    checkin_url,
+                                    oidc_agent_account)
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:

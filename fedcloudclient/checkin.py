@@ -1,4 +1,3 @@
-
 import re
 import time
 from datetime import datetime
@@ -7,6 +6,7 @@ import click
 import jwt
 from tabulate import tabulate
 import requests
+import liboidcagent as agent
 
 DEFAULT_CHECKIN_URL = "https://aai.egi.eu/oidc"
 
@@ -80,11 +80,14 @@ def get_access_token(
         checkin_refresh_token,
         checkin_client_id,
         checkin_client_secret,
-        checkin_url
+        checkin_url,
+        oidc_agent_account,
 ):
     """
     Getting access token.
-    Generate new access token from refresh token (if given) or use existing token
+    Generate new access token from oidc-agent or refresh token (if given)
+    or use existing token
+
     Check expiration time of access token
     Raise error if no valid token exists
 
@@ -93,18 +96,31 @@ def get_access_token(
     :param checkin_client_id:
     :param checkin_client_secret:
     :param checkin_url:
+    :param oidc_agent_account:
+
     :return: access token
     """
 
+    # First, try to get access token from oidc-agent
+    if oidc_agent_account:
+        try:
+            access_token = agent.get_access_token(oidc_agent_account,
+                                                  min_valid_period=30,
+                                                  application_hint="fedcloudclient")
+            return access_token
+        except agent.OidcAgentError as e:
+            print("ERROR oidc-agent: {}".format(e))
+
+    # Then try refresh token
     if (checkin_refresh_token and checkin_client_id
             and checkin_client_secret and checkin_url):
-
-        # Always getting new access token if refresh token exist
         return token_refresh(
             checkin_client_id,
             checkin_client_secret,
             checkin_refresh_token,
             checkin_url)["access_token"]
+
+    # Then finally access token
     elif checkin_access_token:
 
         # Check expiration time of access token
@@ -280,23 +296,29 @@ def check(
     default=DEFAULT_CHECKIN_URL,
     show_default=True,
 )
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def list_vos(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
-        checkin_url
+        checkin_url,
+        oidc_agent_account
 ):
     """
     CLI command for listing VO memberships according to access token
     """
-
     checkin_access_token = get_access_token(
-        checkin_access_token,
-        checkin_refresh_token,
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_url)
+            checkin_access_token,
+            checkin_refresh_token,
+            checkin_client_id,
+            checkin_client_secret,
+            checkin_url,
+            oidc_agent_account)
 
     vos = token_list_vos(checkin_access_token, checkin_url)
     print("\n".join(vos))

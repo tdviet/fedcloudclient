@@ -275,13 +275,19 @@ def endpoint():
     help="Name of the site",
     envvar="EGI_SITE",
 )
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def projects(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
-        site
+        site,
+        oidc_agent_account
 ):
     """
     List of all project from specific site/sites
@@ -290,7 +296,8 @@ def projects(
                                     checkin_refresh_token,
                                     checkin_client_id,
                                     checkin_client_secret,
-                                    checkin_url)
+                                    checkin_url,
+                                    oidc_agent_account)
 
     project_list = get_projects_from_sites(access_token, site)
     print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
@@ -336,6 +343,11 @@ def projects(
     required=True,
     envvar="OS_PROJECT_ID",
 )
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def token(
         checkin_client_id,
         checkin_client_secret,
@@ -344,6 +356,7 @@ def token(
         checkin_url,
         project_id,
         site,
+        oidc_agent_account
 ):
     """
     Get scoped keystone token from site and project ID
@@ -352,7 +365,8 @@ def token(
                                     checkin_refresh_token,
                                     checkin_client_id,
                                     checkin_client_secret,
-                                    checkin_url)
+                                    checkin_url,
+                                    oidc_agent_account)
     # Getting sites from GOCDB
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
@@ -486,6 +500,11 @@ def ec3_refresh(
     show_default=True,
 )
 @click.option("--force", is_flag=True, help="Force rewrite of files")
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def ec3(
         checkin_client_id,
         checkin_client_secret,
@@ -497,6 +516,7 @@ def ec3(
         auth_file,
         template_dir,
         force,
+        oidc_agent_account
 ):
     if os.path.exists(auth_file) and not force:
         print("Auth file already exists, not replacing unless --force option is included")
@@ -506,7 +526,8 @@ def ec3(
                                     checkin_refresh_token,
                                     checkin_client_id,
                                     checkin_client_secret,
-                                    checkin_url)
+                                    checkin_url,
+                                    oidc_agent_account)
 
     # Get the right endpoint from GOCDB
     # assume first one is ok
@@ -612,6 +633,11 @@ def list(service_type, production, monitored, site):
     required=True,
     envvar="OS_PROJECT_ID",
 )
+@click.option(
+    "--oidc-agent-account",
+    help="short account name in oidc-agent",
+    envvar="OIDC_AGENT_ACCOUNT",
+)
 def env(
         checkin_client_id,
         checkin_client_secret,
@@ -620,15 +646,18 @@ def env(
         checkin_url,
         project_id,
         site,
+        oidc_agent_account,
 ):
     """
     Generating OS environment variables for specific project/site
     """
+
     access_token = get_access_token(checkin_access_token,
                                     checkin_refresh_token,
                                     checkin_client_id,
                                     checkin_client_secret,
-                                    checkin_url)
+                                    checkin_url,
+                                    oidc_agent_account)
     # Get the right endpoint from GOCDB
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
