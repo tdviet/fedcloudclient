@@ -136,8 +136,9 @@ def get_access_token(
                              + " Get new access token before continuing on operation")
         return checkin_access_token
     else:
-        raise SystemExit("Error: Either access token OR refresh token + client ID"
-                         + " + client secret are expected")
+        raise SystemExit("Error: An access token is needed for the operation. You can also give refresh token "
+                         "+ client ID + client secret for generating token on the fly"
+                         " or use oidc-agent")
 
 
 def token_list_vos(checkin_access_token, checkin_url):
@@ -313,12 +314,12 @@ def list_vos(
     CLI command for listing VO memberships according to access token
     """
     checkin_access_token = get_access_token(
-            checkin_access_token,
-            checkin_refresh_token,
-            checkin_client_id,
-            checkin_client_secret,
-            checkin_url,
-            oidc_agent_account)
+        checkin_access_token,
+        checkin_refresh_token,
+        checkin_client_id,
+        checkin_client_secret,
+        checkin_url,
+        oidc_agent_account)
 
     vos = token_list_vos(checkin_access_token, checkin_url)
     print("\n".join(vos))

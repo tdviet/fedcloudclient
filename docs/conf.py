@@ -22,7 +22,7 @@ copyright = '2020, Viet Tran'
 author = 'Viet Tran'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.2-dev15'
+# release = '0.0.2-dev15'
 
 # -- General configuration ---------------------------------------------------
 

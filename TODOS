@@ -11,5 +11,3 @@
     and add it to the dict.
     + Applicable only for using as library
 
-- oidc-agent integration
-    + get access token from oidc-agent

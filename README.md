@@ -141,7 +141,7 @@ FAQ
 > and import bundle certificates by using
 > the script from [this repository](https://github.com/tdviet/python-requests-bundle-certs)
 
-3.  The *fedcloud* client fails with error message *"VO XX not found on site YY"* but they do exist.
+3.  The *fedcloud* client fails with error message *"VO XX not found on site YY"*, but they do exist.
 
 > Site configurations at
 > [GitHub repository](https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites)
@@ -178,4 +178,5 @@ FAQ
 > have lower security constraints. However, they have to be refreshed
 > frequently, that may be inconvenient for some users. In shared
 > environment, e.g. VMs in Cloud, access tokens should be used instead
-> of refreshed tokens.
+> of refreshed tokens. If refresh token must be used, consider to use
+> oidc-agent for storing the token. 
