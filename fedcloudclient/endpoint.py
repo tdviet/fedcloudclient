@@ -5,7 +5,7 @@ import defusedxml.ElementTree as ET
 
 import click
 import jwt
-from six.moves.urllib import parse
+from urllib import parse
 import requests
 from tabulate import tabulate
 
@@ -427,7 +427,7 @@ def ec3_refresh(
                         if access_token[0] in ["'", '"']:
                             access_token = access_token[1:-1]
                         # FIXME(enolfc): add verification
-                        payload = jwt.decode(access_token, verify=False)
+                        payload = jwt.decode(access_token, options={"verify_signature": False})
                         now = int(time.time())
                         expires = int(payload['exp'])
                         if expires - now < 300:

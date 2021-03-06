@@ -125,7 +125,7 @@ def get_access_token(
 
         # Check expiration time of access token
         try:
-            payload = jwt.decode(checkin_access_token, verify=False)
+            payload = jwt.decode(checkin_access_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
@@ -237,7 +237,7 @@ def check(
 
     if checkin_refresh_token:
         try:
-            payload = jwt.decode(checkin_refresh_token, verify=False)
+            payload = jwt.decode(checkin_refresh_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid refresh token.")
 
@@ -252,7 +252,7 @@ def check(
 
     elif checkin_access_token:
         try:
-            payload = jwt.decode(checkin_access_token, verify=False)
+            payload = jwt.decode(checkin_access_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
