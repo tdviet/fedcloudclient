@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://fedcloud.egi.eu/catchall-ops.json",
+  "type": "object",
+  "title": "site specs",
+  "description": "site configuration schema",
+  "definitions": {
+    "vodata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "project_id": {
+              "type": "string",
+              "title": "project id",
+              "description": "project supporting the VO at the site"
+            }
+          }
+        }
+      },
+      "required": [
+        "auth",
+        "name"
+      ],
+      "additionalProperties": true
+    }
+  },
+  "required": [
+    "gocdb",
+    "endpoint"
+  ],
+  "properties": {
+    "gocdb": {
+      "$id": "#/properties/gocdb",
+      "type": "string",
+      "title": "GOCDB site name",
+      "description": "The GOCDB site name.",
+      "default": ""
+    },
+    "endpoint": {
+      "$id": "#/properties/endpoint",
+      "type": "string",
+      "title": "keystone endpoint",
+      "description": "The URL of keystone endpoint (should match GOCDB entry).",
+      "default": ""
+    },
+    "protocol": {
+      "$id": "#/properties/protocol",
+      "type": "string",
+      "title": "protocol in Keystone",
+      "description": "The protocol configured in keystone for egi.eu idp.",
+      "default": "openid"
+    },
+    "vos": {
+      "$id": "#/properties/vos",
+      "type": "array",
+      "title": "Supported VOs",
+      "description": "VOs supported at the site.",
+      "items": {
+        "$ref": "#/definitions/vodata"
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -11,8 +11,8 @@ RUN curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-tru
 # Install oidc-agent
 RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87FF00B512839863D487A87 \
     && echo "deb http://repo.data.kit.edu/debian/buster ./" >> /etc/apt/sources.list.d/oidc-agent.list \
-    && apt update \
-    && apt install -y oidc-agent \
+    && apt-get update \
+    && apt-get install -y oidc-agent \
     && mkdir -p  ~/.config/oidc-agent/
 
 # Install fedcloudclient

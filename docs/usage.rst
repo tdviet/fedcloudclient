@@ -61,6 +61,7 @@ Most of fedcloud options, including options for tokens can be set via environmen
 +-----------------------------+---------------------------------+----------------------------------+
 |    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
+
 For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of time.
 
 fedcloud --help command
