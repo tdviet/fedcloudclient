@@ -15,7 +15,7 @@
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IISAS-GPUCloud.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/IN2P3-IRES.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-CATANIA-STACK.yaml"
-- "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-CLOUD-BARI .yaml"
+- "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-CLOUD-BAR.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/INFN-PADOVA-STACK.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/Kharkov-KIPT-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/NCG-INGRID-PT.yaml"
