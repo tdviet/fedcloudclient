@@ -61,10 +61,14 @@ def read_default_site_config():
         raise SystemExit("Error: remote site config must be located at HTTPS : %s" % filename)
 
     # URLs already checked, so ignore bandit test
-    with urlopen(req) as yaml_file:  # nosec
-        if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
-            raise SystemExit("Error: File %s too large" % filename)
-        site_list = yaml.safe_load(yaml_file)
+    try:
+        with urlopen(req) as yaml_file:  # nosec
+            if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
+                raise SystemExit("Error: File %s too large" % filename)
+            site_list = yaml.safe_load(yaml_file)
+    except Exception as e:
+        print("Error during reading file %s" % filename)
+        raise SystemExit("Exception: %s" % e)
 
     # site list is read from Internet, so double checks
     if not isinstance(site_list, builtins.list):
@@ -77,16 +81,18 @@ def read_default_site_config():
             raise SystemExit("Error: remote site config must be located at HTTPS: %s" % filename)
 
         # URLs already checked, so ignore bandit test
-        with urlopen(req) as yaml_file:  # nosec
-            if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
-                raise SystemExit("Error: File %s too large" % filename)
-            try:
+        try:
+            with urlopen(req) as yaml_file:  # nosec
+                if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
+                    raise SystemExit("Error: File %s too large" % filename)
+
                 site_info = yaml.safe_load(yaml_file)
                 validate(instance=site_info, schema=schema)
                 __site_config_data.append(site_info)
-            except Exception as e:
-                print("Error during reading file %s" % filename)
-                raise SystemExit("Exception: %s" % e)
+
+        except Exception as e:
+            print("Error during reading file %s" % filename)
+            raise SystemExit("Exception: %s" % e)
 
 
 def read_local_site_config(config_dir):
