@@ -7,7 +7,7 @@ import pkg_resources
 import click
 import yaml
 
-__REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites1.yaml"
+__REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 
 __LOCAL_CONFIG_DIR = ".fedcloud-site-config/"
 
