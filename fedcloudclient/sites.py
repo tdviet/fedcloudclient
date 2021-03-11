@@ -58,7 +58,7 @@ def read_default_site_config():
     if filename.lower().startswith('https://'):  # Only read from HTTPS location
         req = Request(filename)
     else:
-        raise SystemExit("Error: remote site config must be located at HTTPS")
+        raise SystemExit("Error: remote site config must be located at HTTPS : %s" % filename)
 
     # URLs already checked, so ignore bandit test
     with urlopen(req) as yaml_file:  # nosec
@@ -74,15 +74,19 @@ def read_default_site_config():
         if isinstance(filename, str) and filename.lower().startswith('https://'):
             req = Request(filename)
         else:
-            raise SystemExit("Error: remote site config must be located at HTTPS")
+            raise SystemExit("Error: remote site config must be located at HTTPS: %s" % filename)
 
         # URLs already checked, so ignore bandit test
         with urlopen(req) as yaml_file:  # nosec
             if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
                 raise SystemExit("Error: File %s too large" % filename)
-            site_info = yaml.safe_load(yaml_file)
-            validate(instance=site_info, schema=schema)
-            __site_config_data.append(site_info)
+            try:
+                site_info = yaml.safe_load(yaml_file)
+                validate(instance=site_info, schema=schema)
+                __site_config_data.append(site_info)
+            except Exception as e:
+                print("Error during reading file %s" % filename)
+                raise SystemExit("Exception: %s" % e)
 
 
 def read_local_site_config(config_dir):
@@ -95,11 +99,17 @@ def read_local_site_config(config_dir):
     :return: None
     """
     __site_config_data.clear()
+    schema = read_site_schema()
     config_dir = Path(config_dir)
     for f in sorted(config_dir.glob('*.yaml')):
-        yaml_file = f.open()
-        site_info = yaml.safe_load(yaml_file)
-        __site_config_data.append(site_info)
+        try:
+            yaml_file = f.open()
+            site_info = yaml.safe_load(yaml_file)
+            validate(instance=site_info, schema=schema)
+            __site_config_data.append(site_info)
+        except Exception as e:
+            print("Error during reading file %s" % f)
+            raise SystemExit("Exception: %s" % e)
 
 
 def save_site_config(config_dir):
