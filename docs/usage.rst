@@ -9,9 +9,9 @@ Openstack commands on sites.
 Authentication
 **************
 
-Many **fedcloud** commands need access token for authentication. Users can choose whether to provide access token
-directly (via option *"--checkin-access-token"*), or using refresh token (must be provided together with
-Check-in client ID and secret) to generate access token on the fly. Therefore, in most cases, the option
+Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
+directly (via option *"--checkin-access-token"*), or using refresh tokens (must be provided together with
+Check-in client ID and secret) to generate access tokens on the fly. Therefore, in most cases, the option
 *"--checkin-access-token"* can be replaced by the combination of *"--checkin-refresh-token"*, *"--checkin-client-id"*
 and *"--checkin-client-secret"*.
 
@@ -29,7 +29,7 @@ provider via option *"--checkin-url"*. Remember to set identity provider's name 
 for Openstack commands.
 
 The default protocol is *"openid"*. Users can change default protocol via option *"--checkin-protocol"*. However,
-sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for RECAS-BARI.
+sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
 
 Environment variables
 *********************
