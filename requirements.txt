@@ -5,7 +5,8 @@ defusedxml~=0.6.0
 pyjwt~=2.0.1
 python-openstackclient
 future
-liboidcagent
+liboidcagent~=0.3.0
 
 PyYAML~=5.4.1
 setuptools~=54.1.0
+jsonschema~=3.2.0

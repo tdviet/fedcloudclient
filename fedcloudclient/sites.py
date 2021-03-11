@@ -1,7 +1,9 @@
 import builtins
+import json
 from pathlib import Path
 from urllib.request import urlopen, Request
-
+from jsonschema import validate
+import pkg_resources
 import click
 import yaml
 
@@ -12,6 +14,17 @@ __LOCAL_CONFIG_DIR = ".fedcloud-site-config/"
 __site_config_data = []
 
 __FILE_SIZE_LIMIT = 1024 * 1024  # Max size for config files
+
+
+def read_site_schema():
+    """
+    Read schema.json for validating site configuration
+
+    :return: JSON object from schema.json
+    """
+    file = pkg_resources.resource_stream("fedcloudclient", "schema.json")
+    schema = json.load(file)
+    return schema
 
 
 def read_site_config():
@@ -39,15 +52,16 @@ def read_default_site_config():
     :return: None
     """
     __site_config_data.clear()
+    schema = read_site_schema()
 
     filename = __REMOTE_CONFIG_FILE
-    if filename.lower().startswith('https://'):     # Only read from HTTPS location
+    if filename.lower().startswith('https://'):  # Only read from HTTPS location
         req = Request(filename)
     else:
         raise SystemExit("Error: remote site config must be located at HTTPS")
 
     # URLs already checked, so ignore bandit test
-    with urlopen(req) as yaml_file:       # nosec
+    with urlopen(req) as yaml_file:  # nosec
         if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
             raise SystemExit("Error: File %s too large" % filename)
         site_list = yaml.safe_load(yaml_file)
@@ -63,10 +77,11 @@ def read_default_site_config():
             raise SystemExit("Error: remote site config must be located at HTTPS")
 
         # URLs already checked, so ignore bandit test
-        with urlopen(req) as yaml_file:       # nosec
+        with urlopen(req) as yaml_file:  # nosec
             if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
                 raise SystemExit("Error: File %s too large" % filename)
             site_info = yaml.safe_load(yaml_file)
+            validate(instance=site_info, schema=schema)
             __site_config_data.append(site_info)
 
 
