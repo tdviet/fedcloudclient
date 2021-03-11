@@ -160,7 +160,9 @@ def token_list_vos(checkin_access_token, checkin_url):
     for claim in r.json().get("eduperson_entitlement", []):
         vo = m.match(claim)
         if vo:
-            vos.append(vo.groups()[0])
+            full_vo_role = vo.groups()[0]
+            vo_name = full_vo_role.split(':')[0]
+            vos.append(vo_name)
     return vos
 
 
