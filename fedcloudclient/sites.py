@@ -9,7 +9,7 @@ import yaml
 
 __REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 
-__LOCAL_CONFIG_DIR = ".fedcloud-site-config/"
+__LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
 
 __site_config_data = []
 
