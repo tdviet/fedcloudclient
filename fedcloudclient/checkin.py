@@ -5,7 +5,6 @@ from datetime import datetime
 
 import click
 import jwt
-from tabulate import tabulate
 import requests
 import liboidcagent as agent
 
@@ -176,6 +175,12 @@ def token():
 
 
 def oidc_params(func):
+    """
+    Decorator for OIDC parameters
+
+    :param func:
+    :return:
+    """
     @click.option(
         "--checkin-client-id",
         help="Check-in client id",
@@ -276,7 +281,7 @@ def list_vos(
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
-        oidc_agent_account
+        oidc_agent_account,
 ):
     """
     CLI command for listing VO memberships according to access token

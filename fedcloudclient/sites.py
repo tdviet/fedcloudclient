@@ -196,6 +196,32 @@ def site():
     pass
 
 
+def site_vo_params(func):
+    """
+    Decorator for site and VO parameters
+
+    :param func:
+    :return:
+    """
+    @click.option(
+        "--site",
+        help="Name of the site",
+        required=True,
+        envvar="EGI_SITE",
+    )
+    @click.option(
+        "--vo",
+        help="Name of the VO",
+        required=True,
+        envvar="EGI_VO",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 @site.command()
 @click.option(
     "--site",
@@ -215,18 +241,7 @@ def show(site):
 
 
 @site.command()
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
-@click.option(
-    "--vo",
-    help="Name of the VO",
-    required=True,
-    envvar="EGI_VO",
-)
+@site_vo_params
 def show_project_id(site, vo):
     """
     Printing Keystone endpoint and project ID of the VO on the site

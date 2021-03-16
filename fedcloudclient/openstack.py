@@ -1,4 +1,5 @@
 import concurrent.futures
+import functools
 import json
 import os
 from distutils.spawn import find_executable
@@ -8,8 +9,8 @@ import click
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
 
-from fedcloudclient.checkin import get_access_token, DEFAULT_CHECKIN_URL
-from fedcloudclient.sites import find_endpoint_and_project_id, list_sites
+from fedcloudclient.checkin import get_access_token, DEFAULT_CHECKIN_URL, oidc_params
+from fedcloudclient.sites import find_endpoint_and_project_id, list_sites, site_vo_params
 
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
@@ -133,71 +134,45 @@ def check_openstack_client_installation():
     return find_executable(__OPENSTACK_CLIENT) is not None
 
 
+def openstack_params(func):
+    """
+    Decorator for Openstack authentication parameters
+
+    :param func:
+    :return:
+    """
+    @click.option(
+        "--checkin-protocol",
+        help="Check-in protocol",
+        envvar="CHECKIN_PROTOCOL",
+        default=DEFAULT_PROTOCOL,
+        show_default=True,
+    )
+    @click.option(
+        "--checkin-auth-type",
+        help="Check-in authentication type",
+        envvar="CHECKIN_AUTH_TYPE",
+        default=DEFAULT_AUTH_TYPE,
+        show_default=True,
+    )
+    @click.option(
+        "--checkin-provider",
+        help="Check-in identity provider",
+        envvar="CHECKIN_PROVIDER",
+        default=DEFAULT_IDENTITY_PROVIDER,
+        show_default=True,
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 @click.command(context_settings={"ignore_unknown_options": True})
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
-@click.option(
-    "--checkin-protocol",
-    help="Check-in protocol",
-    envvar="CHECKIN_PROTOCOL",
-    default=DEFAULT_PROTOCOL,
-    show_default=True,
-)
-@click.option(
-    "--checkin-auth-type",
-    help="Check-in authentication type",
-    envvar="CHECKIN_AUTH_TYPE",
-    default=DEFAULT_AUTH_TYPE,
-    show_default=True,
-)
-@click.option(
-    "--checkin-provider",
-    help="Check-in identity provider",
-    envvar="CHECKIN_PROVIDER",
-    default=DEFAULT_IDENTITY_PROVIDER,
-    show_default=True,
-)
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
-@click.option(
-    "--vo",
-    help="Name of the VO",
-    envvar="EGI_VO",
-)
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
+@oidc_params
+@openstack_params
+@site_vo_params
 @click.option(
     '--ignore-missing-vo',
     help="Ignore sites that do not support the VO",
@@ -214,12 +189,12 @@ def openstack(
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         checkin_protocol,
         checkin_auth_type,
         checkin_provider,
         site,
         vo,
-        oidc_agent_account,
         ignore_missing_vo,
         openstack_command
 ):
@@ -277,83 +252,21 @@ def openstack(
 
 
 @click.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
-@click.option(
-    "--checkin-protocol",
-    help="Check-in protocol",
-    envvar="CHECKIN_PROTOCOL",
-    default=DEFAULT_PROTOCOL,
-    show_default=True,
-)
-@click.option(
-    "--checkin-auth-type",
-    help="Check-in authentication type",
-    envvar="CHECKIN_AUTH_TYPE",
-    default=DEFAULT_AUTH_TYPE,
-    show_default=True,
-)
-@click.option(
-    "--checkin-provider",
-    help="Check-in identity provider",
-    envvar="CHECKIN_PROVIDER",
-    default=DEFAULT_IDENTITY_PROVIDER,
-    show_default=True,
-)
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
-@click.option(
-    "--vo",
-    help="Name of the VO",
-    required=True,
-    envvar="EGI_VO",
-)
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
+@oidc_params
+@openstack_params
+@site_vo_params
 def openstack_int(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         checkin_protocol,
         checkin_auth_type,
         checkin_provider,
         site,
         vo,
-        oidc_agent_account
 ):
     """
     Interactive Openstack client on site and VO
