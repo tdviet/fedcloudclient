@@ -10,19 +10,20 @@ Authentication
 **************
 
 Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option *"--checkin-access-token"*), or using refresh tokens (must be provided together with
-Check-in client ID and secret) to generate access tokens on the fly. Therefore, in most cases, the option
-*"--checkin-access-token"* can be replaced by the combination of *"--checkin-refresh-token"*, *"--checkin-client-id"*
-and *"--checkin-client-secret"*.
+directly (via option *"--checkin-access-token"*), or via oidc-agent (via option *"--oidc-agent-account"*), use refresh
+tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
+in most cases, the option *"--checkin-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
+combination of *"--checkin-refresh-token"*, *"--checkin-client-id"* and *"--checkin-client-secret"*.
 
 Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `CheckIn FedCloud
-client <https://aai.egi.eu/fedcloud/>`_.
+client <https://aai.egi.eu/fedcloud/>`_. For providing access token via *oidc-agent*, follow the instructions from
+`oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
+give the client name (account name in *oidc-agent*) to *fedcloudclient* via option *"--oidc-agent-account"*.
 
-Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. In shared
-environment, e.g. in Cloud, consider to use `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/>`_ for securing
-refresh/access tokens. The access token from oidc-agent is specified via option *"--oidc-agent-account"*. If multiple
-methods of getting access tokens are given at the same time, the client will try to get the tokens from the oidc-agent
-first, then from refresh tokens.
+Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
+tokens via environment variables or command-line options is considered as insecure and will be disable in near
+future in favor of using *oidc-agent*. If multiple methods of getting access tokens are given at the same time,
+the client will try to get the tokens from the oidc-agent first, then from refresh tokens.
 
 The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/oidc). Users can set other OIDC identity
 provider via option *"--checkin-url"*. Remember to set identity provider's name *"--checkin-provider"* accordingly

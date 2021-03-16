@@ -114,6 +114,7 @@ def get_access_token(
     # Then try refresh token
     if (checkin_refresh_token and checkin_client_id
             and checkin_client_secret and checkin_url):
+        print("WARNING: exposing refresh tokens is insecure and will be disable in next version!")
         return token_refresh(
             checkin_client_id,
             checkin_client_secret,
@@ -136,9 +137,8 @@ def get_access_token(
                              + " Get new access token before continuing on operation")
         return checkin_access_token
     else:
-        raise SystemExit("Error: An access token is needed for the operation. You can also give refresh token "
-                         "+ client ID + client secret for generating token on the fly"
-                         " or use oidc-agent")
+        raise SystemExit("Error: An access token is needed for the operation. You can specify access token"
+                         " directly via --checkin-access-token option or use oidc-agent via --oidc-agent-account")
 
 
 def token_list_vos(checkin_access_token, checkin_url):
@@ -161,7 +161,7 @@ def token_list_vos(checkin_access_token, checkin_url):
         vo = m.match(claim)
         if vo:
             full_vo_role = vo.groups()[0]
-            vo_name = full_vo_role.split(':')[0]
+            vo_name = full_vo_role.split(':')[0]    # Remove roles and subgroups from VO names
             vos.append(vo_name)
     return vos
 
