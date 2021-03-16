@@ -1,4 +1,5 @@
 import builtins
+import functools
 import json
 from pathlib import Path
 from urllib.request import urlopen, Request
