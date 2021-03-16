@@ -7,6 +7,7 @@ from fedcloudclient.openstack import openstack, openstack_int
 
 
 @click.group()
+@click.version_option()
 def cli():
     pass
 

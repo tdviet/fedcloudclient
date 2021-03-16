@@ -1,15 +1,15 @@
 import os
 import re
 import time
-import defusedxml.ElementTree as ET
+from urllib import parse
 
 import click
+import defusedxml.ElementTree as ElementTree
 import jwt
-from urllib import parse
 import requests
 from tabulate import tabulate
 
-from fedcloudclient.checkin import refresh_access_token, get_access_token, DEFAULT_CHECKIN_URL
+from fedcloudclient.checkin import refresh_access_token, get_access_token, oidc_params
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 
@@ -77,7 +77,7 @@ def get_sites():
     r = requests.get(url)
     sites = []
     if r.status_code == 200:
-        root = ET.fromstring(r.text)
+        root = ElementTree.fromstring(r.text)
         for s in root:
             sites.append(s.attrib.get('NAME'))
     else:
@@ -110,7 +110,7 @@ def find_endpoint(service_type, production=True, monitored=True, site=None):
     r = requests.get(url)
     endpoints = []
     if r.status_code == 200:
-        root = ET.fromstring(r.text)
+        root = ElementTree.fromstring(r.text)
         for sp in root:
             if production:
                 prod = sp.find("IN_PRODUCTION").text.upper()
@@ -243,42 +243,11 @@ def endpoint():
 
 
 @endpoint.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
+@oidc_params
 @click.option(
     "--site",
     help="Name of the site",
     envvar="EGI_SITE",
-)
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
 )
 def projects(
         checkin_client_id,
@@ -286,8 +255,8 @@ def projects(
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         site,
-        oidc_agent_account
 ):
     """
     List of all project from specific site/sites
@@ -304,33 +273,7 @@ def projects(
 
 
 @endpoint.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in client id",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
+@oidc_params
 @click.option(
     "--site",
     help="Name of the site",
@@ -343,20 +286,15 @@ def projects(
     required=True,
     envvar="OS_PROJECT_ID",
 )
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
 def token(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         project_id,
         site,
-        oidc_agent_account
 ):
     """
     Get scoped keystone token from site and project ID
@@ -376,31 +314,7 @@ def token(
 
 
 @endpoint.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    required=True,
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    required=True,
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    required=True,
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
+@oidc_params
 @click.option(
     "--auth-file",
     help="Authorization file",
@@ -411,7 +325,9 @@ def ec3_refresh(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
+        checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         auth_file,
 ):
     # Get the right endpoint from GOCDB
@@ -448,33 +364,7 @@ def ec3_refresh(
 
 
 @endpoint.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
+@oidc_params
 @click.option(
     "--site",
     help="Name of the site",
@@ -500,23 +390,19 @@ def ec3_refresh(
     show_default=True,
 )
 @click.option("--force", is_flag=True, help="Force rewrite of files")
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
+
 def ec3(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         site,
         project_id,
         auth_file,
         template_dir,
         force,
-        oidc_agent_account
 ):
     if os.path.exists(auth_file) and not force:
         print("Auth file already exists, not replacing unless --force option is included")
@@ -594,33 +480,7 @@ def list(service_type, production, monitored, site):
 
 
 @endpoint.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
+@oidc_params
 @click.option(
     "--site",
     help="Name of the site",
@@ -633,20 +493,16 @@ def list(service_type, production, monitored, site):
     required=True,
     envvar="OS_PROJECT_ID",
 )
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
+
 def env(
         checkin_client_id,
         checkin_client_secret,
         checkin_refresh_token,
         checkin_access_token,
         checkin_url,
+        oidc_agent_account,
         project_id,
         site,
-        oidc_agent_account,
 ):
     """
     Generating OS environment variables for specific project/site
