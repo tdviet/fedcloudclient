@@ -221,6 +221,7 @@ def get_projects_from_sites(access_token, site):
 def get_project_id_from_vo_site(access_token, vo, site):
     """
     Deprecated in favor of new functions in sites.py
+
     Get project ID from site ID and VO name
     """
     if site is None:
@@ -390,7 +391,6 @@ def ec3_refresh(
     show_default=True,
 )
 @click.option("--force", is_flag=True, help="Force rewrite of files")
-
 def ec3(
         checkin_client_id,
         checkin_client_secret,
@@ -493,7 +493,6 @@ def list(service_type, production, monitored, site):
     required=True,
     envvar="OS_PROJECT_ID",
 )
-
 def env(
         checkin_client_id,
         checkin_client_secret,
