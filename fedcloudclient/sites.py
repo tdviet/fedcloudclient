@@ -239,6 +239,7 @@ def show(site):
         print(yaml.dump(site_info, sort_keys=True))
     else:
         print("Site %s not found" % site)
+        return 1
 
 
 @site.command()
@@ -249,9 +250,11 @@ def show_project_id(site, vo):
     """
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
-        print(" Endpoint : %s \n Project ID : %s" % (endpoint, project_id))
+        print('export OS_AUTH_URL="%s"' % endpoint)
+        print('export OS_PROJECT_ID="%s"' % project_id)
     else:
         print("VO %s not found on site %s" % (vo, site))
+        return 1
 
 
 @site.command()
