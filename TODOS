@@ -11,3 +11,6 @@
     and add it to the dict.
     + Applicable only for using as library
 
+- Disabling using refresh token in favor of oidc-agent
+
+- Removing repeated CLI options

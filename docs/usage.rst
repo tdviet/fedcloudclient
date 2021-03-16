@@ -178,15 +178,15 @@ site configurations, beside faster loading, is to give users ability to make cus
 remove sites they do not have access, and so on.
 
 * **"fedcloud site save-config"** : Read the default site configurations from GitHub
-  and save them to *~/.fedcloud-site-config/* local directory. The command will overwrite existing site configurations
+  and save them to *~/.config/fedcloud/site-config/* local directory. The command will overwrite existing site configurations
   in the local directory.
 
 ::
 
     $ fedcloud site save-config
-    Saving site configs to directory /home/viet/.fedcloud-site-config
+    Saving site configs to directory /home/viet/.config/fedcloud/site-config/
 
-After saving site configurations, users can edit and customize them, e.g. remove unaccessible sites, add new
+After saving site configurations, users can edit and customize them, e.g. remove inaccessible sites, add new
 VOs and so on.
 
 * **"fedcloud site list"** : List of existing sites in the site configurations
