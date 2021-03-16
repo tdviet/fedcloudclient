@@ -1,3 +1,4 @@
+import functools
 import re
 import time
 from datetime import datetime
@@ -161,7 +162,7 @@ def token_list_vos(checkin_access_token, checkin_url):
         vo = m.match(claim)
         if vo:
             full_vo_role = vo.groups()[0]
-            vo_name = full_vo_role.split(':')[0]    # Remove roles and subgroups from VO names
+            vo_name = full_vo_role.split(':')[0]  # Remove roles and subgroups from VO names
             vos.append(vo_name)
     return vos
 
@@ -174,48 +175,44 @@ def token():
     pass
 
 
-@token.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    required=True,
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    required=True,
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    required=True,
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
-def refresh(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_url,
-):
-    """
-    CLI command for creating new access token from refresh token
-    """
-    output = token_refresh(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_url
+def oidc_params(func):
+    @click.option(
+        "--checkin-client-id",
+        help="Check-in client id",
+        envvar="CHECKIN_CLIENT_ID",
     )
-    print(tabulate([(k, v) for k, v in output.items()], headers=["Field", "Value"]))
+    @click.option(
+        "--checkin-client-secret",
+        help="Check-in client secret",
+        envvar="CHECKIN_CLIENT_SECRET",
+    )
+    @click.option(
+        "--checkin-refresh-token",
+        help="Check-in client id",
+        envvar="CHECKIN_REFRESH_TOKEN",
+    )
+    @click.option(
+        "--checkin-access-token",
+        help="Check-in access token",
+        envvar="CHECKIN_ACCESS_TOKEN",
+    )
+    @click.option(
+        "--checkin-url",
+        help="Check-in OIDC URL",
+        envvar="CHECKIN_OIDC_URL",
+        default=DEFAULT_CHECKIN_URL,
+        show_default=True,
+    )
+    @click.option(
+        "--oidc-agent-account",
+        help="short account name in oidc-agent",
+        envvar="OIDC_AGENT_ACCOUNT",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
 
 
 @token.command()
@@ -272,38 +269,7 @@ def check(
 
 
 @token.command()
-@click.option(
-    "--checkin-client-id",
-    help="Check-in client id",
-    envvar="CHECKIN_CLIENT_ID",
-)
-@click.option(
-    "--checkin-client-secret",
-    help="Check-in client secret",
-    envvar="CHECKIN_CLIENT_SECRET",
-)
-@click.option(
-    "--checkin-refresh-token",
-    help="Check-in client id",
-    envvar="CHECKIN_REFRESH_TOKEN",
-)
-@click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
-)
-@click.option(
-    "--checkin-url",
-    help="Check-in OIDC URL",
-    envvar="CHECKIN_OIDC_URL",
-    default=DEFAULT_CHECKIN_URL,
-    show_default=True,
-)
-@click.option(
-    "--oidc-agent-account",
-    help="short account name in oidc-agent",
-    envvar="OIDC_AGENT_ACCOUNT",
-)
+@oidc_params
 def list_vos(
         checkin_client_id,
         checkin_client_secret,
