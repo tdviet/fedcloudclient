@@ -156,13 +156,11 @@ def token_list_vos(checkin_access_token, checkin_url):
 
     r.raise_for_status()
     vos = []
-    m = re.compile("urn:mace:egi.eu:group:(.*.):role=member#aai.egi.eu")
+    m = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
     for claim in r.json().get("eduperson_entitlement", []):
         vo = m.match(claim)
         if vo:
-            full_vo_role = vo.groups()[0]
-            vo_name = full_vo_role.split(':')[0]  # Remove roles and subgroups from VO names
-            vos.append(vo_name)
+            vos.append(vo.groups()[0])
     return vos
 
 
