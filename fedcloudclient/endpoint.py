@@ -31,7 +31,7 @@ configure front (
       changed_when: false
       failed_when: docker_installed.rc not in [0,1]
       register: docker_installed
-    - name: local install of egicli
+    - name: local install of fedcloudclient
       block:
       - name: Create dir /usr/local/ec3/
         file: path=/usr/local/ec3/ state=directory
@@ -39,24 +39,24 @@ configure front (
         package:
           name: git
           state: present
-      - name: install egicli
+      - name: install fedcloudclient
         pip:
           name:
-          - git+http://github.com/enolfc/egicli@ec3
+          - fedcloudclient
       - cron:
           name: "refresh token"
           minute: "*/5"
-          job: "[ -f /usr/local/ec3/auth.dat ] && /usr/local/bin/egicli endpoint ec3-refresh --checkin-client-id {{ CLIENT_ID }} --checkin-client-secret {{ CLIENT_SECRET }} --checkin-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
+          job: "[ -f /usr/local/ec3/auth.dat ] && /usr/local/bin/fedcloudclient endpoint ec3-refresh --oidc-client-id {{ CLIENT_ID }} --oidc-client-secret {{ CLIENT_SECRET }} --oidc-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
           user: root
           cron_file: refresh_token
           state: present
       when: docker_installed.rc not in [ 0 ]
-    - name: local install of egicli
+    - name: local install of fedcloudclient
       block:
       - cron:
           name: "refresh token"
           minute: "*/5"
-          job: "[ -f /usr/local/ec3/auth.dat ] && docker run -v /usr/local/ec3/auth.dat:/usr/local/ec3/auth.dat egifedcloud/egicli egicli endpoint ec3-refresh --checkin-client-id {{ CLIENT_ID }} --checkin-client-secret {{ CLIENT_SECRET }} --checkin-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
+          job: "[ -f /usr/local/ec3/auth.dat ] && docker run -v /usr/local/ec3/auth.dat:/usr/local/ec3/auth.dat tdviet/fedcloudclient fedcloudclient endpoint ec3-refresh --oidc-client-id {{ CLIENT_ID }} --oidc-client-secret {{ CLIENT_SECRET }} --oidc-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
           user: root
           cron_file: refresh_token
           state: present
@@ -251,22 +251,22 @@ def endpoint():
     envvar="EGI_SITE",
 )
 def projects(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
         site,
 ):
     """
     List of all project from specific site/sites
     """
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
 
     project_list = get_projects_from_sites(access_token, site)
@@ -288,11 +288,11 @@ def projects(
     envvar="OS_PROJECT_ID",
 )
 def token(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
         project_id,
         site,
@@ -300,11 +300,11 @@ def token(
     """
     Get scoped keystone token from site and project ID
     """
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
     # Getting sites from GOCDB
     # assume first one is ok
@@ -323,11 +323,11 @@ def token(
     show_default=True,
 )
 def ec3_refresh(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
         auth_file,
 ):
@@ -349,10 +349,10 @@ def ec3_refresh(
                         expires = int(payload['exp'])
                         if expires - now < 300:
                             access_token = refresh_access_token(
-                                checkin_client_id,
-                                checkin_client_secret,
-                                checkin_refresh_token,
-                                checkin_url
+                                oidc_client_id,
+                                oidc_client_secret,
+                                oidc_refresh_token,
+                                oidc_url
                             )
                         auth_tokens.append("password = %s" % access_token)
                     else:
@@ -392,11 +392,11 @@ def ec3_refresh(
 )
 @click.option("--force", is_flag=True, help="Force rewrite of files")
 def ec3(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
         site,
         project_id,
@@ -408,11 +408,11 @@ def ec3(
         print("Auth file already exists, not replacing unless --force option is included")
         raise click.Abort()
 
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
 
     # Get the right endpoint from GOCDB
@@ -441,9 +441,9 @@ def ec3(
     if not os.path.exists(template_dir):
         os.mkdir(template_dir)
     with open(os.path.join(template_dir, "refresh.radl"), "w+") as f:
-        v = dict(client_id=checkin_client_id,
-                 client_secret=checkin_client_secret,
-                 refresh_token=checkin_refresh_token)
+        v = dict(client_id=oidc_client_id,
+                 client_secret=oidc_client_secret,
+                 refresh_token=oidc_refresh_token)
         f.write(EC3_REFRESHTOKEN_TEMPLATE % v)
 
 
@@ -494,11 +494,11 @@ def list(service_type, production, monitored, site):
     envvar="OS_PROJECT_ID",
 )
 def env(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
         project_id,
         site,
@@ -507,11 +507,11 @@ def env(
     Generating OS environment variables for specific project/site
     """
 
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
     # Get the right endpoint from GOCDB
     # assume first one is ok

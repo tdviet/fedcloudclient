@@ -37,7 +37,7 @@ or use Docker container:
 
 <!-- -->
 
-    $ export CHECKIN_ACCESS_TOKEN=<ACCESS_TOKEN>
+    $ export OIDC_ACCESS_TOKEN=<ACCESS_TOKEN>
 
 -   Check the expiration time of the access token using *fedcloud*
     command:
@@ -105,7 +105,7 @@ Python:
 
     from fedcloudclient.openstack import fedcloud_openstack
     ....
-    error_code, result = fedcloud_openstack(checkin_access_token,
+    error_code, result = fedcloud_openstack(oidc_access_token,
                                                  site,
                                                  vo,
                                                  openstack_command)
@@ -148,14 +148,14 @@ FAQ
 > may be incomplete. Check the site configurations stored in
 > *\~/.fedcloud-site-config/* if the VOs are included. If not, you can
 > ask site admins to fix site configuration. You can also execute
-> *"fedcloud endpoint projects --site SITE --checkin-access-token
+> *"fedcloud endpoint projects --site SITE --oidc-access-token
 > ACCESS\_TOKEN"* to find project IDs of the VOs on the site and add the VOs to
 > local site configuration on your machine manually.
 
 4.  I would like to add supports for additional sites/VOs/identity
     providers that are not parts of EGI Federated Cloud.
 
-> Other identity providers may be specified via option *"--checkin-url"*
+> Other identity providers may be specified via option *"--oidc-url"*
 > or environment variable *"CHECKIN\_OIDC\_URL"*. Additional sites and
 > VOs may be added to local site configuration files.
 

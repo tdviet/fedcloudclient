@@ -26,7 +26,7 @@ or use Docker container:
 
 ::
 
-    $ export CHECKIN_ACCESS_TOKEN=<ACCESS_TOKEN>
+    $ export OIDC_ACCESS_TOKEN=<ACCESS_TOKEN>
 
 Basic usages
 ************
