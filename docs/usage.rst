@@ -10,12 +10,12 @@ Authentication
 **************
 
 Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option *"--checkin-access-token"*), or via oidc-agent (via option *"--oidc-agent-account"*), use refresh
+directly (via option *"--oidc-access-token"*), or via oidc-agent (via option *"--oidc-agent-account"*), use refresh
 tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
-in most cases, the option *"--checkin-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
-combination of *"--checkin-refresh-token"*, *"--checkin-client-id"* and *"--checkin-client-secret"*.
+in most cases, the option *"--oidc-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
+combination of *"--oidc-refresh-token"*, *"--oidc-client-id"* and *"--oidc-client-secret"*.
 
-Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `CheckIn FedCloud
+Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `Check-in FedCloud
 client <https://aai.egi.eu/fedcloud/>`_. For providing access token via *oidc-agent*, follow the instructions from
 `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
 give the client name (account name in *oidc-agent*) to *fedcloudclient* via option *"--oidc-agent-account"*.
@@ -26,10 +26,10 @@ future in favor of using *oidc-agent*. If multiple methods of getting access tok
 the client will try to get the tokens from the oidc-agent first, then from refresh tokens.
 
 The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/oidc). Users can set other OIDC identity
-provider via option *"--checkin-url"*. Remember to set identity provider's name *"--checkin-provider"* accordingly
+provider via option *"--oidc-url"*. Remember to set identity provider's name *"--openstack-auth-provider"* accordingly
 for Openstack commands.
 
-The default protocol is *"openid"*. Users can change default protocol via option *"--checkin-protocol"*. However,
+The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
 
 Environment variables
@@ -40,27 +40,27 @@ Most of fedcloud options, including options for tokens can be set via environmen
 +-----------------------------+---------------------------------+----------------------------------+
 |     Environment variables   |   Command-line options          |          Default value           |
 +=============================+=================================+==================================+
-|    CHECKIN_ACCESS_TOKEN     |   --checkin-access-token        |                                  |
+|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_REFRESH_TOKEN    |   --checkin-refresh-token       |                                  |
+|    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_CLIENT_ID        |   --checkin-client-id           |                                  |
+|    OIDC_REFRESH_TOKEN       |   --oidc-refresh-token          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_CLIENT_SECRET    |   --checkin-client-secret       |                                  |
+|    OIDC_CLIENT_ID           |   --oidc-client-id              |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_URL              |   --checkin-url                 |    https://aai.egi.eu/oidc       |
+|    OIDC_CLIENT_SECRET       |   --oidc-client-secret          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_PROTOCOL         |   --checkin-protocol            |             openid               |
+|    OIDC_URL                 |   --oidc-url                    |    https://aai.egi.eu/oidc       |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_PROVIDER         |   --checkin-provider            |             egi.eu               |
+|    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid               |
 +-----------------------------+---------------------------------+----------------------------------+
-|    CHECKIN_AUTH_TYPE        |   --checkin-auth-type           |         v3oidcaccesstoken        |
+|    OPENSTACK_AUTH_PROVIDER  |   --openstack-auth-provider     |             egi.eu               |
++-----------------------------+---------------------------------+----------------------------------+
+|    OPENSTACK_AUTH_TYPE      |   --openstack-auth-type         |         v3oidcaccesstoken        |
 +-----------------------------+---------------------------------+----------------------------------+
 |    EGI_SITE                 |   --site                        |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
 |    EGI_VO                   |   --vo                          |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
 
 For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of time.
@@ -91,9 +91,9 @@ fedcloud --help command
 fedcloud token commands
 ***********************
 
-* **"fedcloud token check --checkin-access-token <ACCESS_TOKEN>"**: Check the expiration time of access token, so users can know whether
-  they need to refresh it. As mentioned before, access token may be given via environment variable *CHECKIN_ACCESS_TOKEN*,
-  so the option *--checkin-access-token* is not shown in all examples bellows, even if the option is required.
+* **"fedcloud token check --oidc-access-token <ACCESS_TOKEN>"**: Check the expiration time of access token, so users can know whether
+  they need to refresh it. As mentioned before, access token may be given via environment variable *OIDC_ACCESS_TOKEN*,
+  so the option *--oidc-access-token* is not shown in all examples bellows, even if the option is required.
 
 ::
 
@@ -102,7 +102,7 @@ fedcloud token commands
     Access token expires in 3571 seconds
 
 
-* **"fedcloud token list-vos --checkin-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to the EGI Check-in
+* **"fedcloud token list-vos --oidc-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to the EGI Check-in
 
 ::
 
@@ -131,7 +131,7 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     IN2P3-IRES          org.openstack.nova  https://sbgcloud.in2p3.fr:5000/v3
     ...
 
-* **"fedcloud endpoint projects --site <SITE> --checkin-access-token <ACCESS_TOKEN>"** : List of projects that the owner
+* **"fedcloud endpoint projects --site <SITE> --oidc-access-token <ACCESS_TOKEN>"** : List of projects that the owner
   of the access token can have access on the given site
 
 ::
@@ -143,7 +143,7 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     3b9754ad8c6046b4aec43ec21abe7d8c  VO:eosc-synergy.eu          True       IFCA-LCG2
     ...
 
-* **"fedcloud endpoint token --site <SITE> --project-id <PROJECT> --checkin-access-token <ACCESS_TOKEN>"** : Get
+* **"fedcloud endpoint token --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Get
   Openstack keystone scoped token on the site for the project ID.
 
 ::
@@ -151,7 +151,7 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
     export OS_TOKEN="gAAAAA..."
 
-* **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --checkin-access-token <ACCESS_TOKEN>"** : Print
+* **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print
   environment variables for working with the project ID on the site.
 
 ::
@@ -231,7 +231,7 @@ VOs and so on.
 fedcloud openstack commands
 ***************************
 
-* **"fedcloud openstack --site <SITE> --vo <VO> --checkin-access-token <ACCESS_TOKEN> <OPENSTACK_COMMAND>"** : Execute an
+* **"fedcloud openstack --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> <OPENSTACK_COMMAND>"** : Execute an
   Openstack command on the site and VO. Examples of Openstack commands are *"image list"*, *"server list"* and can be used
   with additional options for the commands, e.g. *"image list --long"*, *"server list --format json"*. The list of all
   Openstack commands, and their parameters/usages are available
@@ -249,7 +249,7 @@ fedcloud openstack commands
 
 If the site is *ALL_SITES*, the Openstack command will be executed on all sites in EGI Federated Cloud.
 
-* **"fedcloud openstack-int --site <SITE> --vo <VO> --checkin-access-token <ACCESS_TOKEN>"** : Call Openstack client without
+* **"fedcloud openstack-int --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN>"** : Call Openstack client without
   command, so users can work with Openstack site in interactive mode. This is useful when users need to perform multiple
   commands successively. For example, users may need get list of images, list of flavors, list of networks before
   creating a VM. OIDC authentication is done only once at the beginning, then the keystone token is cached and will

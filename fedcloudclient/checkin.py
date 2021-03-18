@@ -8,47 +8,47 @@ import jwt
 import requests
 import liboidcagent as agent
 
-DEFAULT_CHECKIN_URL = "https://aai.egi.eu/oidc"
+DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
 
 
-def oidc_discover(checkin_url):
+def oidc_discover(oidc_url):
     """
     Discover oidc endpoints
 
-    :param checkin_url: CheckIn URL
+    :param oidc_url: CheckIn URL
     :return: JSON object of OIDC configuration
     """
-    r = requests.get(checkin_url + "/.well-known/openid-configuration")
+    r = requests.get(oidc_url + "/.well-known/openid-configuration")
     r.raise_for_status()
     return r.json()
 
 
 def token_refresh(
-        checkin_client_id, checkin_client_secret, checkin_refresh_token, checkin_url
+        oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
 ):
     """
     Helper function for retrieving JSON object with access token
 
-    :param checkin_client_id:
-    :param checkin_client_secret:
-    :param checkin_refresh_token:
-    :param checkin_url:
+    :param oidc_client_id:
+    :param oidc_client_secret:
+    :param oidc_refresh_token:
+    :param oidc_url:
     :return: JSON object with access token
     """
 
-    oidc_ep = oidc_discover(checkin_url)
+    oidc_ep = oidc_discover(oidc_url)
 
     refresh_data = {
-        "client_id": checkin_client_id,
-        "client_secret": checkin_client_secret,
+        "client_id": oidc_client_id,
+        "client_secret": oidc_client_secret,
         "grant_type": "refresh_token",
-        "refresh_token": checkin_refresh_token,
+        "refresh_token": oidc_refresh_token,
         "scope": "openid email profile offline_access",
     }
 
     r = requests.post(
         oidc_ep["token_endpoint"],
-        auth=(checkin_client_id, checkin_client_secret),
+        auth=(oidc_client_id, oidc_client_secret),
         data=refresh_data
     )
     r.raise_for_status()
@@ -56,31 +56,31 @@ def token_refresh(
 
 
 def refresh_access_token(
-        checkin_client_id, checkin_client_secret, checkin_refresh_token, checkin_url
+        oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
 ):
     """
     Retrieve access token in plain text (string)
 
-    :param checkin_client_id:
-    :param checkin_client_secret:
-    :param checkin_refresh_token:
-    :param checkin_url:
+    :param oidc_client_id:
+    :param oidc_client_secret:
+    :param oidc_refresh_token:
+    :param oidc_url:
     :return: access token
     """
     return token_refresh(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_url,
     )["access_token"]
 
 
 def get_access_token(
-        checkin_access_token,
-        checkin_refresh_token,
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_url,
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
         oidc_agent_account,
 ):
     """
@@ -91,11 +91,11 @@ def get_access_token(
     Check expiration time of access token
     Raise error if no valid token exists
 
-    :param checkin_access_token:
-    :param checkin_refresh_token:
-    :param checkin_client_id:
-    :param checkin_client_secret:
-    :param checkin_url:
+    :param oidc_access_token:
+    :param oidc_refresh_token:
+    :param oidc_client_id:
+    :param oidc_client_secret:
+    :param oidc_url:
     :param oidc_agent_account:
 
     :return: access token
@@ -112,21 +112,21 @@ def get_access_token(
             print("ERROR oidc-agent: {}".format(e))
 
     # Then try refresh token
-    if (checkin_refresh_token and checkin_client_id
-            and checkin_client_secret and checkin_url):
+    if (oidc_refresh_token and oidc_client_id
+            and oidc_client_secret and oidc_url):
         print("WARNING: exposing refresh tokens is insecure and will be disable in next version!")
         return token_refresh(
-            checkin_client_id,
-            checkin_client_secret,
-            checkin_refresh_token,
-            checkin_url)["access_token"]
+            oidc_client_id,
+            oidc_client_secret,
+            oidc_refresh_token,
+            oidc_url)["access_token"]
 
     # Then finally access token
-    elif checkin_access_token:
+    elif oidc_access_token:
 
         # Check expiration time of access token
         try:
-            payload = jwt.decode(checkin_access_token, options={"verify_signature": False})
+            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
@@ -135,34 +135,32 @@ def get_access_token(
         if current_timestamp > expiration_timestamp - 10:
             raise SystemExit("The given access token has expired."
                              + " Get new access token before continuing on operation")
-        return checkin_access_token
+        return oidc_access_token
     else:
         raise SystemExit("Error: An access token is needed for the operation. You can specify access token"
-                         " directly via --checkin-access-token option or use oidc-agent via --oidc-agent-account")
+                         " directly via --oidc-access-token option or use oidc-agent via --oidc-agent-account")
 
 
-def token_list_vos(checkin_access_token, checkin_url):
+def token_list_vos(oidc_access_token, oidc_url):
     """
     List VO memberships in EGI Check-in
 
-    :param checkin_access_token:
-    :param checkin_url:
+    :param oidc_access_token:
+    :param oidc_url:
     :return: list of VO names
     """
-    oidc_ep = oidc_discover(checkin_url)
+    oidc_ep = oidc_discover(oidc_url)
     r = requests.get(
         oidc_ep["userinfo_endpoint"],
-        headers={"Authorization": "Bearer %s" % checkin_access_token})
+        headers={"Authorization": "Bearer %s" % oidc_access_token})
 
     r.raise_for_status()
     vos = []
-    m = re.compile("urn:mace:egi.eu:group:(.*.):role=member#aai.egi.eu")
+    m = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
     for claim in r.json().get("eduperson_entitlement", []):
         vo = m.match(claim)
         if vo:
-            full_vo_role = vo.groups()[0]
-            vo_name = full_vo_role.split(':')[0]  # Remove roles and subgroups from VO names
-            vos.append(vo_name)
+            vos.append(vo.groups()[0])
     return vos
 
 
@@ -182,30 +180,30 @@ def oidc_params(func):
     :return:
     """
     @click.option(
-        "--checkin-client-id",
-        help="Check-in client id",
-        envvar="CHECKIN_CLIENT_ID",
+        "--oidc-client-id",
+        help="OIDC client id",
+        envvar="OIDC_CLIENT_ID",
     )
     @click.option(
-        "--checkin-client-secret",
-        help="Check-in client secret",
-        envvar="CHECKIN_CLIENT_SECRET",
+        "--oidc-client-secret",
+        help="OIDC client secret",
+        envvar="OIDC_CLIENT_SECRET",
     )
     @click.option(
-        "--checkin-refresh-token",
-        help="Check-in client id",
-        envvar="CHECKIN_REFRESH_TOKEN",
+        "--oidc-refresh-token",
+        help="OIDC refresh token",
+        envvar="OIDC_REFRESH_TOKEN",
     )
     @click.option(
-        "--checkin-access-token",
-        help="Check-in access token",
-        envvar="CHECKIN_ACCESS_TOKEN",
+        "--oidc-access-token",
+        help="OIDC access token",
+        envvar="OIDC_ACCESS_TOKEN",
     )
     @click.option(
-        "--checkin-url",
-        help="Check-in OIDC URL",
-        envvar="CHECKIN_OIDC_URL",
-        default=DEFAULT_CHECKIN_URL,
+        "--oidc-url",
+        help="OIDC URL",
+        envvar="OIDC_URL",
+        default=DEFAULT_OIDC_URL,
         show_default=True,
     )
     @click.option(
@@ -222,26 +220,26 @@ def oidc_params(func):
 
 @token.command()
 @click.option(
-    "--checkin-refresh-token",
-    help="Check-in refresh token",
-    envvar="CHECKIN_REFRESH_TOKEN",
+    "--oidc-refresh-token",
+    help="OIDC refresh token",
+    envvar="OIDC_REFRESH_TOKEN",
 )
 @click.option(
-    "--checkin-access-token",
-    help="Check-in access token",
-    envvar="CHECKIN_ACCESS_TOKEN",
+    "--oidc-access-token",
+    help="OIDC access token",
+    envvar="OIDC_ACCESS_TOKEN",
 )
 def check(
-        checkin_refresh_token,
-        checkin_access_token
+        oidc_refresh_token,
+        oidc_access_token
 ):
     """
     CLI command for printing validity of access or refresh token
     """
 
-    if checkin_refresh_token:
+    if oidc_refresh_token:
         try:
-            payload = jwt.decode(checkin_refresh_token, options={"verify_signature": False})
+            payload = jwt.decode(oidc_refresh_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid refresh token.")
 
@@ -254,9 +252,9 @@ def check(
         else:
             print("Refresh token has expired")
 
-    elif checkin_access_token:
+    elif oidc_access_token:
         try:
-            payload = jwt.decode(checkin_access_token, options={"verify_signature": False})
+            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
@@ -269,30 +267,30 @@ def check(
         else:
             print("Access token has expired")
     else:
-        print("Checkin access token or refresh token required")
+        print("OIDC access token or refresh token required")
         exit(1)
 
 
 @token.command()
 @oidc_params
 def list_vos(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
 ):
     """
     CLI command for listing VO memberships according to access token
     """
-    checkin_access_token = get_access_token(
-        checkin_access_token,
-        checkin_refresh_token,
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_url,
+    oidc_access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
         oidc_agent_account)
 
-    vos = token_list_vos(checkin_access_token, checkin_url)
+    vos = token_list_vos(oidc_access_token, oidc_url)
     print("\n".join(vos))

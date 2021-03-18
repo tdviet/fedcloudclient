@@ -9,7 +9,7 @@ import click
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
 
-from fedcloudclient.checkin import get_access_token, DEFAULT_CHECKIN_URL, oidc_params
+from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.sites import find_endpoint_and_project_id, list_sites, site_vo_params
 
 DEFAULT_PROTOCOL = "openid"
@@ -20,9 +20,9 @@ __OPENSTACK_CLIENT = "openstack"
 
 
 def fedcloud_openstack_full(
-        checkin_access_token,
-        checkin_protocol,
-        checkin_auth_type,
+        oidc_access_token,
+        openstack_auth_protocol,
+        openstack_auth_type,
         checkin_identity_provider,
         site,
         vo,
@@ -33,9 +33,9 @@ def fedcloud_openstack_full(
     Calling openstack client with full options specified, including support
     for other identity providers and protocols
 
-    :param checkin_access_token: Checkin access token. Passed to openstack client as --os-access-token
-    :param checkin_protocol: Checkin protocol (openid, oidc). Passed to openstack client as --os-protocol
-    :param checkin_auth_type: Checkin authentication type (v3oidcaccesstoken). Passed to openstack client as --os-auth-type
+    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
+    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to openstack client as --os-protocol
+    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken). Passed to openstack client as --os-auth-type
     :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu). Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
@@ -50,13 +50,13 @@ def fedcloud_openstack_full(
         return 11, ("VO %s not found on site %s\n" % (vo, site))
 
     if protocol is None:
-        protocol = checkin_protocol
+        protocol = openstack_auth_protocol
 
     options = ("--os-auth-url", endpoint,
-               "--os-auth-type", checkin_auth_type,
+               "--os-auth-type", openstack_auth_type,
                "--os-protocol", protocol,
                "--os-identity-provider", checkin_identity_provider,
-               "--os-access-token", checkin_access_token
+               "--os-access-token", oidc_access_token
                )
 
     if vo:
@@ -92,7 +92,7 @@ def fedcloud_openstack_full(
 
 
 def fedcloud_openstack(
-        checkin_access_token,
+        oidc_access_token,
         site,
         vo,
         openstack_command,
@@ -103,7 +103,7 @@ def fedcloud_openstack(
     default EGI setting for identity provider and protocols
     Call openstack client with default options for EGI Check-in
 
-    :param checkin_access_token: Checkin access token. Passed to openstack client as --os-access-token
+    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
     :param site: site ID in GOCDB
     :param vo: VO name
     :param openstack_command: Openstack command in tuple, e.g. ("image", "list", "--long")
@@ -113,7 +113,7 @@ def fedcloud_openstack(
     """
 
     return fedcloud_openstack_full(
-        checkin_access_token,
+        oidc_access_token,
         DEFAULT_PROTOCOL,
         DEFAULT_AUTH_TYPE,
         DEFAULT_IDENTITY_PROVIDER,
@@ -142,23 +142,23 @@ def openstack_params(func):
     :return:
     """
     @click.option(
-        "--checkin-protocol",
+        "--openstack-auth-protocol",
         help="Check-in protocol",
-        envvar="CHECKIN_PROTOCOL",
+        envvar="OPENSTACK_AUTH_PROTOCOL",
         default=DEFAULT_PROTOCOL,
         show_default=True,
     )
     @click.option(
-        "--checkin-auth-type",
+        "--openstack-auth-type",
         help="Check-in authentication type",
-        envvar="CHECKIN_AUTH_TYPE",
+        envvar="OPENSTACK_AUTH_TYPE",
         default=DEFAULT_AUTH_TYPE,
         show_default=True,
     )
     @click.option(
-        "--checkin-provider",
+        "--openstack-auth-provider",
         help="Check-in identity provider",
-        envvar="CHECKIN_PROVIDER",
+        envvar="OPENSTACK_AUTH_PROVIDER",
         default=DEFAULT_IDENTITY_PROVIDER,
         show_default=True,
     )
@@ -184,15 +184,15 @@ def openstack_params(func):
     nargs=-1
 )
 def openstack(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
-        checkin_protocol,
-        checkin_auth_type,
-        checkin_provider,
+        openstack_auth_protocol,
+        openstack_auth_type,
+        openstack_auth_provider,
         site,
         vo,
         ignore_missing_vo,
@@ -206,11 +206,11 @@ def openstack(
         print("Error: Openstack command-line client \"openstack\" not found")
         exit(1)
 
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
 
     if site == "ALL_SITES":
@@ -223,9 +223,9 @@ def openstack(
         # Start Openstack operation with each site
         results = {executor.submit(fedcloud_openstack_full,
                                    access_token,
-                                   checkin_protocol,
-                                   checkin_auth_type,
-                                   checkin_provider,
+                                   openstack_auth_protocol,
+                                   openstack_auth_type,
+                                   openstack_auth_provider,
                                    site,
                                    vo,
                                    openstack_command,
@@ -256,15 +256,15 @@ def openstack(
 @openstack_params
 @site_vo_params
 def openstack_int(
-        checkin_client_id,
-        checkin_client_secret,
-        checkin_refresh_token,
-        checkin_access_token,
-        checkin_url,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
         oidc_agent_account,
-        checkin_protocol,
-        checkin_auth_type,
-        checkin_provider,
+        openstack_auth_protocol,
+        openstack_auth_type,
+        openstack_auth_provider,
         site,
         vo,
 ):
@@ -276,11 +276,11 @@ def openstack_int(
         print("Error: Openstack command-line client \"openstack\" not found")
         exit(1)
 
-    access_token = get_access_token(checkin_access_token,
-                                    checkin_refresh_token,
-                                    checkin_client_id,
-                                    checkin_client_secret,
-                                    checkin_url,
+    access_token = get_access_token(oidc_access_token,
+                                    oidc_refresh_token,
+                                    oidc_client_id,
+                                    oidc_client_secret,
+                                    oidc_url,
                                     oidc_agent_account)
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
@@ -288,12 +288,12 @@ def openstack_int(
         raise SystemExit("Error: VO %s not found on site %s" % (vo, site))
 
     if protocol is None:
-        protocol = checkin_protocol
+        protocol = openstack_auth_protocol
     my_env = os.environ.copy()
     my_env["OS_AUTH_URL"] = endpoint
-    my_env["OS_AUTH_TYPE"] = checkin_auth_type
+    my_env["OS_AUTH_TYPE"] = openstack_auth_type
     my_env["OS_PROTOCOL"] = protocol
-    my_env["OS_IDENTITY_PROVIDER"] = checkin_provider
+    my_env["OS_IDENTITY_PROVIDER"] = openstack_auth_provider
     my_env["OS_ACCESS_TOKEN"] = access_token
     my_env["OS_PROJECT_ID"] = project_id
 
