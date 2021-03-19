@@ -7,6 +7,7 @@ import click
 import jwt
 import requests
 import liboidcagent as agent
+import sys
 
 DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
 
@@ -114,7 +115,7 @@ def get_access_token(
     # Then try refresh token
     if (oidc_refresh_token and oidc_client_id
             and oidc_client_secret and oidc_url):
-        print("WARNING: exposing refresh tokens is insecure and will be disable in next version!")
+        print("WARNING: exposing refresh tokens is insecure and will be disable in next version!", file=sys.stderr)
         return token_refresh(
             oidc_client_id,
             oidc_client_secret,

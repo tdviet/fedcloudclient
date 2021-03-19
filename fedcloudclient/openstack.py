@@ -134,6 +134,50 @@ def check_openstack_client_installation():
     return find_executable(__OPENSTACK_CLIENT) is not None
 
 
+def print_result(site, vo, command, exc_msg, error_code, result, json_output, ignore_missing_vo, first):
+    """
+    Print output from an Openstack command
+
+    :param first:
+    :param site:
+    :param vo:
+    :param command:
+    :param exc_msg:
+    :param error_code:
+    :param result:
+    :param json_output:
+    :param ignore_missing_vo:
+    :return:
+    """
+
+    command = " ".join(command)
+    if not json_output:
+        if exc_msg:
+            print("Site: %s, VO: %s, command: %s" % (site, vo, command))
+            print('%s generated an exception: %s' % (site, exc_msg))
+            print("Error message: %s" % result)
+
+        elif error_code != 0:
+            if not ignore_missing_vo or (error_code != 11):
+                print("Site: %s, VO: %s, command: %s" % (site, vo, command))
+                print("Error code: ", error_code)
+                print("Error message: ", result)
+        else:
+            print("Site: %s, VO: %s, command: %s" % (site, vo, command))
+            print(result)
+    else:
+        site_data = {"Site": site,
+                     "VO": vo,
+                     "command": command,
+                     "Exception": exc_msg,
+                     "Error code": error_code,
+                     "Result":  result,
+                     }
+        separator = "[" if first else ","
+        print(separator)
+        print(json.dumps(site_data, indent=2))
+
+
 def openstack_params(func):
     """
     Decorator for Openstack authentication parameters
@@ -174,8 +218,13 @@ def openstack_params(func):
 @openstack_params
 @site_vo_params
 @click.option(
-    '--ignore-missing-vo',
+    '--ignore-missing-vo', '-i',
     help="Ignore sites that do not support the VO",
+    is_flag=True,
+)
+@click.option(
+    '--json-output', '-j',
+    help="Print output as a big JSON object",
     is_flag=True,
 )
 @click.argument(
@@ -196,6 +245,7 @@ def openstack(
         site,
         vo,
         ignore_missing_vo,
+        json_output,
         openstack_command
 ):
     """
@@ -229,26 +279,28 @@ def openstack(
                                    site,
                                    vo,
                                    openstack_command,
-                                   False
+                                   json_output,
                                    ): site for site in sites}
+
         # Get results and print them
+        first = True
+
+        # Get the result, first come first serve
         for future in concurrent.futures.as_completed(results):
             site = results[future]
+            exc_msg = None
             try:
                 error_code, result = future.result()
             except Exception as exc:
-                print("Site: %s, VO: %s" % (site, vo))
-                print('%s generated an exception: %s' % (site, exc))
-                print("Error message: %s" % result)
-            else:
-                if error_code != 0:
-                    if not ignore_missing_vo or (error_code != 11):
-                        print("Site: %s, VO: %s" % (site, vo))
-                        print("Error code: ", error_code)
-                        print("Error message: ", result)
-                else:
-                    print("Site: %s, VO: %s" % (site, vo))
-                    print(result)
+                exc_msg = exc
+
+            # Print result
+            print_result(site, vo, openstack_command, exc_msg, error_code, result, json_output, ignore_missing_vo, first)
+            first = False
+
+        # Print list enclosing ']' for JSON
+        if json_output:
+            print("]")
 
 
 @click.command()
