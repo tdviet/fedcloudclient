@@ -348,12 +348,12 @@ def ec3_refresh(
                         now = int(time.time())
                         expires = int(payload['exp'])
                         if expires - now < 300:
-                            access_token = refresh_access_token(
-                                oidc_client_id,
-                                oidc_client_secret,
-                                oidc_refresh_token,
-                                oidc_url
-                            )
+                            access_token = get_access_token(oidc_access_token,
+                                                            oidc_refresh_token,
+                                                            oidc_client_id,
+                                                            oidc_client_secret,
+                                                            oidc_url,
+                                                            oidc_agent_account)
                         auth_tokens.append("password = %s" % access_token)
                     else:
                         auth_tokens.append(token.strip())

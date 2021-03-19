@@ -15,9 +15,6 @@ RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87
     && apt-get install -y oidc-agent \
     && mkdir -p  ~/.config/oidc-agent/
 
-# Install haveged for workaround the low entropy issue in Cloud that can freeze libsodium initialization
-RUN apt-get install -y haveged
-
 # Install fedcloudclient
 COPY . /tmp/fedcloudclient
 RUN pip install /tmp/fedcloudclient
