@@ -171,7 +171,7 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
                      "command": command,
                      "Exception": exc_msg,
                      "Error code": error_code,
-                     "Result":  result,
+                     "Result": result,
                      }
         separator = "[" if first else ","
         print(separator)

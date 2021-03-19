@@ -9,7 +9,7 @@ import jwt
 import requests
 from tabulate import tabulate
 
-from fedcloudclient.checkin import refresh_access_token, get_access_token, oidc_params
+from fedcloudclient.checkin import get_access_token, oidc_params
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 
