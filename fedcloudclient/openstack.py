@@ -1,20 +1,19 @@
+"""
+Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing Openstack commands on sites
+"""
+
 import concurrent.futures
-import functools
 import json
 import os
 from distutils.spawn import find_executable
-
 import click
 
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
 
 from fedcloudclient.checkin import get_access_token, oidc_params
+from fedcloudclient.decorators import openstack_params, DEFAULT_PROTOCOL, DEFAULT_AUTH_TYPE, DEFAULT_IDENTITY_PROVIDER
 from fedcloudclient.sites import find_endpoint_and_project_id, list_sites, site_vo_params
-
-DEFAULT_PROTOCOL = "openid"
-DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
-DEFAULT_IDENTITY_PROVIDER = "egi.eu"
 
 __OPENSTACK_CLIENT = "openstack"
 
@@ -138,7 +137,6 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
     """
     Print output from an Openstack command
 
-    :param first:
     :param site:
     :param vo:
     :param command:
@@ -147,6 +145,7 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
     :param result:
     :param json_output:
     :param ignore_missing_vo:
+    :param first:
     :return:
     """
 
@@ -176,41 +175,6 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
         separator = "[" if first else ","
         print(separator)
         print(json.dumps(site_data, indent=2))
-
-
-def openstack_params(func):
-    """
-    Decorator for Openstack authentication parameters
-
-    :param func:
-    :return:
-    """
-    @click.option(
-        "--openstack-auth-protocol",
-        help="Check-in protocol",
-        envvar="OPENSTACK_AUTH_PROTOCOL",
-        default=DEFAULT_PROTOCOL,
-        show_default=True,
-    )
-    @click.option(
-        "--openstack-auth-type",
-        help="Check-in authentication type",
-        envvar="OPENSTACK_AUTH_TYPE",
-        default=DEFAULT_AUTH_TYPE,
-        show_default=True,
-    )
-    @click.option(
-        "--openstack-auth-provider",
-        help="Check-in identity provider",
-        envvar="OPENSTACK_AUTH_PROVIDER",
-        default=DEFAULT_IDENTITY_PROVIDER,
-        show_default=True,
-    )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
