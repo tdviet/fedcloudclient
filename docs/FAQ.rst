@@ -10,6 +10,11 @@ for installing EGI Core Trust Anchor certificates and add them to the certificat
 test in virtual environment, just execute the following commands. See this
 `README.md <https://github.com/tdviet/python-requests-bundle-certs#usage>`_ for more details.
 
+::
+
+    $ wget https://raw.githubusercontent.com/tdviet/python-requests-bundle-certs/main/scripts/install_certs.sh
+    $ bash install_certs.sh
+
 
 2. *fedcloudclient* frozen during initialization (mainly on virtual machines at some sites)
 

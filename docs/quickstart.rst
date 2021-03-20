@@ -1,7 +1,7 @@
 Quick start
 ===========
 
-The `Quick start <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
+The `Tutorial <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
 presentation is designed for new users of **fedcloudclient**. It starts with the quick setup and basic usages,
 then step by step to more advanced scenarios.
 
@@ -22,7 +22,8 @@ or use Docker container:
 
 
 * Get a new access token from EGI Check-in according to instructions from `FedCloud Check-in
-  client <https://aai.egi.eu/fedcloud/>`_ and set environment variable.
+  client <https://aai.egi.eu/fedcloud/>`_  or `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/>`_ and set
+  environment variable.
 
 ::
 
@@ -81,5 +82,5 @@ Basic usages
       site           Site command group for manipulation with site configurations
       token          Token command group for manipulation with tokens
 
-* Read the `Quick start <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
+* Read the `Tutorial <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
   presentation or next sections for more information.
