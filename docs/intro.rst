@@ -22,7 +22,7 @@ the command. For example:
 
 Four modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like
 getting tokens, **fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from
-Keystone, **fedcloudclient.sites** manages site configuration and finally **fedcloudclient.openstack** for
+Openstack keystone, **fedcloudclient.sites** manages site configurations and finally **fedcloudclient.openstack** for
 performing Openstack operations.
 
 

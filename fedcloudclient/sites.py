@@ -57,6 +57,32 @@ def read_site_config():
         read_default_site_config()
 
 
+def safe_read_yaml_from_url(url, max_length):
+    """
+    Safe reading from URL. Check URL and size before reading
+
+    :param url:
+    :param max_length:
+    :return: data from URL
+    """
+    if isinstance(url, str) and url.lower().startswith('https://'):  # Only read from HTTPS location
+        req = Request(url)
+    else:
+        raise SystemExit("Error: remote filename not starting with https:// : %s" % url)
+
+    # URLs already checked, so ignore bandit test
+    data = None
+    try:
+        with urlopen(req) as yaml_file:  # nosec
+            if int(yaml_file.headers['Content-Length']) > max_length:
+                raise SystemExit("Error: remote file %s is larger than limit %d " % (url, max_length))
+            data = yaml.safe_load(yaml_file)
+    except Exception as e:
+        print("Error during reading data from %s" % url)
+        raise SystemExit("Exception: %s" % e)
+    return data
+
+
 def read_default_site_config():
     """
     Read default site configurations from GitHub.  Storing
@@ -67,45 +93,23 @@ def read_default_site_config():
     __site_config_data.clear()
     schema = read_site_schema()
 
-    filename = __REMOTE_CONFIG_FILE
-    if filename.lower().startswith('https://'):  # Only read from HTTPS location
-        req = Request(filename)
-    else:
-        raise SystemExit("Error: remote site config must be located at HTTPS : %s" % filename)
+    site_list = safe_read_yaml_from_url(__REMOTE_CONFIG_FILE, __FILE_SIZE_LIMIT)
 
-    # URLs already checked, so ignore bandit test
-    try:
-        with urlopen(req) as yaml_file:  # nosec
-            if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
-                raise SystemExit("Error: Site list %s too large" % filename)
-            site_list = yaml.safe_load(yaml_file)
-    except Exception as e:
-        print("Error during reading site list from %s" % filename)
-        raise SystemExit("Exception: %s" % e)
-
-    # site list is read from Internet, so double checks
+    # Check data format of site list
     if not isinstance(site_list, builtins.list):
         raise SystemExit("Error: site list is in a wrong format")
 
     for filename in site_list:
-        if isinstance(filename, str) and filename.lower().startswith('https://'):
-            req = Request(filename)
-        else:
-            raise SystemExit("Error: remote site config must be located at HTTPS: %s" % filename)
+        site_info = safe_read_yaml_from_url(filename, __FILE_SIZE_LIMIT)
 
-        # URLs already checked, so ignore bandit test
+        # Validating site config after reading
         try:
-            with urlopen(req) as yaml_file:  # nosec
-                if int(yaml_file.headers['Content-Length']) > __FILE_SIZE_LIMIT:
-                    raise SystemExit("Error: Site config %s too large" % filename)
-
-                site_info = yaml.safe_load(yaml_file)
-                validate(instance=site_info, schema=schema)
-                __site_config_data.append(site_info)
-
+            validate(instance=site_info, schema=schema)
         except Exception as e:
-            print("Error during reading site config from %s" % filename)
+            print("Site config in file %s is in wrong format" % filename)
             raise SystemExit("Exception: %s" % e)
+
+        __site_config_data.append(site_info)
 
 
 def read_local_site_config(config_dir):
@@ -114,7 +118,6 @@ def read_local_site_config(config_dir):
     site configurations in global variable, that will be used by other functions
 
     :param config_dir: path to directory containing site configuration
-
     :return: None
     """
     __site_config_data.clear()
@@ -136,7 +139,6 @@ def save_site_config(config_dir):
     Save site configs to local directory specified in config_dir. Overwrite local configs if exist
 
     :param config_dir: path to directory containing site configuration
-
     :return: None
     """
     config_dir = Path(config_dir)
@@ -181,7 +183,6 @@ def find_endpoint_and_project_id(site_name, vo):
 
     :param site_name: site ID in GOCDB
     :param vo: VO name. None if finding only site endpoint
-
     :return: endpoint, project_id, protocol if the VO exist on the site, otherwise None, None, None
     """
     site_info = find_site_data(site_name)
