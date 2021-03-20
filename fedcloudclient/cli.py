@@ -1,3 +1,7 @@
+"""
+Main CLI module
+"""
+
 import click
 
 from fedcloudclient.sites import site

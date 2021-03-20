@@ -1,5 +1,15 @@
+"""
+"fedcloud site" commands will read site configurations and manipulate with them. If the local site configurations
+exist at ~/.fedcloud-site-config/, fedcloud will read them from there, otherwise the commands will read from GitHub
+repository.
+
+By default, fedcloud does not save anything on local disk, users have to save the site configuration to local disk
+explicitly via "fedcloud site save-config" command. The advantage of having local site configurations, beside faster
+loading, is to give users ability to make customizations, e.g. add additional VOs, remove sites they do not have
+access, and so on.
+"""
+
 import builtins
-import functools
 import json
 from pathlib import Path
 from urllib.request import urlopen, Request
@@ -7,6 +17,8 @@ from jsonschema import validate
 import pkg_resources
 import click
 import yaml
+
+from fedcloudclient.decorators import site_vo_params, site_params
 
 __REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 
@@ -197,39 +209,8 @@ def site():
     pass
 
 
-def site_vo_params(func):
-    """
-    Decorator for site and VO parameters
-
-    :param func:
-    :return:
-    """
-    @click.option(
-        "--site",
-        help="Name of the site",
-        required=True,
-        envvar="EGI_SITE",
-    )
-    @click.option(
-        "--vo",
-        help="Name of the VO",
-        required=True,
-        envvar="EGI_VO",
-    )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 @site.command()
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
+@site_params
 def show(site):
     """
     Print configuration of the specified site

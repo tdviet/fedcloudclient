@@ -16,6 +16,7 @@ Welcome to fedcloudclient's documentation!
    usage
    development
    fedcloudclient
+   FAQ
 
 
 

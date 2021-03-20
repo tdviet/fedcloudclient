@@ -1,15 +1,17 @@
-import functools
+"""
+Implementation of "fedcloud token" commands for interactions with EGI Check-in and access tokens
+"""
+
 import re
 import time
 from datetime import datetime
-
 import click
 import jwt
 import requests
 import liboidcagent as agent
 import sys
 
-DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
+from fedcloudclient.decorators import oidc_params, oidc_refresh_token_params, oidc_access_token_params
 
 
 def oidc_discover(oidc_url):
@@ -173,63 +175,9 @@ def token():
     pass
 
 
-def oidc_params(func):
-    """
-    Decorator for OIDC parameters
-
-    :param func:
-    :return:
-    """
-    @click.option(
-        "--oidc-client-id",
-        help="OIDC client id",
-        envvar="OIDC_CLIENT_ID",
-    )
-    @click.option(
-        "--oidc-client-secret",
-        help="OIDC client secret",
-        envvar="OIDC_CLIENT_SECRET",
-    )
-    @click.option(
-        "--oidc-refresh-token",
-        help="OIDC refresh token",
-        envvar="OIDC_REFRESH_TOKEN",
-    )
-    @click.option(
-        "--oidc-access-token",
-        help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
-    )
-    @click.option(
-        "--oidc-url",
-        help="OIDC URL",
-        envvar="OIDC_URL",
-        default=DEFAULT_OIDC_URL,
-        show_default=True,
-    )
-    @click.option(
-        "--oidc-agent-account",
-        help="short account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
-    )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
 @token.command()
-@click.option(
-    "--oidc-refresh-token",
-    help="OIDC refresh token",
-    envvar="OIDC_REFRESH_TOKEN",
-)
-@click.option(
-    "--oidc-access-token",
-    help="OIDC access token",
-    envvar="OIDC_ACCESS_TOKEN",
-)
+@oidc_refresh_token_params
+@oidc_access_token_params
 def check(
         oidc_refresh_token,
         oidc_access_token

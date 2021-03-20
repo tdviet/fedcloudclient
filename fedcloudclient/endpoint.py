@@ -1,3 +1,9 @@
+"""
+"fedcloud endpoint" commands are complementary part of the "fedcloud site" commands. Instead of using site
+configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
+directly from GOCDB (Grid Operations Configuration Management Database) https://goc.egi.eu/ or make probe test on sites
+"""
+
 import os
 import re
 import time
@@ -9,7 +15,8 @@ import jwt
 import requests
 from tabulate import tabulate
 
-from fedcloudclient.checkin import refresh_access_token, get_access_token, oidc_params
+from fedcloudclient.checkin import get_access_token, oidc_params
+from fedcloudclient.decorators import site_params, project_id_params, auth_file_params
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 
@@ -245,11 +252,7 @@ def endpoint():
 
 @endpoint.command()
 @oidc_params
-@click.option(
-    "--site",
-    help="Name of the site",
-    envvar="EGI_SITE",
-)
+@site_params
 def projects(
         oidc_client_id,
         oidc_client_secret,
@@ -268,6 +271,8 @@ def projects(
                                     oidc_client_secret,
                                     oidc_url,
                                     oidc_agent_account)
+    if site == "ALL_SITES":
+        site = None
 
     project_list = get_projects_from_sites(access_token, site)
     print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
@@ -275,18 +280,8 @@ def projects(
 
 @endpoint.command()
 @oidc_params
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
-@click.option(
-    "--project-id",
-    help="Project ID",
-    required=True,
-    envvar="OS_PROJECT_ID",
-)
+@site_params
+@project_id_params
 def token(
         oidc_client_id,
         oidc_client_secret,
@@ -294,8 +289,8 @@ def token(
         oidc_access_token,
         oidc_url,
         oidc_agent_account,
-        project_id,
         site,
+        project_id,
 ):
     """
     Get scoped keystone token from site and project ID
@@ -316,12 +311,7 @@ def token(
 
 @endpoint.command()
 @oidc_params
-@click.option(
-    "--auth-file",
-    help="Authorization file",
-    default="auth.dat",
-    show_default=True,
-)
+@auth_file_params
 def ec3_refresh(
         oidc_client_id,
         oidc_client_secret,
@@ -366,24 +356,9 @@ def ec3_refresh(
 
 @endpoint.command()
 @oidc_params
-@click.option(
-    "--site",
-    help="Name of the site",
-    envvar="EGI_SITE",
-    required=True,
-)
-@click.option(
-    "--project-id",
-    help="Project ID",
-    required=True,
-    envvar="OS_PROJECT_ID",
-)
-@click.option(
-    "--auth-file",
-    help="Authorization file",
-    default="auth.dat",
-    show_default=True,
-)
+@site_params
+@project_id_params
+@auth_file_params
 @click.option(
     "--template-dir",
     help="EC3 templates dir",
@@ -466,33 +441,22 @@ def ec3(
     help="Monitoring status",
     show_default=True,
 )
-@click.option(
-    "--site",
-    help="Name of the site",
-    envvar="EGI_SITE"
-)
+@site_params
 def list(service_type, production, monitored, site):
     """
     List of endpoints of site/sites according info in GOCDB
     """
+    if site == "ALL_SITES":
+        site = None
+
     endpoints = find_endpoint(service_type, production, monitored, site)
     print(tabulate(endpoints, headers=["Site", "type", "URL"]))
 
 
 @endpoint.command()
 @oidc_params
-@click.option(
-    "--site",
-    help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
-)
-@click.option(
-    "--project-id",
-    help="Project ID",
-    required=True,
-    envvar="OS_PROJECT_ID",
-)
+@site_params
+@project_id_params
 def env(
         oidc_client_id,
         oidc_client_secret,
@@ -500,8 +464,8 @@ def env(
         oidc_access_token,
         oidc_url,
         oidc_agent_account,
-        project_id,
         site,
+        project_id,
 ):
     """
     Generating OS environment variables for specific project/site

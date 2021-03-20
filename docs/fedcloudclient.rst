@@ -41,10 +41,3 @@ fedcloudclient.cli module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: fedcloudclient
-   :members:
-   :undoc-members:
-   :show-inheritance:
