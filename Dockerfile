@@ -17,6 +17,7 @@ RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87
 
 # Install fedcloudclient
 COPY . /tmp/fedcloudclient
+COPY examples/command_history.txt ~/.bash_history
 RUN pip install /tmp/fedcloudclient
 
 # Add IGTF CAs to Python requests

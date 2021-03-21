@@ -16,6 +16,7 @@ from fedcloudclient.decorators import openstack_params, DEFAULT_PROTOCOL, DEFAUL
 from fedcloudclient.sites import find_endpoint_and_project_id, list_sites, site_vo_params
 
 __OPENSTACK_CLIENT = "openstack"
+__MAX_WORKER_THREAD = 30
 
 
 def fedcloud_openstack_full(
@@ -233,7 +234,7 @@ def openstack(
         sites = [site]
 
     # Multi-thread execution of Openstack commands
-    with concurrent.futures.ThreadPoolExecutor(max_workers=30) as executor:
+    with concurrent.futures.ThreadPoolExecutor(max_workers=__MAX_WORKER_THREAD) as executor:
         # Start Openstack operation with each site
         results = {executor.submit(fedcloud_openstack_full,
                                    access_token,
