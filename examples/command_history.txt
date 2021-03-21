@@ -1,0 +1,4 @@
+fedcloud --help
+fedcloud token list-vos
+fedcloud site list
+eval `oidc-keychain --accounts egi` && export OIDC_AGENT_ACCOUNT=egi
