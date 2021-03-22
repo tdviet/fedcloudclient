@@ -2,15 +2,8 @@
     + Images are specify with parameter "--appdb <image name/ID in AppDB>"
     + The client will replace the parameter with "--image imageID" before calling Openstack client (like site and VO)
 
-- Separating CLI functions from library functions, keep them in different files, e.g. sites.py and sites_cli.py
-    + Better understanding and maintaining the code
-
 - Caching keystone token, reuse it for successive Openstack commands without authentication via CheckIn again
     + Make a dict: key = hash of (site + vo + access token), value = keystone token
     + Before using Openstack command, check the dict reuse the token if found. If not found, generate new token
     and add it to the dict.
     + Applicable only for using as library
-
-- Disabling using refresh token in favor of oidc-agent
-
-- Removing repeated CLI options
