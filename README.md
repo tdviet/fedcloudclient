@@ -11,7 +11,7 @@ Keystone, **fedcloudclient.sites** manages site configuration and finally **fedc
 performing Openstack operations.
 
 A short presentation of the fedcloudclient is available at 
-[Quick start](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing). 
+[Tutorial](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing). 
 
 The full documentation, including installation, usage and API description is available 
 at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
@@ -32,7 +32,8 @@ or use Docker container:
     $ docker run -it  tdviet/fedcloudclient bash
 
 -   Get a new access token from EGI Check-in according to instructions from
-    FedCloud [Check-in client](https://aai.egi.eu/fedcloud/) and set
+    FedCloud [Check-in client](https://aai.egi.eu/fedcloud/), or from 
+    [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi) and set
     environment variable.
 
 <!-- -->
@@ -159,24 +160,22 @@ FAQ
 > or environment variable *"CHECKIN\_OIDC\_URL"*. Additional sites and
 > VOs may be added to local site configuration files.
 
-5.  Why there are options for both access token and refresh token? Which
-    one should be used?
+5.  Why there are so many options for authentication: access token, refresh token,
+    and oidc-agent? Which one should be used?
 
-> Cloud operations need only access tokens, not refresh tokens. If a
-> refresh token is given as parameter to *fedcloud* client (together
-> with client ID and client secret), an access token will be generated
-> on the fly from the refresh token and client ID/secret.
->
-> Refresh tokens have long lifetime (one year in EGI Check-in), so they
-> should be securely protected. In secured environment, e.g. private
-> computers, refresh tokens may be conveniently specified via environment
-> variables *CHECKIN\_REFRESH\_TOKEN*, *CHECKIN\_CLIENT\_ID*,
-> *CHECKIN\_CLIENT\_SECRET*; so users don't have to set token for
-> *fedcloud* client via command-line parameters.
->
+> Cloud operations need only access tokens, not refresh tokens. 
 > Access tokens have short lifetime (one hour in EGI Check-in), so they
 > have lower security constraints. However, they have to be refreshed
-> frequently, that may be inconvenient for some users. In shared
-> environment, e.g. VMs in Cloud, access tokens should be used instead
-> of refreshed tokens. If refresh token must be used, consider to use
-> [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/) for storing the token. 
+> frequently, that may be inconvenient for some users.
+> 
+> If a refresh token is given as parameter to *fedcloud* client (together
+> with client ID and client secret), an access token will be generated
+> on the fly from the refresh token and client ID/secret. However, 
+> using unencrypted refresh tokens is considered
+> to be insecure and will be removed in future versions in favor of 
+> oidc-agent.
+>
+> [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/) stores the refresh
+> token securely and will automatically  generate a new access token when the current one 
+> expires, so that is the recommended way to provide access token to fedcloudclient
+> 
