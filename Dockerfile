@@ -15,6 +15,9 @@ RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87
     && apt-get install -y oidc-agent \
     && mkdir -p  ~/.config/oidc-agent/
 
+# Install jq for scripting with JSON
+RUN apt-get install -y jq
+
 # Install fedcloudclient
 COPY . /tmp/fedcloudclient
 COPY examples/command_history.txt /root/.bash_history

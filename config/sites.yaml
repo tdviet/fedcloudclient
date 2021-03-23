@@ -1,6 +1,7 @@
 # List of sites in https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/main/sites
 # As GitHub API has limited access rates, the list of sites is stored here for simple access
 
+
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/100IT.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/BIFI.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/master/sites/CESGA.yaml"
