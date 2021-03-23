@@ -7,3 +7,5 @@
     + Before using Openstack command, check the dict reuse the token if found. If not found, generate new token
     and add it to the dict.
     + Applicable only for using as library
+
+- Check last commit and update site configuration
