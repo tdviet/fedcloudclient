@@ -62,7 +62,7 @@ or use Docker container:
     $ fedcloud site list
 
 -   Save the site configuration to local machine at
-    *\~/.fedcloud-site-config/* to speed up the client's start in the
+    *\~/.config/fedcloud/site-config/* to speed up the client's start in the
     next time:
 
 <!-- -->
@@ -127,6 +127,12 @@ FAQ
 > 
 > Some sites in the repository may not respond, and client has to wait for long time before report 
 > "Connection time out". You can remove the sites from your local repository to speed-up all-sites operations
+> 
+> *libsodium* which is used by *oidc-agent* Python library may be frozen at initialization on VMs with low entropy.
+> The problem is described [here](https://doc.libsodium.org/usage#sodium_init-stalling-on-linux). Check the entropy on 
+> the VMs by executing command *"cat /proc/sys/kernel/random/entropy_avail"*, and if the result is lower than 300, 
+> consider installing *haveged* or *rng-tools* to increase entropy.
+> On VMs with CentOS, you also have to start the daemon manually after installation (or reboot the VMs)
 
 2.  The *fedcloud* client fails with error message *"SSL exception
     connecting to <https://> ..."* when attempts to interact with some
@@ -147,7 +153,7 @@ FAQ
 > Site configurations at
 > [GitHub repository](https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites)
 > may be incomplete. Check the site configurations stored in
-> *\~/.fedcloud-site-config/* if the VOs are included. If not, you can
+> *\~/.config/fedcloud/site-config/* if the VOs are included. If not, you can
 > ask site admins to fix site configuration. You can also execute
 > *"fedcloud endpoint projects --site SITE --oidc-access-token
 > ACCESS\_TOKEN"* to find project IDs of the VOs on the site and add the VOs to
@@ -172,7 +178,7 @@ FAQ
 > with client ID and client secret), an access token will be generated
 > on the fly from the refresh token and client ID/secret. However, 
 > using unencrypted refresh tokens is considered
-> to be insecure and will be removed in future versions in favor of 
+> as insecure and will be removed in future versions in favor of 
 > oidc-agent.
 >
 > [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/) stores the refresh

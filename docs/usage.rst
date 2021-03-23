@@ -169,7 +169,7 @@ fedcloud site commands
 **********************
 
 **"fedcloud site"** commands will read site configurations and manipulate with them. If the local site configurations exist
-at *~/.fedcloud-site-config/*, **fedcloud** will read them from there, otherwise the commands will read from `GitHub repository
+at *~/.config/fedcloud/site-config/*, **fedcloud** will read them from there, otherwise the commands will read from `GitHub repository
 <https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites>`_.
 
 By default, **fedcloud** does not save anything on local disk, users have to save the site configuration to local disk

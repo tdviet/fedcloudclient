@@ -1,6 +1,6 @@
 """
 "fedcloud site" commands will read site configurations and manipulate with them. If the local site configurations
-exist at ~/.fedcloud-site-config/, fedcloud will read them from there, otherwise the commands will read from GitHub
+exist at ~/.config/fedcloud/site-config/, fedcloud will read them from there, otherwise the commands will read from GitHub
 repository.
 
 By default, fedcloud does not save anything on local disk, users have to save the site configuration to local disk
