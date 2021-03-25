@@ -1,26 +1,29 @@
 """
-"fedcloud site" commands will read site configurations and manipulate with them. If the local site configurations
-exist at ~/.config/fedcloud/site-config/, fedcloud will read them from there, otherwise the commands will read from GitHub
-repository.
+"fedcloud site" commands will read site configurations and manipulate with them. If
+the local site configurations exist at ~/.config/fedcloud/site-config/, fedcloud will
+read them from there, otherwise the commands will read from GitHub repository.
 
-By default, fedcloud does not save anything on local disk, users have to save the site configuration to local disk
-explicitly via "fedcloud site save-config" command. The advantage of having local site configurations, beside faster
-loading, is to give users ability to make customizations, e.g. add additional VOs, remove sites they do not have
-access, and so on.
+By default, fedcloud does not save anything on local disk, users have to save the
+site configuration to local disk explicitly via "fedcloud site save-config" command.
+The advantage of having local site configurations, beside faster loading, is to give
+users ability to make customizations, e.g. add additional VOs, remove sites they
+do not have access, and so on.
 """
 
 import builtins
 import json
 from pathlib import Path
-from urllib.request import urlopen, Request
-from jsonschema import validate
-import pkg_resources
+from urllib.request import Request, urlopen
+
 import click
+import pkg_resources
 import yaml
+from fedcloudclient.decorators import site_params, site_vo_params
+from jsonschema import validate
 
-from fedcloudclient.decorators import site_vo_params, site_params
-
-__REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
+__REMOTE_CONFIG_FILE = (
+    "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
+)
 
 __LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
 
@@ -42,8 +45,9 @@ def read_site_schema():
 
 def read_site_config():
     """
-    Read site configurations from local config dir if exist, otherwise from default GitHub location. Storing
-    site configurations in global variable, that will be used by other functions. Call read_local_site_config()
+    Read site configurations from local config dir if exist, otherwise from default
+    GitHub location. Storing site configurations in global variable, that will be
+    used by other functions. Call read_local_site_config()
     or read_default_site_config()
 
     :return: None
@@ -65,7 +69,9 @@ def safe_read_yaml_from_url(url, max_length):
     :param max_length:
     :return: data from URL
     """
-    if isinstance(url, str) and url.lower().startswith('https://'):  # Only read from HTTPS location
+    if isinstance(url, str) and url.lower().startswith(
+        "https://"
+    ):  # Only read from HTTPS location
         req = Request(url)
     else:
         raise SystemExit("Error: remote filename not starting with https:// : %s" % url)
@@ -74,8 +80,10 @@ def safe_read_yaml_from_url(url, max_length):
     data = None
     try:
         with urlopen(req) as yaml_file:  # nosec
-            if int(yaml_file.headers['Content-Length']) > max_length:
-                raise SystemExit("Error: remote file %s is larger than limit %d " % (url, max_length))
+            if int(yaml_file.headers["Content-Length"]) > max_length:
+                raise SystemExit(
+                    "Error: remote file %s is larger than limit %d " % (url, max_length)
+                )
             data = yaml.safe_load(yaml_file)
     except Exception as e:
         print("Error during reading data from %s" % url)
@@ -123,7 +131,7 @@ def read_local_site_config(config_dir):
     __site_config_data.clear()
     schema = read_site_schema()
     config_dir = Path(config_dir)
-    for f in sorted(config_dir.glob('*.yaml')):
+    for f in sorted(config_dir.glob("*.yaml")):
         try:
             yaml_file = f.open()
             site_info = yaml.safe_load(yaml_file)
@@ -136,7 +144,8 @@ def read_local_site_config(config_dir):
 
 def save_site_config(config_dir):
     """
-    Save site configs to local directory specified in config_dir. Overwrite local configs if exist
+    Save site configs to local directory specified in config_dir.
+    Overwrite local configs if exist
 
     :param config_dir: path to directory containing site configuration
     :return: None
@@ -179,11 +188,13 @@ def find_site_data(site_name):
 
 def find_endpoint_and_project_id(site_name, vo):
     """
-    Return Keystone endpoint and project ID from site name and VO according to site configuration
+    Return Keystone endpoint and project ID from site name and VO according
+    to site configuration
 
     :param site_name: site ID in GOCDB
     :param vo: VO name. None if finding only site endpoint
-    :return: endpoint, project_id, protocol if the VO exist on the site, otherwise None, None, None
+    :return: endpoint, project_id, protocol if the VO exist on the site,
+             otherwise None, None, None
     """
     site_info = find_site_data(site_name)
     if site_info is None:
@@ -253,7 +264,7 @@ def show_all():
 @site.command()
 def save_config():
     """
-    Read default site configs from GitHub and save them to local folder in home directory
+    Read default site configs from GitHub and save them to local folder in $HOME
     Overwrite local configs if exist
     """
     read_default_site_config()

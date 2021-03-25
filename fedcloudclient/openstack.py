@@ -1,45 +1,60 @@
 """
-Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing Openstack commands on sites
+Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing
+Openstack commands on sites
 """
 
 import concurrent.futures
 import json
 import os
-from distutils.spawn import find_executable
-import click
 
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
+from distutils.spawn import find_executable
 
+import click
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import openstack_params, DEFAULT_PROTOCOL, DEFAULT_AUTH_TYPE, DEFAULT_IDENTITY_PROVIDER
-from fedcloudclient.sites import find_endpoint_and_project_id, list_sites, site_vo_params
+from fedcloudclient.decorators import (
+    DEFAULT_AUTH_TYPE,
+    DEFAULT_IDENTITY_PROVIDER,
+    DEFAULT_PROTOCOL,
+    openstack_params,
+)
+from fedcloudclient.sites import (
+    find_endpoint_and_project_id,
+    list_sites,
+    site_vo_params,
+)
 
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30
 
 
 def fedcloud_openstack_full(
-        oidc_access_token,
-        openstack_auth_protocol,
-        openstack_auth_type,
-        checkin_identity_provider,
-        site,
-        vo,
-        openstack_command,
-        json_output=True
+    oidc_access_token,
+    openstack_auth_protocol,
+    openstack_auth_type,
+    checkin_identity_provider,
+    site,
+    vo,
+    openstack_command,
+    json_output=True,
 ):
     """
     Calling openstack client with full options specified, including support
     for other identity providers and protocols
 
-    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
-    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to openstack client as --os-protocol
-    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken). Passed to openstack client as --os-auth-type
-    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu). Passed to openstack client as --os-identity-provider
+    :param oidc_access_token: Checkin access token. Passed to openstack client
+           as --os-access-token
+    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to
+           openstack client as --os-protocol
+    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).
+           Passed to openstack client as --os-auth-type
+    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).
+           Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple, e.g. ("image", "list", "--long")
+    :param openstack_command: Openstack command in tuple,
+           e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
@@ -52,12 +67,18 @@ def fedcloud_openstack_full(
     if protocol is None:
         protocol = openstack_auth_protocol
 
-    options = ("--os-auth-url", endpoint,
-               "--os-auth-type", openstack_auth_type,
-               "--os-protocol", protocol,
-               "--os-identity-provider", checkin_identity_provider,
-               "--os-access-token", oidc_access_token
-               )
+    options = (
+        "--os-auth-url",
+        endpoint,
+        "--os-auth-type",
+        openstack_auth_type,
+        "--os-protocol",
+        protocol,
+        "--os-identity-provider",
+        checkin_identity_provider,
+        "--os-access-token",
+        oidc_access_token,
+    )
 
     if vo:
         options = options + ("--os-project-id", project_id)
@@ -68,12 +89,15 @@ def fedcloud_openstack_full(
 
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
-    completed = subprocess.run((__OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
-                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    completed = subprocess.run(
+        (__OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
 
     error_code = completed.returncode
-    error_message = completed.stderr.decode('utf-8')
-    result_str = completed.stdout.decode('utf-8')
+    error_message = completed.stderr.decode("utf-8")
+    result_str = completed.stdout.decode("utf-8")
 
     if error_code == 0:
         if json_output:
@@ -87,26 +111,25 @@ def fedcloud_openstack_full(
             return error_code, result_str
     else:
         # If error code != 0, return error message instead of result
-        # But attach also result string, as applications may print error messages to stdout instead stderr
+        # But attach also result string, as applications may print
+        # error messages to stdout instead stderr
         return error_code, error_message + result_str
 
 
 def fedcloud_openstack(
-        oidc_access_token,
-        site,
-        vo,
-        openstack_command,
-        json_output=True
+    oidc_access_token, site, vo, openstack_command, json_output=True
 ):
     """
     Simplified version of fedcloud_openstack_full() function using
     default EGI setting for identity provider and protocols
     Call openstack client with default options for EGI Check-in
 
-    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
+    :param oidc_access_token: Checkin access token.
+           Passed to openstack client as --os-access-token
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple, e.g. ("image", "list", "--long")
+    :param openstack_command: Openstack command in tuple,
+           e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
@@ -120,7 +143,7 @@ def fedcloud_openstack(
         site,
         vo,
         openstack_command,
-        json_output
+        json_output,
     )
 
 
@@ -134,7 +157,17 @@ def check_openstack_client_installation():
     return find_executable(__OPENSTACK_CLIENT) is not None
 
 
-def print_result(site, vo, command, exc_msg, error_code, result, json_output, ignore_missing_vo, first):
+def print_result(
+    site,
+    vo,
+    command,
+    exc_msg,
+    error_code,
+    result,
+    json_output,
+    ignore_missing_vo,
+    first,
+):
     """
     Print output from an Openstack command
 
@@ -154,7 +187,7 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
     if not json_output:
         if exc_msg:
             print("Site: %s, VO: %s, command: %s" % (site, vo, command))
-            print('%s generated an exception: %s' % (site, exc_msg))
+            print("%s generated an exception: %s" % (site, exc_msg))
             print("Error message: %s" % result)
 
         elif error_code != 0:
@@ -166,13 +199,14 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
             print("Site: %s, VO: %s, command: %s" % (site, vo, command))
             print(result)
     else:
-        site_data = {"Site": site,
-                     "VO": vo,
-                     "command": command,
-                     "Exception": exc_msg,
-                     "Error code": error_code,
-                     "Result": result,
-                     }
+        site_data = {
+            "Site": site,
+            "VO": vo,
+            "command": command,
+            "Exception": exc_msg,
+            "Error code": error_code,
+            "Result": result,
+        }
         separator = "[" if first else ","
         print(separator)
         print(json.dumps(site_data, indent=2))
@@ -183,50 +217,50 @@ def print_result(site, vo, command, exc_msg, error_code, result, json_output, ig
 @openstack_params
 @site_vo_params
 @click.option(
-    '--ignore-missing-vo', '-i',
+    "--ignore-missing-vo",
+    "-i",
     help="Ignore sites that do not support the VO",
     is_flag=True,
 )
 @click.option(
-    '--json-output', '-j',
+    "--json-output",
+    "-j",
     help="Print output as a big JSON object",
     is_flag=True,
 )
-@click.argument(
-    "openstack_command",
-    required=True,
-    nargs=-1
-)
+@click.argument("openstack_command", required=True, nargs=-1)
 def openstack(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        openstack_auth_protocol,
-        openstack_auth_type,
-        openstack_auth_provider,
-        site,
-        vo,
-        ignore_missing_vo,
-        json_output,
-        openstack_command
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    openstack_auth_protocol,
+    openstack_auth_type,
+    openstack_auth_provider,
+    site,
+    vo,
+    ignore_missing_vo,
+    json_output,
+    openstack_command,
 ):
     """
     Executing Openstack commands on site and VO
     """
 
     if not check_openstack_client_installation():
-        print("Error: Openstack command-line client \"openstack\" not found")
+        print('Error: Openstack command-line client "openstack" not found')
         exit(1)
 
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
 
     if site == "ALL_SITES":
         sites = list_sites()
@@ -234,18 +268,24 @@ def openstack(
         sites = [site]
 
     # Multi-thread execution of Openstack commands
-    with concurrent.futures.ThreadPoolExecutor(max_workers=__MAX_WORKER_THREAD) as executor:
+    with concurrent.futures.ThreadPoolExecutor(
+        max_workers=__MAX_WORKER_THREAD
+    ) as executor:
         # Start Openstack operation with each site
-        results = {executor.submit(fedcloud_openstack_full,
-                                   access_token,
-                                   openstack_auth_protocol,
-                                   openstack_auth_type,
-                                   openstack_auth_provider,
-                                   site,
-                                   vo,
-                                   openstack_command,
-                                   json_output,
-                                   ): site for site in sites}
+        results = {
+            executor.submit(
+                fedcloud_openstack_full,
+                access_token,
+                openstack_auth_protocol,
+                openstack_auth_type,
+                openstack_auth_provider,
+                site,
+                vo,
+                openstack_command,
+                json_output,
+            ): site
+            for site in sites
+        }
 
         # Get results and print them
         first = True
@@ -260,7 +300,17 @@ def openstack(
                 exc_msg = exc
 
             # Print result
-            print_result(site, vo, openstack_command, exc_msg, error_code, result, json_output, ignore_missing_vo, first)
+            print_result(
+                site,
+                vo,
+                openstack_command,
+                exc_msg,
+                error_code,
+                result,
+                json_output,
+                ignore_missing_vo,
+                first,
+            )
             first = False
 
         # Print list enclosing ']' for JSON
@@ -273,32 +323,34 @@ def openstack(
 @openstack_params
 @site_vo_params
 def openstack_int(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        openstack_auth_protocol,
-        openstack_auth_type,
-        openstack_auth_provider,
-        site,
-        vo,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    openstack_auth_protocol,
+    openstack_auth_type,
+    openstack_auth_provider,
+    site,
+    vo,
 ):
     """
     Interactive Openstack client on site and VO
     """
 
     if not check_openstack_client_installation():
-        print("Error: Openstack command-line client \"openstack\" not found")
+        print('Error: Openstack command-line client "openstack" not found')
         exit(1)
 
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:

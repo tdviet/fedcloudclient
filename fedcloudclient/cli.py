@@ -3,11 +3,10 @@ Main CLI module
 """
 
 import click
-
-from fedcloudclient.sites import site
 from fedcloudclient.checkin import token
 from fedcloudclient.endpoint import endpoint
 from fedcloudclient.openstack import openstack, openstack_int
+from fedcloudclient.sites import site
 
 
 @click.group()

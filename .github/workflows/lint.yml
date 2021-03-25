@@ -1,0 +1,23 @@
+---
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  super-lint:
+    name: Lint with Supper-Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Runs the Super-Linter action
+      - name: Run Super-Linter on new changes
+        uses: github/super-linter@v3
+        env:
+          DEFAULT_BRANCH: master 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fail on errors
+          DISABLE_ERRORS: false
