@@ -1,20 +1,21 @@
 """
-Implementation of "fedcloud token" commands for interactions with EGI Check-in and access tokens
+Implementation of "fedcloud token" commands for interactions with EGI Check-in and
+access tokens
 """
 
 import re
+import sys
 import time
 from datetime import datetime
+
 import click
 import jwt
-import requests
 import liboidcagent as agent
-import sys
-
+import requests
 from fedcloudclient.decorators import (
+    oidc_access_token_params,
     oidc_params,
     oidc_refresh_token_params,
-    oidc_access_token_params,
 )
 
 
@@ -121,7 +122,8 @@ def get_access_token(
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
         print(
-            "WARNING: exposing refresh tokens is insecure and will be disable in next version!",
+            "WARNING: exposing refresh tokens is insecure and will be disabled in "
+            "next version!",
             file=sys.stderr,
         )
         return token_refresh(
@@ -147,8 +149,9 @@ def get_access_token(
         return oidc_access_token
     else:
         raise SystemExit(
-            "Error: An access token is needed for the operation. You can specify access token"
-            " directly via --oidc-access-token option or use oidc-agent via --oidc-agent-account"
+            "Error: An access token is needed for the operation. You can specify "
+            "access token directly via --oidc-access-token option or use oidc-agent "
+            "via --oidc-agent-account"
         )
 
 

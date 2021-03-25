@@ -3,6 +3,7 @@ Decorators for command-line parameters
 """
 
 import functools
+
 import click
 
 DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"

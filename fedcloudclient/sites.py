@@ -12,13 +12,13 @@ access, and so on.
 import builtins
 import json
 from pathlib import Path
-from urllib.request import urlopen, Request
-from jsonschema import validate
-import pkg_resources
-import click
-import yaml
+from urllib.request import Request, urlopen
 
-from fedcloudclient.decorators import site_vo_params, site_params
+import click
+import pkg_resources
+import yaml
+from fedcloudclient.decorators import site_params, site_vo_params
+from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"

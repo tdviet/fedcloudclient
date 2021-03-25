@@ -5,18 +5,17 @@ Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performin
 import concurrent.futures
 import json
 import os
-from distutils.spawn import find_executable
-import click
-
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
+from distutils.spawn import find_executable
 
+import click
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
-    openstack_params,
-    DEFAULT_PROTOCOL,
     DEFAULT_AUTH_TYPE,
     DEFAULT_IDENTITY_PROVIDER,
+    DEFAULT_PROTOCOL,
+    openstack_params,
 )
 from fedcloudclient.sites import (
     find_endpoint_and_project_id,

@@ -6,9 +6,10 @@ Only single call is needed for any Openstack command at any site/VO
 Usage: add your access token to line 14, and execute "python demo.py"
 """
 
+import json
+
 # Import fedcloudclient library
 from fedcloudclient.openstack import fedcloud_openstack
-import json
 
 # Setting values for input parameters: token, site, VO
 token = "YOUR_ACCESS_TOKEN"

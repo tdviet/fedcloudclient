@@ -1,7 +1,10 @@
 """
-"fedcloud endpoint" commands are complementary part of the "fedcloud site" commands. Instead of using site
-configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
-directly from GOCDB (Grid Operations Configuration Management Database) https://goc.egi.eu/ or make probe test on sites
+"fedcloud endpoint" commands are complementary part of the "fedcloud site" commands.
+
+Instead of using site configurations defined in files saved in GitHub repository or
+local disk, the commands try to get site information directly from GOCDB
+(Grid Operations Configuration Management Database) https://goc.egi.eu/ or make probe
+test on sites
 """
 
 import os
@@ -13,10 +16,13 @@ import click
 import defusedxml.ElementTree as ElementTree
 import jwt
 import requests
-from tabulate import tabulate
-
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import site_params, project_id_params, auth_file_params
+from fedcloudclient.decorators import (
+    auth_file_params,
+    project_id_params,
+    site_params,
+)
+from tabulate import tabulate
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 
@@ -177,6 +183,7 @@ def get_scoped_token(os_auth_url, access_token, project_id):
         }
     }
     r = requests.post(url, json=body)
+    # pylint: disable=no-member
     if r.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an scoped token")
     else:
@@ -192,6 +199,7 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
         "/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/%s/auth" % protocol,
     )
     r = requests.post(url, headers={"Authorization": "Bearer %s" % access_token})
+    # pylint: disable=no-member
     if r.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an unscoped token")
     else:
