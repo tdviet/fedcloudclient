@@ -1,10 +1,12 @@
 """
-Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing Openstack commands on sites
+Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing
+Openstack commands on sites
 """
 
 import concurrent.futures
 import json
 import os
+
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
 from distutils.spawn import find_executable
@@ -41,13 +43,18 @@ def fedcloud_openstack_full(
     Calling openstack client with full options specified, including support
     for other identity providers and protocols
 
-    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
-    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to openstack client as --os-protocol
-    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken). Passed to openstack client as --os-auth-type
-    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu). Passed to openstack client as --os-identity-provider
+    :param oidc_access_token: Checkin access token. Passed to openstack client
+           as --os-access-token
+    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to
+           openstack client as --os-protocol
+    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).
+           Passed to openstack client as --os-auth-type
+    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).
+           Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple, e.g. ("image", "list", "--long")
+    :param openstack_command: Openstack command in tuple,
+           e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
@@ -104,7 +111,8 @@ def fedcloud_openstack_full(
             return error_code, result_str
     else:
         # If error code != 0, return error message instead of result
-        # But attach also result string, as applications may print error messages to stdout instead stderr
+        # But attach also result string, as applications may print
+        # error messages to stdout instead stderr
         return error_code, error_message + result_str
 
 
@@ -116,10 +124,12 @@ def fedcloud_openstack(
     default EGI setting for identity provider and protocols
     Call openstack client with default options for EGI Check-in
 
-    :param oidc_access_token: Checkin access token. Passed to openstack client as --os-access-token
+    :param oidc_access_token: Checkin access token.
+           Passed to openstack client as --os-access-token
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple, e.g. ("image", "list", "--long")
+    :param openstack_command: Openstack command in tuple,
+           e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message

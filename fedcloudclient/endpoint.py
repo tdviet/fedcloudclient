@@ -59,7 +59,12 @@ configure front (
       - cron:
           name: "refresh token"
           minute: "*/5"
-          job: "[ -f /usr/local/ec3/auth.dat ] && /usr/local/bin/fedcloudclient endpoint ec3-refresh --oidc-client-id {{ CLIENT_ID }} --oidc-client-secret {{ CLIENT_SECRET }} --oidc-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
+          job: "[ -f /usr/local/ec3/auth.dat ]
+            && /usr/local/bin/fedcloudclient endpoint ec3-refresh
+               --oidc-client-id {{ CLIENT_ID }}
+               --oidc-client-secret {{ CLIENT_SECRET }}
+               --oidc-refresh-token {{ REFRESH_TOKEN }}
+               --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
           user: root
           cron_file: refresh_token
           state: present
@@ -69,7 +74,13 @@ configure front (
       - cron:
           name: "refresh token"
           minute: "*/5"
-          job: "[ -f /usr/local/ec3/auth.dat ] && docker run -v /usr/local/ec3/auth.dat:/usr/local/ec3/auth.dat tdviet/fedcloudclient fedcloudclient endpoint ec3-refresh --oidc-client-id {{ CLIENT_ID }} --oidc-client-secret {{ CLIENT_SECRET }} --oidc-refresh-token {{ REFRESH_TOKEN }} --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
+          job: "[ -f /usr/local/ec3/auth.dat ]
+            && docker run -v /usr/local/ec3/auth.dat:/usr/local/ec3/auth.dat
+               tdviet/fedcloudclient fedcloudclient endpoint ec3-refresh
+               --oidc-client-id {{ CLIENT_ID }}
+               --oidc-client-secret {{ CLIENT_SECRET }}
+               --oidc-refresh-token {{ REFRESH_TOKEN }}
+               --auth-file /usr/local/ec3/auth.dat &> /var/log/refresh.log"
           user: root
           cron_file: refresh_token
           state: present
