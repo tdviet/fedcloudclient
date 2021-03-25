@@ -28,7 +28,7 @@ available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
 
   or use Docker container:
 
-  ```
+  ```shell
   docker run -it  tdviet/fedcloudclient bash
   ```
 
