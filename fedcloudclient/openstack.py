@@ -6,7 +6,6 @@ Openstack commands on sites
 import concurrent.futures
 import json
 import os
-
 # Subprocess is required for invoking openstack client, so ignored bandit check
 import subprocess  # nosec
 from distutils.spawn import find_executable
