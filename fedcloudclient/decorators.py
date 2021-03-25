@@ -20,6 +20,7 @@ def oidc_access_token_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -32,6 +33,7 @@ def oidc_refresh_token_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -45,6 +47,7 @@ def site_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -58,6 +61,7 @@ def project_id_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -71,6 +75,7 @@ def auth_file_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -81,6 +86,7 @@ def site_vo_params(func):
     :param func:
     :return:
     """
+
     @site_params
     @click.option(
         "--vo",
@@ -91,6 +97,7 @@ def site_vo_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -101,6 +108,7 @@ def oidc_params(func):
     :param func:
     :return:
     """
+
     @click.option(
         "--oidc-client-id",
         help="OIDC client id",
@@ -128,6 +136,7 @@ def oidc_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper
 
 
@@ -138,6 +147,7 @@ def openstack_params(func):
     :param func:
     :return:
     """
+
     @click.option(
         "--openstack-auth-protocol",
         help="Check-in protocol",
@@ -162,4 +172,5 @@ def openstack_params(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
+
     return wrapper

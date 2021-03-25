@@ -20,7 +20,9 @@ import yaml
 
 from fedcloudclient.decorators import site_vo_params, site_params
 
-__REMOTE_CONFIG_FILE = "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
+__REMOTE_CONFIG_FILE = (
+    "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
+)
 
 __LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
 
@@ -65,7 +67,9 @@ def safe_read_yaml_from_url(url, max_length):
     :param max_length:
     :return: data from URL
     """
-    if isinstance(url, str) and url.lower().startswith('https://'):  # Only read from HTTPS location
+    if isinstance(url, str) and url.lower().startswith(
+        "https://"
+    ):  # Only read from HTTPS location
         req = Request(url)
     else:
         raise SystemExit("Error: remote filename not starting with https:// : %s" % url)
@@ -74,8 +78,10 @@ def safe_read_yaml_from_url(url, max_length):
     data = None
     try:
         with urlopen(req) as yaml_file:  # nosec
-            if int(yaml_file.headers['Content-Length']) > max_length:
-                raise SystemExit("Error: remote file %s is larger than limit %d " % (url, max_length))
+            if int(yaml_file.headers["Content-Length"]) > max_length:
+                raise SystemExit(
+                    "Error: remote file %s is larger than limit %d " % (url, max_length)
+                )
             data = yaml.safe_load(yaml_file)
     except Exception as e:
         print("Error during reading data from %s" % url)
@@ -123,7 +129,7 @@ def read_local_site_config(config_dir):
     __site_config_data.clear()
     schema = read_site_schema()
     config_dir = Path(config_dir)
-    for f in sorted(config_dir.glob('*.yaml')):
+    for f in sorted(config_dir.glob("*.yaml")):
         try:
             yaml_file = f.open()
             site_info = yaml.safe_load(yaml_file)

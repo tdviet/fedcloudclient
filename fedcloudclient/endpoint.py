@@ -86,7 +86,7 @@ def get_sites():
     if r.status_code == 200:
         root = ElementTree.fromstring(r.text)
         for s in root:
-            sites.append(s.attrib.get('NAME'))
+            sites.append(s.attrib.get("NAME"))
     else:
         print("Something went wrong...")
         print(r.status_code)
@@ -124,7 +124,7 @@ def find_endpoint(service_type, production=True, monitored=True, site=None):
                 if prod != "Y":
                     continue
             os_url = sp.find("URL").text
-            ep_site = sp.find('SITENAME').text
+            ep_site = sp.find("SITENAME").text
             if ep_site not in sites:
                 continue
             # os_url = urlparse.urlparse(sp.find('URL').text)
@@ -254,23 +254,25 @@ def endpoint():
 @oidc_params
 @site_params
 def projects(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        site,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    site,
 ):
     """
     List of all project from specific site/sites
     """
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
     if site == "ALL_SITES":
         site = None
 
@@ -283,24 +285,26 @@ def projects(
 @site_params
 @project_id_params
 def token(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        site,
-        project_id,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    site,
+    project_id,
 ):
     """
     Get scoped keystone token from site and project ID
     """
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
     # Getting sites from GOCDB
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
@@ -313,20 +317,20 @@ def token(
 @oidc_params
 @auth_file_params
 def ec3_refresh(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        auth_file,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    auth_file,
 ):
     # Get the right endpoint from GOCDB
     auth_file_contents = []
     with open(auth_file, "r") as f:
         for raw_line in f.readlines():
             line = raw_line.strip()
-            if 'OpenStack' in line:
+            if "OpenStack" in line:
                 auth_tokens = []
                 for token in line.split(";"):
                     if token.strip().startswith("password"):
@@ -334,16 +338,20 @@ def ec3_refresh(
                         if access_token[0] in ["'", '"']:
                             access_token = access_token[1:-1]
                         # FIXME(enolfc): add verification
-                        payload = jwt.decode(access_token, options={"verify_signature": False})
+                        payload = jwt.decode(
+                            access_token, options={"verify_signature": False}
+                        )
                         now = int(time.time())
-                        expires = int(payload['exp'])
+                        expires = int(payload["exp"])
                         if expires - now < 300:
-                            access_token = get_access_token(oidc_access_token,
-                                                            oidc_refresh_token,
-                                                            oidc_client_id,
-                                                            oidc_client_secret,
-                                                            oidc_url,
-                                                            oidc_agent_account)
+                            access_token = get_access_token(
+                                oidc_access_token,
+                                oidc_refresh_token,
+                                oidc_client_id,
+                                oidc_client_secret,
+                                oidc_url,
+                                oidc_agent_account,
+                            )
                         auth_tokens.append("password = %s" % access_token)
                     else:
                         auth_tokens.append(token.strip())
@@ -367,28 +375,32 @@ def ec3_refresh(
 )
 @click.option("--force", is_flag=True, help="Force rewrite of files")
 def ec3(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        site,
-        project_id,
-        auth_file,
-        template_dir,
-        force,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    site,
+    project_id,
+    auth_file,
+    template_dir,
+    force,
 ):
     if os.path.exists(auth_file) and not force:
-        print("Auth file already exists, not replacing unless --force option is included")
+        print(
+            "Auth file already exists, not replacing unless --force option is included"
+        )
         raise click.Abort()
 
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
 
     # Get the right endpoint from GOCDB
     # assume first one is ok
@@ -402,13 +414,13 @@ def ec3(
         "auth_version = 3.x_oidc_access_token",
         "host = %s" % os_auth_url,
         "domain = %s" % project_id,
-        "password = '%s'" % access_token
+        "password = '%s'" % access_token,
     ]
     auth_file_contents = [";".join(site_auth)]
     if os.path.exists(auth_file):
         with open(auth_file, "r") as f:
             for line in f.readlines():
-                if 'OpenStack' in line:
+                if "OpenStack" in line:
                     continue
                 auth_file_contents.append(line)
     with open(auth_file, "w+") as f:
@@ -416,9 +428,11 @@ def ec3(
     if not os.path.exists(template_dir):
         os.mkdir(template_dir)
     with open(os.path.join(template_dir, "refresh.radl"), "w+") as f:
-        v = dict(client_id=oidc_client_id,
-                 client_secret=oidc_client_secret,
-                 refresh_token=oidc_refresh_token)
+        v = dict(
+            client_id=oidc_client_id,
+            client_secret=oidc_client_secret,
+            refresh_token=oidc_refresh_token,
+        )
         f.write(EC3_REFRESHTOKEN_TEMPLATE % v)
 
 
@@ -458,25 +472,27 @@ def list(service_type, production, monitored, site):
 @site_params
 @project_id_params
 def env(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_access_token,
-        oidc_url,
-        oidc_agent_account,
-        site,
-        project_id,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+    site,
+    project_id,
 ):
     """
     Generating OS environment variables for specific project/site
     """
 
-    access_token = get_access_token(oidc_access_token,
-                                    oidc_refresh_token,
-                                    oidc_client_id,
-                                    oidc_client_secret,
-                                    oidc_url,
-                                    oidc_agent_account)
+    access_token = get_access_token(
+        oidc_access_token,
+        oidc_refresh_token,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_url,
+        oidc_agent_account,
+    )
     # Get the right endpoint from GOCDB
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
