@@ -1,0 +1,22 @@
+# Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build:
+    name: Sphinx Pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install gcc
+        run: sudo apt-get install gcc
+      - uses: seanzhengw/sphinx-pages@master
+        id: sphinx-pages
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          create_readme: true
