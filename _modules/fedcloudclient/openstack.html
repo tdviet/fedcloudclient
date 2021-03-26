@@ -1,0 +1,576 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>fedcloudclient.openstack &mdash; fedcloudclient  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fedcloudclient
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using fedcloudclient as command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ and Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fedcloudclient</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fedcloudclient.openstack</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fedcloudclient.openstack</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implementation of &quot;fedcloud openstack&quot; or &quot;fedcloud openstack-int&quot; for performing</span>
+<span class="sd">Openstack commands on sites</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">concurrent.futures</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># Subprocess is required for invoking openstack client, so ignored bandit check</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>  <span class="c1"># nosec</span>
+<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="kn">import</span> <span class="n">find_executable</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.checkin</span> <span class="kn">import</span> <span class="n">get_access_token</span><span class="p">,</span> <span class="n">oidc_params</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.decorators</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">DEFAULT_AUTH_TYPE</span><span class="p">,</span>
+    <span class="n">DEFAULT_IDENTITY_PROVIDER</span><span class="p">,</span>
+    <span class="n">DEFAULT_PROTOCOL</span><span class="p">,</span>
+    <span class="n">openstack_params</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.sites</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">find_endpoint_and_project_id</span><span class="p">,</span>
+    <span class="n">list_sites</span><span class="p">,</span>
+    <span class="n">site_vo_params</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">__OPENSTACK_CLIENT</span> <span class="o">=</span> <span class="s2">&quot;openstack&quot;</span>
+<span class="n">__MAX_WORKER_THREAD</span> <span class="o">=</span> <span class="mi">30</span>
+
+
+<div class="viewcode-block" id="fedcloud_openstack_full"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.openstack.fedcloud_openstack_full">[docs]</a><span class="k">def</span> <span class="nf">fedcloud_openstack_full</span><span class="p">(</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
+    <span class="n">openstack_auth_type</span><span class="p">,</span>
+    <span class="n">checkin_identity_provider</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">vo</span><span class="p">,</span>
+    <span class="n">openstack_command</span><span class="p">,</span>
+    <span class="n">json_output</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calling openstack client with full options specified, including support</span>
+<span class="sd">    for other identity providers and protocols</span>
+
+<span class="sd">    :param oidc_access_token: Checkin access token. Passed to openstack client</span>
+<span class="sd">           as --os-access-token</span>
+<span class="sd">    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to</span>
+<span class="sd">           openstack client as --os-protocol</span>
+<span class="sd">    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).</span>
+<span class="sd">           Passed to openstack client as --os-auth-type</span>
+<span class="sd">    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).</span>
+<span class="sd">           Passed to openstack client as --os-identity-provider</span>
+<span class="sd">    :param site: site ID in GOCDB</span>
+<span class="sd">    :param vo: VO name</span>
+<span class="sd">    :param openstack_command: Openstack command in tuple,</span>
+<span class="sd">           e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</span>
+<span class="sd">    :param json_output: if result is JSON object or string. Default:True</span>
+
+<span class="sd">    :return: error code, result or error message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">11</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;VO </span><span class="si">%s</span><span class="s2"> not found on site </span><span class="si">%s</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vo</span><span class="p">,</span> <span class="n">site</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">openstack_auth_protocol</span>
+
+    <span class="n">options</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;--os-auth-url&quot;</span><span class="p">,</span>
+        <span class="n">endpoint</span><span class="p">,</span>
+        <span class="s2">&quot;--os-auth-type&quot;</span><span class="p">,</span>
+        <span class="n">openstack_auth_type</span><span class="p">,</span>
+        <span class="s2">&quot;--os-protocol&quot;</span><span class="p">,</span>
+        <span class="n">protocol</span><span class="p">,</span>
+        <span class="s2">&quot;--os-identity-provider&quot;</span><span class="p">,</span>
+        <span class="n">checkin_identity_provider</span><span class="p">,</span>
+        <span class="s2">&quot;--os-access-token&quot;</span><span class="p">,</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">vo</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;--os-project-id&quot;</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
+
+    <span class="c1"># Output JSON format is useful for further machine processing</span>
+    <span class="k">if</span> <span class="n">json_output</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">options</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="s2">&quot;json&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Calling openstack client as subprocess, caching stdout/stderr</span>
+    <span class="c1"># Ignore bandit warning</span>
+    <span class="n">completed</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">,)</span> <span class="o">+</span> <span class="n">openstack_command</span> <span class="o">+</span> <span class="n">options</span><span class="p">,</span>  <span class="c1"># nosec</span>
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+        <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">error_code</span> <span class="o">=</span> <span class="n">completed</span><span class="o">.</span><span class="n">returncode</span>
+    <span class="n">error_message</span> <span class="o">=</span> <span class="n">completed</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">result_str</span> <span class="o">=</span> <span class="n">completed</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">error_code</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">json_output</span><span class="p">:</span>
+            <span class="c1"># Test if openstack command ignore JSON format option</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">json_object</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">result_str</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">json_object</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">result_str</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">result_str</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># If error code != 0, return error message instead of result</span>
+        <span class="c1"># But attach also result string, as applications may print</span>
+        <span class="c1"># error messages to stdout instead stderr</span>
+        <span class="k">return</span> <span class="n">error_code</span><span class="p">,</span> <span class="n">error_message</span> <span class="o">+</span> <span class="n">result_str</span></div>
+
+
+<div class="viewcode-block" id="fedcloud_openstack"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.openstack.fedcloud_openstack">[docs]</a><span class="k">def</span> <span class="nf">fedcloud_openstack</span><span class="p">(</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span> <span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">openstack_command</span><span class="p">,</span> <span class="n">json_output</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simplified version of fedcloud_openstack_full() function using</span>
+<span class="sd">    default EGI setting for identity provider and protocols</span>
+<span class="sd">    Call openstack client with default options for EGI Check-in</span>
+
+<span class="sd">    :param oidc_access_token: Checkin access token.</span>
+<span class="sd">           Passed to openstack client as --os-access-token</span>
+<span class="sd">    :param site: site ID in GOCDB</span>
+<span class="sd">    :param vo: VO name</span>
+<span class="sd">    :param openstack_command: Openstack command in tuple,</span>
+<span class="sd">           e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</span>
+<span class="sd">    :param json_output: if result is JSON object or string. Default:True</span>
+
+<span class="sd">    :return: error code, result or error message</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">fedcloud_openstack_full</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">DEFAULT_PROTOCOL</span><span class="p">,</span>
+        <span class="n">DEFAULT_AUTH_TYPE</span><span class="p">,</span>
+        <span class="n">DEFAULT_IDENTITY_PROVIDER</span><span class="p">,</span>
+        <span class="n">site</span><span class="p">,</span>
+        <span class="n">vo</span><span class="p">,</span>
+        <span class="n">openstack_command</span><span class="p">,</span>
+        <span class="n">json_output</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_openstack_client_installation"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.openstack.check_openstack_client_installation">[docs]</a><span class="k">def</span> <span class="nf">check_openstack_client_installation</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Check if openstack command-line client is installed and available via $PATH</span>
+
+<span class="sd">    :return: True if available</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">find_executable</span><span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="print_result"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.openstack.print_result">[docs]</a><span class="k">def</span> <span class="nf">print_result</span><span class="p">(</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">vo</span><span class="p">,</span>
+    <span class="n">command</span><span class="p">,</span>
+    <span class="n">exc_msg</span><span class="p">,</span>
+    <span class="n">error_code</span><span class="p">,</span>
+    <span class="n">result</span><span class="p">,</span>
+    <span class="n">json_output</span><span class="p">,</span>
+    <span class="n">ignore_missing_vo</span><span class="p">,</span>
+    <span class="n">first</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print output from an Openstack command</span>
+
+<span class="sd">    :param site:</span>
+<span class="sd">    :param vo:</span>
+<span class="sd">    :param command:</span>
+<span class="sd">    :param exc_msg:</span>
+<span class="sd">    :param error_code:</span>
+<span class="sd">    :param result:</span>
+<span class="sd">    :param json_output:</span>
+<span class="sd">    :param ignore_missing_vo:</span>
+<span class="sd">    :param first:</span>
+<span class="sd">    :return:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">json_output</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">exc_msg</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Site: </span><span class="si">%s</span><span class="s2">, VO: </span><span class="si">%s</span><span class="s2">, command: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">command</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> generated an exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">exc_msg</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error message: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">result</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">error_code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_missing_vo</span> <span class="ow">or</span> <span class="p">(</span><span class="n">error_code</span> <span class="o">!=</span> <span class="mi">11</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Site: </span><span class="si">%s</span><span class="s2">, VO: </span><span class="si">%s</span><span class="s2">, command: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">command</span><span class="p">))</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error code: &quot;</span><span class="p">,</span> <span class="n">error_code</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error message: &quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Site: </span><span class="si">%s</span><span class="s2">, VO: </span><span class="si">%s</span><span class="s2">, command: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">command</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">site_data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Site&quot;</span><span class="p">:</span> <span class="n">site</span><span class="p">,</span>
+            <span class="s2">&quot;VO&quot;</span><span class="p">:</span> <span class="n">vo</span><span class="p">,</span>
+            <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="n">command</span><span class="p">,</span>
+            <span class="s2">&quot;Exception&quot;</span><span class="p">:</span> <span class="n">exc_msg</span><span class="p">,</span>
+            <span class="s2">&quot;Error code&quot;</span><span class="p">:</span> <span class="n">error_code</span><span class="p">,</span>
+            <span class="s2">&quot;Result&quot;</span><span class="p">:</span> <span class="n">result</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span> <span class="k">if</span> <span class="n">first</span> <span class="k">else</span> <span class="s2">&quot;,&quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">site_data</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">context_settings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;ignore_unknown_options&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">})</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@openstack_params</span>
+<span class="nd">@site_vo_params</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--ignore-missing-vo&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;-i&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Ignore sites that do not support the VO&quot;</span><span class="p">,</span>
+    <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--json-output&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;-j&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Print output as a big JSON object&quot;</span><span class="p">,</span>
+    <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">argument</span><span class="p">(</span><span class="s2">&quot;openstack_command&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">openstack</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
+    <span class="n">openstack_auth_type</span><span class="p">,</span>
+    <span class="n">openstack_auth_provider</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">vo</span><span class="p">,</span>
+    <span class="n">ignore_missing_vo</span><span class="p">,</span>
+    <span class="n">json_output</span><span class="p">,</span>
+    <span class="n">openstack_command</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executing Openstack commands on site and VO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_openstack_client_installation</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: Openstack command-line client &quot;openstack&quot; not found&#39;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">site</span> <span class="o">==</span> <span class="s2">&quot;ALL_SITES&quot;</span><span class="p">:</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="n">list_sites</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span><span class="p">]</span>
+
+    <span class="c1"># Multi-thread execution of Openstack commands</span>
+    <span class="k">with</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">ThreadPoolExecutor</span><span class="p">(</span>
+        <span class="n">max_workers</span><span class="o">=</span><span class="n">__MAX_WORKER_THREAD</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">executor</span><span class="p">:</span>
+        <span class="c1"># Start Openstack operation with each site</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
+                <span class="n">fedcloud_openstack_full</span><span class="p">,</span>
+                <span class="n">access_token</span><span class="p">,</span>
+                <span class="n">openstack_auth_protocol</span><span class="p">,</span>
+                <span class="n">openstack_auth_type</span><span class="p">,</span>
+                <span class="n">openstack_auth_provider</span><span class="p">,</span>
+                <span class="n">site</span><span class="p">,</span>
+                <span class="n">vo</span><span class="p">,</span>
+                <span class="n">openstack_command</span><span class="p">,</span>
+                <span class="n">json_output</span><span class="p">,</span>
+            <span class="p">):</span> <span class="n">site</span>
+            <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">sites</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Get results and print them</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># Get the result, first come first serve</span>
+        <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="n">site</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">future</span><span class="p">]</span>
+            <span class="n">exc_msg</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">error_code</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="n">exc_msg</span> <span class="o">=</span> <span class="n">exc</span>
+
+            <span class="c1"># Print result</span>
+            <span class="n">print_result</span><span class="p">(</span>
+                <span class="n">site</span><span class="p">,</span>
+                <span class="n">vo</span><span class="p">,</span>
+                <span class="n">openstack_command</span><span class="p">,</span>
+                <span class="n">exc_msg</span><span class="p">,</span>
+                <span class="n">error_code</span><span class="p">,</span>
+                <span class="n">result</span><span class="p">,</span>
+                <span class="n">json_output</span><span class="p">,</span>
+                <span class="n">ignore_missing_vo</span><span class="p">,</span>
+                <span class="n">first</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Print list enclosing &#39;]&#39; for JSON</span>
+        <span class="k">if</span> <span class="n">json_output</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;]&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@openstack_params</span>
+<span class="nd">@site_vo_params</span>
+<span class="k">def</span> <span class="nf">openstack_int</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
+    <span class="n">openstack_auth_type</span><span class="p">,</span>
+    <span class="n">openstack_auth_provider</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">vo</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interactive Openstack client on site and VO</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">check_openstack_client_installation</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Error: Openstack command-line client &quot;openstack&quot; not found&#39;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">endpoint</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: VO </span><span class="si">%s</span><span class="s2"> not found on site </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vo</span><span class="p">,</span> <span class="n">site</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">openstack_auth_protocol</span>
+    <span class="n">my_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_AUTH_URL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_AUTH_TYPE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">openstack_auth_type</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_PROTOCOL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">protocol</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_IDENTITY_PROVIDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">openstack_auth_provider</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_ACCESS_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">access_token</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_PROJECT_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">project_id</span>
+
+    <span class="c1"># Calling Openstack client as subprocess</span>
+    <span class="c1"># Ignore bandit warning</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">my_env</span><span class="p">)</span>  <span class="c1"># nosec</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Viet Tran.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,731 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>fedcloudclient.endpoint &mdash; fedcloudclient  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fedcloudclient
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using fedcloudclient as command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ and Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fedcloudclient</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fedcloudclient.endpoint</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fedcloudclient.endpoint</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;fedcloud endpoint&quot; commands are complementary part of the &quot;fedcloud site&quot; commands.</span>
+
+<span class="sd">Instead of using site configurations defined in files saved in GitHub repository or</span>
+<span class="sd">local disk, the commands try to get site information directly from GOCDB</span>
+<span class="sd">(Grid Operations Configuration Management Database) https://goc.egi.eu/ or make probe</span>
+<span class="sd">test on sites</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">urllib</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">defusedxml.ElementTree</span> <span class="k">as</span> <span class="nn">ElementTree</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.checkin</span> <span class="kn">import</span> <span class="n">get_access_token</span><span class="p">,</span> <span class="n">oidc_params</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.decorators</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">auth_file_params</span><span class="p">,</span>
+    <span class="n">project_id_params</span><span class="p">,</span>
+    <span class="n">site_params</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">tabulate</span> <span class="kn">import</span> <span class="n">tabulate</span>
+
+<span class="n">GOCDB_PUBLICURL</span> <span class="o">=</span> <span class="s2">&quot;https://goc.egi.eu/gocdbpi/public/&quot;</span>
+
+<span class="n">EC3_REFRESHTOKEN_TEMPLATE</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">description refreshtoken (</span>
+<span class="s2">    kind = &#39;component&#39; and</span>
+<span class="s2">    short = &#39;Tool to refresh LToS access token.&#39; and</span>
+<span class="s2">    content = &#39;Tool to refresh LToS access token.&#39;</span>
+<span class="s2">)</span>
+<span class="s2">configure front (</span>
+<span class="s2">@begin</span>
+<span class="s2">  - vars:</span>
+<span class="s2">      CLIENT_ID: </span><span class="si">%(client_id)s</span><span class="s2"></span>
+<span class="s2">      CLIENT_SECRET: </span><span class="si">%(client_secret)s</span><span class="s2"></span>
+<span class="s2">      REFRESH_TOKEN: </span><span class="si">%(refresh_token)s</span><span class="s2"></span>
+<span class="s2">    tasks:</span>
+<span class="s2">    - name: Check if docker is available</span>
+<span class="s2">      command: which docker</span>
+<span class="s2">      changed_when: false</span>
+<span class="s2">      failed_when: docker_installed.rc not in [0,1]</span>
+<span class="s2">      register: docker_installed</span>
+<span class="s2">    - name: local install of fedcloudclient</span>
+<span class="s2">      block:</span>
+<span class="s2">      - name: Create dir /usr/local/ec3/</span>
+<span class="s2">        file: path=/usr/local/ec3/ state=directory</span>
+<span class="s2">      - name: install git</span>
+<span class="s2">        package:</span>
+<span class="s2">          name: git</span>
+<span class="s2">          state: present</span>
+<span class="s2">      - name: install fedcloudclient</span>
+<span class="s2">        pip:</span>
+<span class="s2">          name:</span>
+<span class="s2">          - fedcloudclient</span>
+<span class="s2">      - cron:</span>
+<span class="s2">          name: &quot;refresh token&quot;</span>
+<span class="s2">          minute: &quot;*/5&quot;</span>
+<span class="s2">          job: &quot;[ -f /usr/local/ec3/auth.dat ]</span>
+<span class="s2">            &amp;&amp; /usr/local/bin/fedcloudclient endpoint ec3-refresh</span>
+<span class="s2">               --oidc-client-id {{ CLIENT_ID }}</span>
+<span class="s2">               --oidc-client-secret {{ CLIENT_SECRET }}</span>
+<span class="s2">               --oidc-refresh-token {{ REFRESH_TOKEN }}</span>
+<span class="s2">               --auth-file /usr/local/ec3/auth.dat &amp;&gt; /var/log/refresh.log&quot;</span>
+<span class="s2">          user: root</span>
+<span class="s2">          cron_file: refresh_token</span>
+<span class="s2">          state: present</span>
+<span class="s2">      when: docker_installed.rc not in [ 0 ]</span>
+<span class="s2">    - name: local install of fedcloudclient</span>
+<span class="s2">      block:</span>
+<span class="s2">      - cron:</span>
+<span class="s2">          name: &quot;refresh token&quot;</span>
+<span class="s2">          minute: &quot;*/5&quot;</span>
+<span class="s2">          job: &quot;[ -f /usr/local/ec3/auth.dat ]</span>
+<span class="s2">            &amp;&amp; docker run -v /usr/local/ec3/auth.dat:/usr/local/ec3/auth.dat</span>
+<span class="s2">               tdviet/fedcloudclient fedcloudclient endpoint ec3-refresh</span>
+<span class="s2">               --oidc-client-id {{ CLIENT_ID }}</span>
+<span class="s2">               --oidc-client-secret {{ CLIENT_SECRET }}</span>
+<span class="s2">               --oidc-refresh-token {{ REFRESH_TOKEN }}</span>
+<span class="s2">               --auth-file /usr/local/ec3/auth.dat &amp;&gt; /var/log/refresh.log&quot;</span>
+<span class="s2">          user: root</span>
+<span class="s2">          cron_file: refresh_token</span>
+<span class="s2">          state: present</span>
+<span class="s2">      when: docker_installed.rc not in [ 1 ]</span>
+<span class="s2">@end</span>
+<span class="s2">)</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="get_sites"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_sites">[docs]</a><span class="k">def</span> <span class="nf">get_sites</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get list of sites (using GOCDB instead of site configuration)</span>
+
+<span class="sd">    :return: list of site IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get_site_list&quot;</span><span class="p">,</span> <span class="s2">&quot;certification_status&quot;</span><span class="p">:</span> <span class="s2">&quot;Certified&quot;</span><span class="p">}</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;?&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">GOCDB_PUBLICURL</span><span class="p">,</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">q</span><span class="p">)])</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">sites</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="n">sites</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;NAME&quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Something went wrong...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sites</span></div>
+
+
+<div class="viewcode-block" id="find_endpoint"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.find_endpoint">[docs]</a><span class="k">def</span> <span class="nf">find_endpoint</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">production</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">monitored</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Searching GOCDB for endpoints according to service types and status</span>
+
+<span class="sd">    :param service_type:</span>
+<span class="sd">    :param production:</span>
+<span class="sd">    :param monitored:</span>
+<span class="sd">    :param site: list of sites, None for searching all sites</span>
+
+<span class="sd">    :return: list of endpoints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;get_service_endpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;service_type&quot;</span><span class="p">:</span> <span class="n">service_type</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">monitored</span><span class="p">:</span>
+        <span class="n">q</span><span class="p">[</span><span class="s2">&quot;monitored&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Y&quot;</span>
+    <span class="k">if</span> <span class="n">site</span><span class="p">:</span>
+        <span class="n">q</span><span class="p">[</span><span class="s2">&quot;sitename&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">site</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="p">[</span><span class="n">site</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sites</span> <span class="o">=</span> <span class="n">get_sites</span><span class="p">()</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;?&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">GOCDB_PUBLICURL</span><span class="p">,</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">q</span><span class="p">)])</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">endpoints</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">sp</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">production</span><span class="p">:</span>
+                <span class="n">prod</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;IN_PRODUCTION&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">prod</span> <span class="o">!=</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+            <span class="n">os_url</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;URL&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="n">ep_site</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;SITENAME&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span>
+            <span class="k">if</span> <span class="n">ep_site</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sites</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># os_url = urlparse.urlparse(sp.find(&#39;URL&#39;).text)</span>
+            <span class="c1"># sites[sp.find(&#39;SITENAME&#39;).text] = urlparse.urlunparse(</span>
+            <span class="c1">#    (os_url[0], os_url[1], os_url[2], &#39;&#39;, &#39;&#39;, &#39;&#39;))</span>
+            <span class="n">endpoints</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sp</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;SITENAME&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">service_type</span><span class="p">,</span> <span class="n">os_url</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Something went wrong...&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">endpoints</span></div>
+
+
+<div class="viewcode-block" id="get_keystone_url"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_keystone_url">[docs]</a><span class="k">def</span> <span class="nf">get_keystone_url</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function for fixing keystone URL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlparse</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">)</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;v2.0&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;v3&quot;</span><span class="p">):</span>
+        <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">prefix</span><span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlunparse</span><span class="p">((</span><span class="n">url</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">url</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">path</span><span class="p">,</span> <span class="n">url</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">url</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">url</span><span class="p">[</span><span class="mi">5</span><span class="p">]))</span></div>
+
+
+<div class="viewcode-block" id="get_unscoped_token"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_unscoped_token">[docs]</a><span class="k">def</span> <span class="nf">get_unscoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get an unscoped token, trying various protocol names if needed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">protocols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span> <span class="s2">&quot;oidc&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">protocols</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">unscoped_token</span> <span class="o">=</span> <span class="n">retrieve_unscoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">unscoped_token</span><span class="p">,</span> <span class="n">p</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get an scoped token&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_scoped_token"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_scoped_token">[docs]</a><span class="k">def</span> <span class="nf">get_scoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">project_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get a scoped token, trying various protocol names if needed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">unscoped_token</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">get_unscoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">)</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">get_keystone_url</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="s2">&quot;/v3/auth/tokens&quot;</span><span class="p">)</span>
+    <span class="n">body</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;auth&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;identity&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;methods&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">],</span> <span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">unscoped_token</span><span class="p">}},</span>
+            <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;project&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">project_id</span><span class="p">}},</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">body</span><span class="p">)</span>
+    <span class="c1"># pylint: disable=no-member</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">created</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get an scoped token&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Subject-Token&quot;</span><span class="p">],</span> <span class="n">protocol</span></div>
+
+
+<div class="viewcode-block" id="retrieve_unscoped_token"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.retrieve_unscoped_token">[docs]</a><span class="k">def</span> <span class="nf">retrieve_unscoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">protocol</span><span class="o">=</span><span class="s2">&quot;openid&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Request an unscoped token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">get_keystone_url</span><span class="p">(</span>
+        <span class="n">os_auth_url</span><span class="p">,</span>
+        <span class="s2">&quot;/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/</span><span class="si">%s</span><span class="s2">/auth&quot;</span> <span class="o">%</span> <span class="n">protocol</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">access_token</span><span class="p">})</span>
+    <span class="c1"># pylint: disable=no-member</span>
+    <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">requests</span><span class="o">.</span><span class="n">codes</span><span class="o">.</span><span class="n">created</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unable to get an unscoped token&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Subject-Token&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_projects"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_projects">[docs]</a><span class="k">def</span> <span class="nf">get_projects</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">unscoped_token</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get list of projects from unscoped token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">get_keystone_url</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="s2">&quot;/v3/auth/projects&quot;</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;X-Auth-Token&quot;</span><span class="p">:</span> <span class="n">unscoped_token</span><span class="p">})</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;projects&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_projects_from_sites"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_projects_from_sites">[docs]</a><span class="k">def</span> <span class="nf">get_projects_from_sites</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">site</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get all projects from sites using access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">project_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ep</span> <span class="ow">in</span> <span class="n">find_endpoint</span><span class="p">(</span><span class="s2">&quot;org.openstack.nova&quot;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="n">site</span><span class="p">):</span>
+        <span class="n">os_auth_url</span> <span class="o">=</span> <span class="n">ep</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">unscoped_token</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_unscoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">)</span>
+        <span class="n">project_list</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span>
+            <span class="p">[</span>
+                <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="s2">&quot;enabled&quot;</span><span class="p">],</span> <span class="n">ep</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">get_projects</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">unscoped_token</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="n">project_list</span></div>
+
+
+<div class="viewcode-block" id="get_project_id_from_vo_site"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.endpoint.get_project_id_from_vo_site">[docs]</a><span class="k">def</span> <span class="nf">get_project_id_from_vo_site</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">vo</span><span class="p">,</span> <span class="n">site</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Deprecated in favor of new functions in sites.py</span>
+
+<span class="sd">    Get project ID from site ID and VO name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">site</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="n">project_list</span> <span class="o">=</span> <span class="n">get_projects_from_sites</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;^(VO:|vo_)*&quot;</span> <span class="o">+</span> <span class="n">vo</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_list</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">project</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">project</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">endpoint</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    endpoint command group for interaction with GOCDB and endpoints</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@site_params</span>
+<span class="k">def</span> <span class="nf">projects</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all project from specific site/sites</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">site</span> <span class="o">==</span> <span class="s2">&quot;ALL_SITES&quot;</span><span class="p">:</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">project_list</span> <span class="o">=</span> <span class="n">get_projects_from_sites</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">project_list</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;Name&quot;</span><span class="p">,</span> <span class="s2">&quot;enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;site&quot;</span><span class="p">]))</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@site_params</span>
+<span class="nd">@project_id_params</span>
+<span class="k">def</span> <span class="nf">token</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">project_id</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get scoped keystone token from site and project ID</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Getting sites from GOCDB</span>
+    <span class="c1"># assume first one is ok</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">find_endpoint</span><span class="p">(</span><span class="s2">&quot;org.openstack.nova&quot;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="n">site</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">os_auth_url</span> <span class="o">=</span> <span class="n">ep</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">scoped_token</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">get_scoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_TOKEN=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">scoped_token</span><span class="p">)</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@auth_file_params</span>
+<span class="k">def</span> <span class="nf">ec3_refresh</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">auth_file</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="c1"># Get the right endpoint from GOCDB</span>
+    <span class="n">auth_file_contents</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">auth_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">raw_line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">raw_line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s2">&quot;OpenStack&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">auth_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;password&quot;</span><span class="p">):</span>
+                        <span class="n">access_token</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">if</span> <span class="n">access_token</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;&#39;&quot;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">]:</span>
+                            <span class="n">access_token</span> <span class="o">=</span> <span class="n">access_token</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="c1"># FIXME(enolfc): add verification</span>
+                        <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                            <span class="n">access_token</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;verify_signature&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+                        <span class="p">)</span>
+                        <span class="n">now</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+                        <span class="n">expires</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;exp&quot;</span><span class="p">])</span>
+                        <span class="k">if</span> <span class="n">expires</span> <span class="o">-</span> <span class="n">now</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+                            <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+                                <span class="n">oidc_access_token</span><span class="p">,</span>
+                                <span class="n">oidc_refresh_token</span><span class="p">,</span>
+                                <span class="n">oidc_client_id</span><span class="p">,</span>
+                                <span class="n">oidc_client_secret</span><span class="p">,</span>
+                                <span class="n">oidc_url</span><span class="p">,</span>
+                                <span class="n">oidc_agent_account</span><span class="p">,</span>
+                            <span class="p">)</span>
+                        <span class="n">auth_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;password = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">access_token</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">auth_tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                <span class="n">auth_file_contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">auth_tokens</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">auth_file_contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">auth_file</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">auth_file_contents</span><span class="p">))</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@site_params</span>
+<span class="nd">@project_id_params</span>
+<span class="nd">@auth_file_params</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--template-dir&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;EC3 templates dir&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;./templates&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span><span class="s2">&quot;--force&quot;</span><span class="p">,</span> <span class="n">is_flag</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Force rewrite of files&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">ec3</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">project_id</span><span class="p">,</span>
+    <span class="n">auth_file</span><span class="p">,</span>
+    <span class="n">template_dir</span><span class="p">,</span>
+    <span class="n">force</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">auth_file</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Auth file already exists, not replacing unless --force option is included&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">click</span><span class="o">.</span><span class="n">Abort</span><span class="p">()</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get the right endpoint from GOCDB</span>
+    <span class="c1"># assume first one is ok</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">find_endpoint</span><span class="p">(</span><span class="s2">&quot;org.openstack.nova&quot;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="n">site</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">os_auth_url</span> <span class="o">=</span> <span class="n">ep</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">site_auth</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;id = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">site</span><span class="p">,</span>
+        <span class="s2">&quot;type = OpenStack&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;username = egi.eu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;tenant = openid&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;auth_version = 3.x_oidc_access_token&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;host = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">os_auth_url</span><span class="p">,</span>
+        <span class="s2">&quot;domain = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">project_id</span><span class="p">,</span>
+        <span class="s2">&quot;password = &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">access_token</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">auth_file_contents</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">site_auth</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">auth_file</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">auth_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s2">&quot;OpenStack&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">auth_file_contents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">auth_file</span><span class="p">,</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">auth_file_contents</span><span class="p">))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">template_dir</span><span class="p">):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">template_dir</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">template_dir</span><span class="p">,</span> <span class="s2">&quot;refresh.radl&quot;</span><span class="p">),</span> <span class="s2">&quot;w+&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">client_id</span><span class="o">=</span><span class="n">oidc_client_id</span><span class="p">,</span>
+            <span class="n">client_secret</span><span class="o">=</span><span class="n">oidc_client_secret</span><span class="p">,</span>
+            <span class="n">refresh_token</span><span class="o">=</span><span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">EC3_REFRESHTOKEN_TEMPLATE</span> <span class="o">%</span> <span class="n">v</span><span class="p">)</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--service-type&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;org.openstack.nova&quot;</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Service type in GOCDB&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--production/--not-production&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Production status&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@click</span><span class="o">.</span><span class="n">option</span><span class="p">(</span>
+    <span class="s2">&quot;--monitored/--not-monitored&quot;</span><span class="p">,</span>
+    <span class="n">default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Monitoring status&quot;</span><span class="p">,</span>
+    <span class="n">show_default</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="nd">@site_params</span>
+<span class="k">def</span> <span class="nf">list</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">production</span><span class="p">,</span> <span class="n">monitored</span><span class="p">,</span> <span class="n">site</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of endpoints of site/sites according info in GOCDB</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">site</span> <span class="o">==</span> <span class="s2">&quot;ALL_SITES&quot;</span><span class="p">:</span>
+        <span class="n">site</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="n">endpoints</span> <span class="o">=</span> <span class="n">find_endpoint</span><span class="p">(</span><span class="n">service_type</span><span class="p">,</span> <span class="n">production</span><span class="p">,</span> <span class="n">monitored</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tabulate</span><span class="p">(</span><span class="n">endpoints</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Site&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;URL&quot;</span><span class="p">]))</span>
+
+
+<span class="nd">@endpoint</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="nd">@site_params</span>
+<span class="nd">@project_id_params</span>
+<span class="k">def</span> <span class="nf">env</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="n">site</span><span class="p">,</span>
+    <span class="n">project_id</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generating OS environment variables for specific project/site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># Get the right endpoint from GOCDB</span>
+    <span class="c1"># assume first one is ok</span>
+    <span class="n">ep</span> <span class="o">=</span> <span class="n">find_endpoint</span><span class="p">(</span><span class="s2">&quot;org.openstack.nova&quot;</span><span class="p">,</span> <span class="n">site</span><span class="o">=</span><span class="n">site</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+    <span class="n">os_auth_url</span> <span class="o">=</span> <span class="n">ep</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">scoped_token</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">get_scoped_token</span><span class="p">(</span><span class="n">os_auth_url</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;# environment for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">site</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_AUTH_URL=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">os_auth_url</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_AUTH_TYPE=&quot;v3oidcaccesstoken&quot;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_IDENTITY_PROVIDER=&quot;egi.eu&quot;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_PROTOCOL=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">protocol</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_ACCESS_TOKEN=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">access_token</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_PROJECT_ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">project_id</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Viet Tran.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Using fedcloudclient as command-line client &mdash; fedcloudclient  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using fedcloud client for development" href="development.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> fedcloudclient
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using fedcloudclient as command-line client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-help-command">fedcloud --help command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-token-commands">fedcloud token commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-endpoint-commands">fedcloud endpoint commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-site-commands">fedcloud site commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-openstack-commands">fedcloud openstack commands</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">fedcloudclient</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Using fedcloudclient as command-line client</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-fedcloudclient-as-command-line-client">
+<h1>Using fedcloudclient as command-line client<a class="headerlink" href="#using-fedcloudclient-as-command-line-client" title="Permalink to this headline">¶</a></h1>
+<p><strong>fedcloudclient</strong> has four groups of commands: <strong>&quot;fedcloud token&quot;</strong> for interactions with EGI Check-in and access tokens,
+<strong>&quot;fedcloud endpoint&quot;</strong> for interactions with GOCDB (and site endpoints according to GOCDB), <strong>&quot;fedcloud site&quot;</strong> for
+manipulations with site configurations, and <strong>&quot;fedcloud openstack&quot;</strong> or <strong>&quot;fedcloud openstack-int&quot;</strong> for performing
+Openstack commands on sites.</p>
+<div class="section" id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
+directly (via option <em>&quot;--oidc-access-token&quot;</em>), or via oidc-agent (via option <em>&quot;--oidc-agent-account&quot;</em>), use refresh
+tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
+in most cases, the option <em>&quot;--oidc-access-token&quot;</em> can be replaced by the option <em>&quot;--oidc-agent-account&quot;</em>, or the
+combination of <em>&quot;--oidc-refresh-token&quot;</em>, <em>&quot;--oidc-client-id&quot;</em> and <em>&quot;--oidc-client-secret&quot;</em>.</p>
+<p>Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from <a class="reference external" href="https://aai.egi.eu/fedcloud/">Check-in FedCloud
+client</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
+<a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
+give the client name (account name in <em>oidc-agent</em>) to <em>fedcloudclient</em> via option <em>&quot;--oidc-agent-account&quot;</em>.</p>
+<p>Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
+tokens via environment variables or command-line options is considered as insecure and will be disable in near
+future in favor of using <em>oidc-agent</em>. If multiple methods of getting access tokens are given at the same time,
+the client will try to get the tokens from the oidc-agent first, then from refresh tokens.</p>
+<p>The default OIDC identity provider is EGI Check-in (<a class="reference external" href="https://aai.egi.eu/oidc">https://aai.egi.eu/oidc</a>). Users can set other OIDC identity
+provider via option <em>&quot;--oidc-url&quot;</em>. Remember to set identity provider's name <em>&quot;--openstack-auth-provider&quot;</em> accordingly
+for Openstack commands.</p>
+<p>The default protocol is <em>&quot;openid&quot;</em>. Users can change default protocol via option <em>&quot;--openstack-auth-protocol&quot;</em>. However,
+sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oidc&quot;</em> for INFN-CLOUD-BARI.</p>
+</div>
+<div class="section" id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+<p>Most of fedcloud options, including options for tokens can be set via environment variables:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 30%" />
+<col style="width: 34%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Environment variables</p></th>
+<th class="head"><p>Command-line options</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>OIDC_AGENT_ACCOUNT</p></td>
+<td><p>--oidc-agent-account</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>OIDC_ACCESS_TOKEN</p></td>
+<td><p>--oidc-access-token</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>OIDC_REFRESH_TOKEN</p></td>
+<td><p>--oidc-refresh-token</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>OIDC_CLIENT_ID</p></td>
+<td><p>--oidc-client-id</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>OIDC_CLIENT_SECRET</p></td>
+<td><p>--oidc-client-secret</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>OIDC_URL</p></td>
+<td><p>--oidc-url</p></td>
+<td><p><a class="reference external" href="https://aai.egi.eu/oidc">https://aai.egi.eu/oidc</a></p></td>
+</tr>
+<tr class="row-even"><td><p>OPENSTACK_AUTH_PROTOCOL</p></td>
+<td><p>--openstack-auth-protocol</p></td>
+<td><p>openid</p></td>
+</tr>
+<tr class="row-odd"><td><p>OPENSTACK_AUTH_PROVIDER</p></td>
+<td><p>--openstack-auth-provider</p></td>
+<td><p>egi.eu</p></td>
+</tr>
+<tr class="row-even"><td><p>OPENSTACK_AUTH_TYPE</p></td>
+<td><p>--openstack-auth-type</p></td>
+<td><p>v3oidcaccesstoken</p></td>
+</tr>
+<tr class="row-odd"><td><p>EGI_SITE</p></td>
+<td><p>--site</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>EGI_VO</p></td>
+<td><p>--vo</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of time.</p>
+</div>
+<div class="section" id="fedcloud-help-command">
+<h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud --help&quot;</strong> command will print help message. When using it in combination with other
+commands, e.g. <strong>&quot;fedcloud token --help&quot;</strong>, <strong>&quot;fedcloud token check --hep&quot;</strong>, it will print list of options for the
+corresponding commands</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud --help
+Usage: fedcloud [OPTIONS] COMMAND [ARGS]...
+
+Options:
+  --help  Show this message and exit.
+
+Commands:
+  endpoint       Endpoint command group for interaction with GOCDB and endpoints
+  openstack      Executing Openstack commands on site and VO
+  openstack-int  Interactive Openstack client on site and VO
+  site           Site command group for manipulation with site configurations
+  token          Token command group for manipulation with tokens
+</pre></div>
+</div>
+</div>
+<div class="section" id="fedcloud-token-commands">
+<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud token check --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong>: Check the expiration time of access token, so users can know whether
+they need to refresh it. As mentioned before, access token may be given via environment variable <em>OIDC_ACCESS_TOKEN</em>,
+so the option <em>--oidc-access-token</em> is not shown in all examples bellows, even if the option is required.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token check
+Access token is valid to 2021-01-02 01:25:39 UTC
+Access token expires in 3571 seconds
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud token list-vos --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Print the list of VO memberships according to the EGI Check-in</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token list-vos
+eosc-synergy.eu
+fedcloud.egi.eu
+training.egi.eu
+</pre></div>
+</div>
+</div>
+<div class="section" id="fedcloud-endpoint-commands">
+<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Permalink to this headline">¶</a></h2>
+<p><strong>&quot;fedcloud endpoint&quot;</strong> commands are complementary part of the <strong>&quot;fedcloud site&quot;</strong> commands. Instead of using site
+configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
+directly from GOCDB (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe test on sites</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud endpoint list&quot;</strong> : List of endpoints of sites defined in GOCDB.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint list
+Site                type                URL
+------------------  ------------------  ------------------------------------------------
+IFCA-LCG2           org.openstack.nova  https://api.cloud.ifca.es:5000/v3/
+IN2P3-IRES          org.openstack.nova  https://sbgcloud.in2p3.fr:5000/v3
+...
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud endpoint projects --site &lt;SITE&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : List of projects that the owner
+of the access token can have access on the given site</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint projects --site IFCA-LCG2
+id                                Name                        enabled    site
+--------------------------------  --------------------------  ---------  ---------
+2a7e2cd4b6dc4e609dd934964c1715c6  VO:demo.fedcloud.egi.eu     True       IFCA-LCG2
+3b9754ad8c6046b4aec43ec21abe7d8c  VO:eosc-synergy.eu          True       IFCA-LCG2
+...
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud endpoint token --site &lt;SITE&gt; --project-id &lt;PROJECT&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Get
+Openstack keystone scoped token on the site for the project ID.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
+export OS_TOKEN=&quot;gAAAAA...&quot;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud endpoint env --site &lt;SITE&gt; --project-id &lt;PROJECT&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Print
+environment variables for working with the project ID on the site.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint env --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
+# environment for IFCA-LCG2
+export OS_AUTH_URL=&quot;https://api.cloud.ifca.es:5000/v3/&quot;
+export OS_AUTH_TYPE=&quot;v3oidcaccesstoken&quot;
+export OS_IDENTITY_PROVIDER=&quot;egi.eu&quot;
+export OS_PROTOCOL=&quot;openid&quot;
+export OS_ACCESS_TOKEN=&quot;...&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="fedcloud-site-commands">
+<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this headline">¶</a></h2>
+<p><strong>&quot;fedcloud site&quot;</strong> commands will read site configurations and manipulate with them. If the local site configurations exist
+at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
+<p>By default, <strong>fedcloud</strong> does not save anything on local disk, users have to save the site configuration to local disk
+explicitly via <strong>&quot;fedcloud site save-config&quot;</strong> command. The advantage of having local
+site configurations, beside faster loading, is to give users ability to make customizations, e.g. add additional VOs,
+remove sites they do not have access, and so on.</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site save-config&quot;</strong> : Read the default site configurations from GitHub
+and save them to <em>~/.config/fedcloud/site-config/</em> local directory. The command will overwrite existing site configurations
+in the local directory.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site save-config
+Saving site configs to directory /home/viet/.config/fedcloud/site-config/
+</pre></div>
+</div>
+<p>After saving site configurations, users can edit and customize them, e.g. remove inaccessible sites, add new
+VOs and so on.</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site list&quot;</strong> : List of existing sites in the site configurations</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site list
+100IT
+BIFI
+CESGA
+...
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site show --site &lt;SITE&gt;&quot;</strong> : Show configuration of the corresponding site.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site show --site IISAS-FedCloud
+endpoint: https://cloud.ui.savba.sk:5000/v3/
+gocdb: IISAS-FedCloud
+vos:
+- auth:
+    project_id: a22bbffb007745b2934bf308b0a4d186
+  name: covid19.eosc-synergy.eu
+- auth:
+    project_id: 51f736d36ce34b9ebdf196cfcabd24ee
+  name: eosc-synergy.eu
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site show-all&quot;</strong> : Show configurations of all sites.</p></li>
+</ul>
+<div class="line-block">
+<div class="line"><br /></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site show-project-id --site &lt;SITE&gt; --vo &lt;VO&gt;&quot;</strong>: show the project ID of the VO on the site.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
+ Endpoint : https://cloud.ui.savba.sk:5000/v3/
+ Project ID : 51f736d36ce34b9ebdf196cfcabd24ee
+</pre></div>
+</div>
+</div>
+<div class="section" id="fedcloud-openstack-commands">
+<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud openstack --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; &lt;OPENSTACK_COMMAND&gt;&quot;</strong> : Execute an
+Openstack command on the site and VO. Examples of Openstack commands are <em>&quot;image list&quot;</em>, <em>&quot;server list&quot;</em> and can be used
+with additional options for the commands, e.g. <em>&quot;image list --long&quot;</em>, <em>&quot;server list --format json&quot;</em>. The list of all
+Openstack commands, and their parameters/usages are available
+<a class="reference external" href="https://docs.openstack.org/python-openstackclient/latest/cli/command-list.html">here</a>.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --site IISAS-FedCloud --vo eosc-synergy.eu
+Site: IISAS-FedCloud, VO: eosc-synergy.eu
++--------------------------------------+-------------------------------------------------+--------+
+| ID                                   | Name                                            | Status |
++--------------------------------------+-------------------------------------------------+--------+
+| 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
+...
+</pre></div>
+</div>
+<p>If the site is <em>ALL_SITES</em>, the Openstack command will be executed on all sites in EGI Federated Cloud.</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud openstack-int --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Call Openstack client without
+command, so users can work with Openstack site in interactive mode. This is useful when users need to perform multiple
+commands successively. For example, users may need get list of images, list of flavors, list of networks before
+creating a VM. OIDC authentication is done only once at the beginning, then the keystone token is cached and will
+be used for successive commands without authentication via CheckIn again.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack-int --site IISAS-FedCloud --vo eosc-synergy.eu
+(openstack) image list
++--------------------------------------+-------------------------------------------------+--------+
+| ID                                   | Name                                            | Status |
++--------------------------------------+-------------------------------------------------+--------+
+| 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
+...
+(openstack) flavor list
++--------------------------------------+-----------+-------+------+-----------+-------+-----------+
+| ID                                   | Name      |   RAM | Disk | Ephemeral | VCPUs | Is Public |
++--------------------------------------+-----------+-------+------+-----------+-------+-----------+
+| 5bd8397c-b97f-462d-9d2b-5b533844996c | m1.small  |  2048 |   10 |         0 |     1 | True      |
+| df25f80f-ed19-4e0b-805e-d34620ba0334 | m1.medium |  4096 |   40 |         0 |     2 | True      |
+...
+(openstack)
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloud client for development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Viet Tran.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

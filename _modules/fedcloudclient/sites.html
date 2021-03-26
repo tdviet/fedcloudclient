@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>fedcloudclient.sites &mdash; fedcloudclient  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fedcloudclient
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using fedcloudclient as command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ and Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fedcloudclient</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fedcloudclient.sites</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fedcloudclient.sites</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">&quot;fedcloud site&quot; commands will read site configurations and manipulate with them. If</span>
+<span class="sd">the local site configurations exist at ~/.config/fedcloud/site-config/, fedcloud will</span>
+<span class="sd">read them from there, otherwise the commands will read from GitHub repository.</span>
+
+<span class="sd">By default, fedcloud does not save anything on local disk, users have to save the</span>
+<span class="sd">site configuration to local disk explicitly via &quot;fedcloud site save-config&quot; command.</span>
+<span class="sd">The advantage of having local site configurations, beside faster loading, is to give</span>
+<span class="sd">users ability to make customizations, e.g. add additional VOs, remove sites they</span>
+<span class="sd">do not have access, and so on.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">builtins</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">Request</span><span class="p">,</span> <span class="n">urlopen</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.decorators</span> <span class="kn">import</span> <span class="n">site_params</span><span class="p">,</span> <span class="n">site_vo_params</span>
+<span class="kn">from</span> <span class="nn">jsonschema</span> <span class="kn">import</span> <span class="n">validate</span>
+
+<span class="n">__REMOTE_CONFIG_FILE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml&quot;</span>
+<span class="p">)</span>
+
+<span class="n">__LOCAL_CONFIG_DIR</span> <span class="o">=</span> <span class="s2">&quot;.config/fedcloud/site-config/&quot;</span>
+
+<span class="n">__site_config_data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">__FILE_SIZE_LIMIT</span> <span class="o">=</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>  <span class="c1"># Max size for config files</span>
+
+
+<div class="viewcode-block" id="read_site_schema"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.read_site_schema">[docs]</a><span class="k">def</span> <span class="nf">read_site_schema</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read schema.json for validating site configuration</span>
+
+<span class="sd">    :return: JSON object from schema.json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file</span> <span class="o">=</span> <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_stream</span><span class="p">(</span><span class="s2">&quot;fedcloudclient&quot;</span><span class="p">,</span> <span class="s2">&quot;schema.json&quot;</span><span class="p">)</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">schema</span></div>
+
+
+<div class="viewcode-block" id="read_site_config"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.read_site_config">[docs]</a><span class="k">def</span> <span class="nf">read_site_config</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read site configurations from local config dir if exist, otherwise from default</span>
+<span class="sd">    GitHub location. Storing site configurations in global variable, that will be</span>
+<span class="sd">    used by other functions. Call read_local_site_config()</span>
+<span class="sd">    or read_default_site_config()</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">__site_config_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">config_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="n">__LOCAL_CONFIG_DIR</span>
+    <span class="k">if</span> <span class="n">config_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">read_local_site_config</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">read_default_site_config</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="safe_read_yaml_from_url"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.safe_read_yaml_from_url">[docs]</a><span class="k">def</span> <span class="nf">safe_read_yaml_from_url</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Safe reading from URL. Check URL and size before reading</span>
+
+<span class="sd">    :param url:</span>
+<span class="sd">    :param max_length:</span>
+<span class="sd">    :return: data from URL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+        <span class="s2">&quot;https://&quot;</span>
+    <span class="p">):</span>  <span class="c1"># Only read from HTTPS location</span>
+        <span class="n">req</span> <span class="o">=</span> <span class="n">Request</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: remote filename not starting with https:// : </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="c1"># URLs already checked, so ignore bandit test</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="k">as</span> <span class="n">yaml_file</span><span class="p">:</span>  <span class="c1"># nosec</span>
+            <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">yaml_file</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                    <span class="s2">&quot;Error: remote file </span><span class="si">%s</span><span class="s2"> is larger than limit </span><span class="si">%d</span><span class="s2"> &quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error during reading data from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">data</span></div>
+
+
+<div class="viewcode-block" id="read_default_site_config"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.read_default_site_config">[docs]</a><span class="k">def</span> <span class="nf">read_default_site_config</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read default site configurations from GitHub.  Storing</span>
+<span class="sd">    site configurations in a global variable, that will be used by other functions</span>
+
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__site_config_data</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">read_site_schema</span><span class="p">()</span>
+
+    <span class="n">site_list</span> <span class="o">=</span> <span class="n">safe_read_yaml_from_url</span><span class="p">(</span><span class="n">__REMOTE_CONFIG_FILE</span><span class="p">,</span> <span class="n">__FILE_SIZE_LIMIT</span><span class="p">)</span>
+
+    <span class="c1"># Check data format of site list</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">site_list</span><span class="p">,</span> <span class="n">builtins</span><span class="o">.</span><span class="n">list</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: site list is in a wrong format&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">site_list</span><span class="p">:</span>
+        <span class="n">site_info</span> <span class="o">=</span> <span class="n">safe_read_yaml_from_url</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">__FILE_SIZE_LIMIT</span><span class="p">)</span>
+
+        <span class="c1"># Validating site config after reading</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">site_info</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Site config in file </span><span class="si">%s</span><span class="s2"> is in wrong format&quot;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span>
+
+        <span class="n">__site_config_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_info</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="read_local_site_config"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.read_local_site_config">[docs]</a><span class="k">def</span> <span class="nf">read_local_site_config</span><span class="p">(</span><span class="n">config_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read site configurations from local directory specified in config_dir. Storing</span>
+<span class="sd">    site configurations in global variable, that will be used by other functions</span>
+
+<span class="sd">    :param config_dir: path to directory containing site configuration</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__site_config_data</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">read_site_schema</span><span class="p">()</span>
+    <span class="n">config_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">config_dir</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s2">&quot;*.yaml&quot;</span><span class="p">)):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">yaml_file</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+            <span class="n">site_info</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
+            <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">site_info</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+            <span class="n">__site_config_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_info</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Error during reading site config from </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Exception: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_site_config"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.save_site_config">[docs]</a><span class="k">def</span> <span class="nf">save_site_config</span><span class="p">(</span><span class="n">config_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save site configs to local directory specified in config_dir.</span>
+<span class="sd">    Overwrite local configs if exist</span>
+
+<span class="sd">    :param config_dir: path to directory containing site configuration</span>
+<span class="sd">    :return: None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span>
+    <span class="n">config_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
+        <span class="n">config_file</span> <span class="o">=</span> <span class="n">config_dir</span> <span class="o">/</span> <span class="p">(</span><span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;gocdb&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.yaml&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">config_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">site_info</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="list_sites"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.list_sites">[docs]</a><span class="k">def</span> <span class="nf">list_sites</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List of all sites IDs in site configurations</span>
+
+<span class="sd">    :return: list of site IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_site_config</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;gocdb&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="find_site_data"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.find_site_data">[docs]</a><span class="k">def</span> <span class="nf">find_site_data</span><span class="p">(</span><span class="n">site_name</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return configuration of the correspondent site with site_name</span>
+
+<span class="sd">    :param site_name: site ID in GOCDB</span>
+<span class="sd">    :return: configuration of site if found, otherwise None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_site_config</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;gocdb&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">site_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">site_info</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="find_endpoint_and_project_id"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.sites.find_endpoint_and_project_id">[docs]</a><span class="k">def</span> <span class="nf">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site_name</span><span class="p">,</span> <span class="n">vo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return Keystone endpoint and project ID from site name and VO according</span>
+<span class="sd">    to site configuration</span>
+
+<span class="sd">    :param site_name: site ID in GOCDB</span>
+<span class="sd">    :param vo: VO name. None if finding only site endpoint</span>
+<span class="sd">    :return: endpoint, project_id, protocol if the VO exist on the site,</span>
+<span class="sd">             otherwise None, None, None</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">site_info</span> <span class="o">=</span> <span class="n">find_site_data</span><span class="p">(</span><span class="n">site_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">site_info</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="n">protocol</span> <span class="o">=</span> <span class="n">site_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;protocol&quot;</span><span class="p">)</span>
+    <span class="c1"># If only site name is given, return endpoint without project ID</span>
+    <span class="k">if</span> <span class="n">vo</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;endpoint&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="n">protocol</span>
+
+    <span class="k">for</span> <span class="n">vo_info</span> <span class="ow">in</span> <span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;vos&quot;</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">vo_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">vo</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;endpoint&quot;</span><span class="p">],</span> <span class="n">vo_info</span><span class="p">[</span><span class="s2">&quot;auth&quot;</span><span class="p">][</span><span class="s2">&quot;project_id&quot;</span><span class="p">],</span> <span class="n">protocol</span>
+
+    <span class="c1"># Return None, None if VO not found</span>
+    <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">site</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Site command group for manipulation with site configurations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@site_params</span>
+<span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">site</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print configuration of the specified site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">site_info</span> <span class="o">=</span> <span class="n">find_site_data</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">site_info</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">site_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Site </span><span class="si">%s</span><span class="s2"> not found&quot;</span> <span class="o">%</span> <span class="n">site</span><span class="p">)</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+
+<span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@site_vo_params</span>
+<span class="k">def</span> <span class="nf">show_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Printing Keystone endpoint and project ID of the VO on the site</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">endpoint</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_AUTH_URL=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">endpoint</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;export OS_PROJECT_ID=&quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">project_id</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;VO </span><span class="si">%s</span><span class="s2"> not found on site </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">vo</span><span class="p">,</span> <span class="n">site</span><span class="p">))</span>
+        <span class="k">return</span> <span class="mi">1</span>
+
+
+<span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">show_all</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Print all site configuration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_site_config</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
+        <span class="n">site_info_str</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">site_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">site_info_str</span><span class="p">)</span>
+
+
+<span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">save_config</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read default site configs from GitHub and save them to local folder in $HOME</span>
+<span class="sd">    Overwrite local configs if exist</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_default_site_config</span><span class="p">()</span>
+    <span class="n">config_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span> <span class="o">/</span> <span class="n">__LOCAL_CONFIG_DIR</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Saving site configs to directory </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">config_dir</span><span class="p">)</span>
+    <span class="n">save_site_config</span><span class="p">(</span><span class="n">config_dir</span><span class="p">)</span>
+
+
+<span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">list</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List site IDs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">read_site_config</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">site_info</span><span class="p">[</span><span class="s2">&quot;gocdb&quot;</span><span class="p">])</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Viet Tran.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

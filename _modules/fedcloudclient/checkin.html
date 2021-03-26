@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>fedcloudclient.checkin &mdash; fedcloudclient  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> fedcloudclient
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Using fedcloudclient as command-line client</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ and Troubleshooting</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">fedcloudclient</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>fedcloudclient.checkin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for fedcloudclient.checkin</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Implementation of &quot;fedcloud token&quot; commands for interactions with EGI Check-in and</span>
+<span class="sd">access tokens</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">import</span> <span class="nn">click</span>
+<span class="kn">import</span> <span class="nn">jwt</span>
+<span class="kn">import</span> <span class="nn">liboidcagent</span> <span class="k">as</span> <span class="nn">agent</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">fedcloudclient.decorators</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">oidc_access_token_params</span><span class="p">,</span>
+    <span class="n">oidc_params</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token_params</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<div class="viewcode-block" id="oidc_discover"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.checkin.oidc_discover">[docs]</a><span class="k">def</span> <span class="nf">oidc_discover</span><span class="p">(</span><span class="n">oidc_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Discover oidc endpoints</span>
+
+<span class="sd">    :param oidc_url: CheckIn URL</span>
+<span class="sd">    :return: JSON object of OIDC configuration</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">oidc_url</span> <span class="o">+</span> <span class="s2">&quot;/.well-known/openid-configuration&quot;</span><span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="token_refresh"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.checkin.token_refresh">[docs]</a><span class="k">def</span> <span class="nf">token_refresh</span><span class="p">(</span><span class="n">oidc_client_id</span><span class="p">,</span> <span class="n">oidc_client_secret</span><span class="p">,</span> <span class="n">oidc_refresh_token</span><span class="p">,</span> <span class="n">oidc_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Helper function for retrieving JSON object with access token</span>
+
+<span class="sd">    :param oidc_client_id:</span>
+<span class="sd">    :param oidc_client_secret:</span>
+<span class="sd">    :param oidc_refresh_token:</span>
+<span class="sd">    :param oidc_url:</span>
+<span class="sd">    :return: JSON object with access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">oidc_ep</span> <span class="o">=</span> <span class="n">oidc_discover</span><span class="p">(</span><span class="n">oidc_url</span><span class="p">)</span>
+
+    <span class="n">refresh_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;refresh_token&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="s2">&quot;scope&quot;</span><span class="p">:</span> <span class="s2">&quot;openid email profile offline_access&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="n">oidc_ep</span><span class="p">[</span><span class="s2">&quot;token_endpoint&quot;</span><span class="p">],</span>
+        <span class="n">auth</span><span class="o">=</span><span class="p">(</span><span class="n">oidc_client_id</span><span class="p">,</span> <span class="n">oidc_client_secret</span><span class="p">),</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">refresh_data</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="refresh_access_token"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.checkin.refresh_access_token">[docs]</a><span class="k">def</span> <span class="nf">refresh_access_token</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span> <span class="n">oidc_client_secret</span><span class="p">,</span> <span class="n">oidc_refresh_token</span><span class="p">,</span> <span class="n">oidc_url</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Retrieve access token in plain text (string)</span>
+
+<span class="sd">    :param oidc_client_id:</span>
+<span class="sd">    :param oidc_client_secret:</span>
+<span class="sd">    :param oidc_refresh_token:</span>
+<span class="sd">    :param oidc_url:</span>
+<span class="sd">    :return: access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">token_refresh</span><span class="p">(</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="p">)[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="get_access_token"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.checkin.get_access_token">[docs]</a><span class="k">def</span> <span class="nf">get_access_token</span><span class="p">(</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Getting access token.</span>
+<span class="sd">    Generate new access token from oidc-agent or refresh token (if given)</span>
+<span class="sd">    or use existing token</span>
+
+<span class="sd">    Check expiration time of access token</span>
+<span class="sd">    Raise error if no valid token exists</span>
+
+<span class="sd">    :param oidc_access_token:</span>
+<span class="sd">    :param oidc_refresh_token:</span>
+<span class="sd">    :param oidc_client_id:</span>
+<span class="sd">    :param oidc_client_secret:</span>
+<span class="sd">    :param oidc_url:</span>
+<span class="sd">    :param oidc_agent_account:</span>
+
+<span class="sd">    :return: access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># First, try to get access token from oidc-agent</span>
+    <span class="k">if</span> <span class="n">oidc_agent_account</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">access_token</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(</span>
+                <span class="n">oidc_agent_account</span><span class="p">,</span>
+                <span class="n">min_valid_period</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+                <span class="n">application_hint</span><span class="o">=</span><span class="s2">&quot;fedcloudclient&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">access_token</span>
+        <span class="k">except</span> <span class="n">agent</span><span class="o">.</span><span class="n">OidcAgentError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR oidc-agent: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+    <span class="c1"># Then try refresh token</span>
+    <span class="k">if</span> <span class="n">oidc_refresh_token</span> <span class="ow">and</span> <span class="n">oidc_client_id</span> <span class="ow">and</span> <span class="n">oidc_client_secret</span> <span class="ow">and</span> <span class="n">oidc_url</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;WARNING: exposing refresh tokens is insecure and will be disabled in &quot;</span>
+            <span class="s2">&quot;next version!&quot;</span><span class="p">,</span>
+            <span class="n">file</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">token_refresh</span><span class="p">(</span>
+            <span class="n">oidc_client_id</span><span class="p">,</span> <span class="n">oidc_client_secret</span><span class="p">,</span> <span class="n">oidc_refresh_token</span><span class="p">,</span> <span class="n">oidc_url</span>
+        <span class="p">)[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Then finally access token</span>
+    <span class="k">elif</span> <span class="n">oidc_access_token</span><span class="p">:</span>
+
+        <span class="c1"># Check expiration time of access token</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">oidc_access_token</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;verify_signature&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: Invalid access token.&quot;</span><span class="p">)</span>
+
+        <span class="n">expiration_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;exp&quot;</span><span class="p">])</span>
+        <span class="n">current_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">current_timestamp</span> <span class="o">&gt;</span> <span class="n">expiration_timestamp</span> <span class="o">-</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+                <span class="s2">&quot;The given access token has expired.&quot;</span>
+                <span class="o">+</span> <span class="s2">&quot; Get new access token before continuing on operation&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">oidc_access_token</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span>
+            <span class="s2">&quot;Error: An access token is needed for the operation. You can specify &quot;</span>
+            <span class="s2">&quot;access token directly via --oidc-access-token option or use oidc-agent &quot;</span>
+            <span class="s2">&quot;via --oidc-agent-account&quot;</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="token_list_vos"><a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.checkin.token_list_vos">[docs]</a><span class="k">def</span> <span class="nf">token_list_vos</span><span class="p">(</span><span class="n">oidc_access_token</span><span class="p">,</span> <span class="n">oidc_url</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    List VO memberships in EGI Check-in</span>
+
+<span class="sd">    :param oidc_access_token:</span>
+<span class="sd">    :param oidc_url:</span>
+<span class="sd">    :return: list of VO names</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">oidc_ep</span> <span class="o">=</span> <span class="n">oidc_discover</span><span class="p">(</span><span class="n">oidc_url</span><span class="p">)</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">oidc_ep</span><span class="p">[</span><span class="s2">&quot;userinfo_endpoint&quot;</span><span class="p">],</span>
+        <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="s2">&quot;Bearer </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">oidc_access_token</span><span class="p">},</span>
+    <span class="p">)</span>
+
+    <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+    <span class="n">vos</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">claim</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;eduperson_entitlement&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="n">vo</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">claim</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vo</span><span class="p">:</span>
+            <span class="n">vos</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">vo</span><span class="o">.</span><span class="n">groups</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">vos</span></div>
+
+
+<span class="nd">@click</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">token</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Token command group for manipulation with tokens</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@token</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_refresh_token_params</span>
+<span class="nd">@oidc_access_token_params</span>
+<span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="n">oidc_refresh_token</span><span class="p">,</span> <span class="n">oidc_access_token</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CLI command for printing validity of access or refresh token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">oidc_refresh_token</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span>
+                <span class="n">oidc_refresh_token</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;verify_signature&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: Invalid refresh token.&quot;</span><span class="p">)</span>
+
+        <span class="n">expiration_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;exp&quot;</span><span class="p">])</span>
+        <span class="n">expiration_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">expiration_timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Refresh token is valid to </span><span class="si">%s</span><span class="s2"> UTC&quot;</span> <span class="o">%</span> <span class="n">expiration_time</span><span class="p">)</span>
+        <span class="n">current_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">current_timestamp</span> <span class="o">&lt;</span> <span class="n">expiration_timestamp</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Refresh token expires in </span><span class="si">%d</span><span class="s2"> days&quot;</span>
+                <span class="o">%</span> <span class="p">((</span><span class="n">expiration_timestamp</span> <span class="o">-</span> <span class="n">current_timestamp</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="mi">24</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">))</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Refresh token has expired&quot;</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">oidc_access_token</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">payload</span> <span class="o">=</span> <span class="n">jwt</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">oidc_access_token</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;verify_signature&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">})</span>
+        <span class="k">except</span> <span class="n">jwt</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InvalidTokenError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="s2">&quot;Error: Invalid access token.&quot;</span><span class="p">)</span>
+
+        <span class="n">expiration_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;exp&quot;</span><span class="p">])</span>
+        <span class="n">expiration_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">expiration_timestamp</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span>
+            <span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Access token is valid to </span><span class="si">%s</span><span class="s2"> UTC&quot;</span> <span class="o">%</span> <span class="n">expiration_time</span><span class="p">)</span>
+        <span class="n">current_timestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">current_timestamp</span> <span class="o">&lt;</span> <span class="n">expiration_timestamp</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Access token expires in </span><span class="si">%d</span><span class="s2"> seconds&quot;</span>
+                <span class="o">%</span> <span class="p">(</span><span class="n">expiration_timestamp</span> <span class="o">-</span> <span class="n">current_timestamp</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Access token has expired&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OIDC access token or refresh token required&quot;</span><span class="p">)</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="nd">@token</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
+<span class="nd">@oidc_params</span>
+<span class="k">def</span> <span class="nf">list_vos</span><span class="p">(</span>
+    <span class="n">oidc_client_id</span><span class="p">,</span>
+    <span class="n">oidc_client_secret</span><span class="p">,</span>
+    <span class="n">oidc_refresh_token</span><span class="p">,</span>
+    <span class="n">oidc_access_token</span><span class="p">,</span>
+    <span class="n">oidc_url</span><span class="p">,</span>
+    <span class="n">oidc_agent_account</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    CLI command for listing VO memberships according to access token</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">oidc_access_token</span> <span class="o">=</span> <span class="n">get_access_token</span><span class="p">(</span>
+        <span class="n">oidc_access_token</span><span class="p">,</span>
+        <span class="n">oidc_refresh_token</span><span class="p">,</span>
+        <span class="n">oidc_client_id</span><span class="p">,</span>
+        <span class="n">oidc_client_secret</span><span class="p">,</span>
+        <span class="n">oidc_url</span><span class="p">,</span>
+        <span class="n">oidc_agent_account</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">vos</span> <span class="o">=</span> <span class="n">token_list_vos</span><span class="p">(</span><span class="n">oidc_access_token</span><span class="p">,</span> <span class="n">oidc_url</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">vos</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Viet Tran.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
