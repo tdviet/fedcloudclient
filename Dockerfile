@@ -6,7 +6,7 @@ RUN curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-tru
     && curl https://dl.igtf.net/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3 \
         | apt-key add - \
     && apt-get update \
-    && apt-get install -y --no-install-recommends ca-policy-egi-core
+    && apt-get install -y --no-install-recommends ca-policy-egi-core \
     && rm -rf /var/lib/apt/lists/*
 
 # Install oidc-agent and jq
@@ -14,7 +14,7 @@ RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87
     && echo "deb http://repo.data.kit.edu/debian/buster ./" >> /etc/apt/sources.list.d/oidc-agent.list \
     && apt-get update \
     && apt-get install -y oidc-agent jq \
-    && mkdir -p  ~/.config/oidc-agent/
+    && mkdir -p  ~/.config/oidc-agent/ \
     && rm -rf /var/lib/apt/lists/*
 
 # Install fedcloudclient
