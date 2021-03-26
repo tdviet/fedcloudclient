@@ -6,7 +6,7 @@ RUN curl http://repository.egi.eu/sw/production/cas/1/current/repo-files/egi-tru
     && curl https://dl.igtf.net/distribution/igtf/current/GPG-KEY-EUGridPMA-RPM-3 \
         | apt-key add - \
     && apt-get update \
-    && apt-get install -y --no-install-recommends ca-policy-egi-core \
+    && apt-get install -y ca-policy-egi-core \
     && rm -rf /var/lib/apt/lists/*
 
 # Install oidc-agent and jq
