@@ -1,7 +1,9 @@
 ---
 name: Lint
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+    branches: [ master, devel ]
 
 jobs:
   super-lint:
