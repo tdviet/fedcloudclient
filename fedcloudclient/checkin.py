@@ -176,7 +176,7 @@ def token_list_vos(oidc_access_token, oidc_url):
         vo = m.match(claim)
         if vo:
             vos.append(vo.groups()[0])
-    return vos
+    return sorted(vos)
 
 
 @click.group()
