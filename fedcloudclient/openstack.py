@@ -85,12 +85,17 @@ def fedcloud_openstack_full(
     if json_output:
         options = options + ("--format", "json")
 
+    # Remove conflicting environment
+    my_env = os.environ.copy()
+    my_env.pop("OS_TOKEN", None)
+
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
     completed = subprocess.run(
         (__OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        env=my_env,
     )
 
     error_code = completed.returncode
