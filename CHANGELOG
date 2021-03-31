@@ -3,7 +3,7 @@
 - Add --ignore-missing-vo option
 
 ## [1.0.1]
-- Multi-thread execution of Openstack all-sites operation
+- Multi-thread execution of OpenStack all-sites operation
 - Update documentation
 
 

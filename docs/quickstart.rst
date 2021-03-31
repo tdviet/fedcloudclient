@@ -52,7 +52,7 @@ Basic usages
     CESGA
     ...
 
-* Execute an Openstack command, e.g. list images in eosc-synergy.eu VO on IISAS-FedCloud site
+* Execute an OpenStack command, e.g. list images in eosc-synergy.eu VO on IISAS-FedCloud site
   (or other combination of site and VO you have access):
 
 ::
@@ -77,8 +77,8 @@ Basic usages
 
     Commands:
       endpoint       Endpoint command group for interaction with GOCDB and endpoints
-      openstack      Executing Openstack commands on site and VO
-      openstack-int  Interactive Openstack client on site and VO
+      openstack      Executing OpenStack commands on site and VO
+      openstack-int  Interactive OpenStack client on site and VO
       site           Site command group for manipulation with site configurations
       token          Token command group for manipulation with tokens
 

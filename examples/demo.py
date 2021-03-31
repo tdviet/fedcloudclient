@@ -1,7 +1,7 @@
 """
 This is a simple demo code how to use fedcloudclient code as a library
 for development of tools and services for EGI Federated Cloud
-Only single call is needed for any Openstack command at any site/VO
+Only single call is needed for any OpenStack command at any site/VO
 
 Usage: add your access token to line 14, and execute "python demo.py"
 """
@@ -16,10 +16,10 @@ token = "YOUR_ACCESS_TOKEN"
 site = "CYFRONET-CLOUD"
 vo = "fedcloud.egi.eu"
 
-# Openstack command and options. Must be a tuple
+# OpenStack command and options. Must be a tuple
 command = ("image", "list", "--long")
 
-# Execute the Openstack command on the site/VO with single line of code
+# Execute the OpenStack command on the site/VO with single line of code
 # If command finishes correctly, the error_code is 0 and the result is stored
 # in JSON object for easy processing
 
