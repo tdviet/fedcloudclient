@@ -4,7 +4,7 @@ Using fedcloudclient as command-line client
 **fedcloudclient** has four groups of commands: **"fedcloud token"** for interactions with EGI Check-in and access tokens,
 **"fedcloud endpoint"** for interactions with GOCDB (and site endpoints according to GOCDB), **"fedcloud site"** for
 manipulations with site configurations, and **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing
-Openstack commands on sites.
+OpenStack commands on sites.
 
 Authentication
 **************
@@ -27,7 +27,7 @@ the client will try to get the tokens from the oidc-agent first, then from refre
 
 The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/oidc). Users can set other OIDC identity
 provider via option *"--oidc-url"*. Remember to set identity provider's name *"--openstack-auth-provider"* accordingly
-for Openstack commands.
+for OpenStack commands.
 
 The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
@@ -82,8 +82,8 @@ fedcloud --help command
 
     Commands:
       endpoint       Endpoint command group for interaction with GOCDB and endpoints
-      openstack      Executing Openstack commands on site and VO
-      openstack-int  Interactive Openstack client on site and VO
+      openstack      Executing OpenStack commands on site and VO
+      openstack-int  Interactive OpenStack client on site and VO
       site           Site command group for manipulation with site configurations
       token          Token command group for manipulation with tokens
 
@@ -144,7 +144,7 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     ...
 
 * **"fedcloud endpoint token --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Get
-  Openstack keystone scoped token on the site for the project ID.
+  OpenStack keystone scoped token on the site for the project ID.
 
 ::
 
@@ -232,9 +232,9 @@ fedcloud openstack commands
 ***************************
 
 * **"fedcloud openstack --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> <OPENSTACK_COMMAND>"** : Execute an
-  Openstack command on the site and VO. Examples of Openstack commands are *"image list"*, *"server list"* and can be used
+  OpenStack command on the site and VO. Examples of OpenStack commands are *"image list"*, *"server list"* and can be used
   with additional options for the commands, e.g. *"image list --long"*, *"server list --format json"*. The list of all
-  Openstack commands, and their parameters/usages are available
+  OpenStack commands, and their parameters/usages are available
   `here <https://docs.openstack.org/python-openstackclient/latest/cli/command-list.html>`_.
 
 ::
@@ -247,10 +247,10 @@ fedcloud openstack commands
     | 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
     ...
 
-If the site is *ALL_SITES*, the Openstack command will be executed on all sites in EGI Federated Cloud.
+If the site is *ALL_SITES*, the OpenStack command will be executed on all sites in EGI Federated Cloud.
 
-* **"fedcloud openstack-int --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN>"** : Call Openstack client without
-  command, so users can work with Openstack site in interactive mode. This is useful when users need to perform multiple
+* **"fedcloud openstack-int --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN>"** : Call OpenStack client without
+  command, so users can work with OpenStack site in interactive mode. This is useful when users need to perform multiple
   commands successively. For example, users may need get list of images, list of flavors, list of networks before
   creating a VM. OIDC authentication is done only once at the beginning, then the keystone token is cached and will
   be used for successive commands without authentication via CheckIn again.

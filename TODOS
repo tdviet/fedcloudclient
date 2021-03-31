@@ -1,10 +1,10 @@
 - Adding support for integration with AppDB for images
     + Images are specify with parameter "--appdb <image name/ID in AppDB>"
-    + The client will replace the parameter with "--image imageID" before calling Openstack client (like site and VO)
+    + The client will replace the parameter with "--image imageID" before calling OpenStack client (like site and VO)
 
-- Caching keystone token, reuse it for successive Openstack commands without authentication via CheckIn again
+- Caching keystone token, reuse it for successive OpenStack commands without authentication via CheckIn again
     + Make a dict: key = hash of (site + vo + access token), value = keystone token
-    + Before using Openstack command, check the dict reuse the token if found. If not found, generate new token
+    + Before using OpenStack command, check the dict reuse the token if found. If not found, generate new token
     and add it to the dict.
     + Applicable only for using as library
 

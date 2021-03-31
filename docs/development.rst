@@ -17,10 +17,10 @@ Just copy/download the code, add your access token and execute *"python demo.py"
     site = "CYFRONET-CLOUD"
     vo = "fedcloud.egi.eu"
 
-    # Openstack command and options. Must be a tuple
+    # OpenStack command and options. Must be a tuple
     command = ("image", "list", "--long")
 
-    # Execute the Openstack command on the site/VO with single line of code
+    # Execute the OpenStack command on the site/VO with single line of code
     # If command finishes correctly, the error_code is 0 and the result is stored
     # in JSON object for easy processing
 
@@ -34,6 +34,6 @@ Just copy/download the code, add your access token and execute *"python demo.py"
         print("Error message is %s" % result)
 
 
-Read the `fedcloudclient API references <https://fedcloudclient.readthedocs.io/en/master/fedcloudclient.html>`_
+Read the `fedcloudclient API references <https://fedcloudclient.fedcloud.eu/fedcloudclient.html>`_
 for more details about each function in fedcloudclient library. Check the output of the equivalent command of
 fedcloudclient and its source code to see how the function is used.

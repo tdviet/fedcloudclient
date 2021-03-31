@@ -2,21 +2,21 @@
 
 **fedcloudclient** is a command-line client and high-level Python package for
 interaction with EGI Federated Cloud. This package is an extension of the
-[egicli](https://github.com/EGI-Foundation/egicli) for Openstack commands.
+[egicli](https://github.com/EGI-Foundation/egicli) for OpenStack commands.
 
 The aim here was to create a simple client which would allow users to perform
-the various Openstack operations in EGI Federated Cloud. Four modules are
+the various OpenStack operations in EGI Federated Cloud. Four modules are
 included: **fedcloudclient.checkin** for operation with EGI Check-in like
 getting tokens, **fedcloudclient.endpoint** for searching endpoints via GOCDB,
 getting unscoped/scoped token from Keystone, **fedcloudclient.sites** manages
 site configuration and finally **fedcloudclient.openstack** for performing
-Openstack operations.
+OpenStack operations.
 
 A short presentation of the fedcloudclient is available at
 [Tutorial](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing).
 
 The full documentation, including installation, usage and API description is
-available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
+available at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedcloud.eu/).
 
 ## Quick start
 
@@ -53,7 +53,7 @@ available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
   fedcloud token list-vos
   ```
 
-- List the Openstack sites available in EGI Federated Cloud. That may take few
+- List the OpenStack sites available in EGI Federated Cloud. That may take few
   seconds because all site configurations are retrieved from
   [GitHub repository](https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites)
 
@@ -69,15 +69,15 @@ available at [readthedocs.io](https://fedcloudclient.readthedocs.io/).
   fedcloud site save-config
   ```
 
-- Execute an Openstack command, e.g. list images in fedcloud.egi.eu VO on
+- Execute an OpenStack command, e.g. list images in fedcloud.egi.eu VO on
   CYFRONET-CLOUD site (or other combination of site and VO you have access):
 
   ```shell
   fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
   ```
 
-- Execute an Openstack command on all sites, e.g. list VMs in eosc-synergy.eu VO
-  on all Openstack sites in EGI Federated Cloud
+- Execute an OpenStack command on all sites, e.g. list VMs in eosc-synergy.eu VO
+  on all OpenStack sites in EGI Federated Cloud
 
   ```shell
   fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu
@@ -113,7 +113,7 @@ error_code, result = fedcloud_openstack(oidc_access_token,
 See a working example
 [_"demo.py"_](https://github.com/tdviet/fedcloudclient/blob/master/examples/demo.py).
 The documentation of fedcloudclient API is available at
-[readthedocs.io](https://fedcloudclient.readthedocs.io/).
+[https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedcloud.eu/).
 
 ## FAQ
 

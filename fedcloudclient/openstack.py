@@ -1,6 +1,6 @@
 """
 Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing
-Openstack commands on sites
+OpenStack commands on sites
 """
 
 import concurrent.futures
@@ -51,7 +51,7 @@ def fedcloud_openstack_full(
            Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple,
+    :param openstack_command: OpenStack command in tuple,
            e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
@@ -126,7 +126,7 @@ def fedcloud_openstack(
            Passed to openstack client as --os-access-token
     :param site: site ID in GOCDB
     :param vo: VO name
-    :param openstack_command: Openstack command in tuple,
+    :param openstack_command: OpenStack command in tuple,
            e.g. ("image", "list", "--long")
     :param json_output: if result is JSON object or string. Default:True
 
@@ -167,7 +167,7 @@ def print_result(
     first,
 ):
     """
-    Print output from an Openstack command
+    Print output from an OpenStack command
 
     :param site:
     :param vo:
@@ -244,11 +244,11 @@ def openstack(
     openstack_command,
 ):
     """
-    Executing Openstack commands on site and VO
+    Executing OpenStack commands on site and VO
     """
 
     if not check_openstack_client_installation():
-        print('Error: Openstack command-line client "openstack" not found')
+        print('Error: OpenStack command-line client "openstack" not found')
         exit(1)
 
     access_token = get_access_token(
@@ -265,11 +265,11 @@ def openstack(
     else:
         sites = [site]
 
-    # Multi-thread execution of Openstack commands
+    # Multi-thread execution of OpenStack commands
     with concurrent.futures.ThreadPoolExecutor(
         max_workers=__MAX_WORKER_THREAD
     ) as executor:
-        # Start Openstack operation with each site
+        # Start OpenStack operation with each site
         results = {
             executor.submit(
                 fedcloud_openstack_full,
@@ -334,11 +334,11 @@ def openstack_int(
     vo,
 ):
     """
-    Interactive Openstack client on site and VO
+    Interactive OpenStack client on site and VO
     """
 
     if not check_openstack_client_installation():
-        print('Error: Openstack command-line client "openstack" not found')
+        print('Error: OpenStack command-line client "openstack" not found')
         exit(1)
 
     access_token = get_access_token(
@@ -364,6 +364,6 @@ def openstack_int(
     my_env["OS_ACCESS_TOKEN"] = access_token
     my_env["OS_PROJECT_ID"] = project_id
 
-    # Calling Openstack client as subprocess
+    # Calling OpenStack client as subprocess
     # Ignore bandit warning
     subprocess.run(__OPENSTACK_CLIENT, env=my_env)  # nosec

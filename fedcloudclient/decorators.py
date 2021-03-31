@@ -143,7 +143,7 @@ def oidc_params(func):
 
 def openstack_params(func):
     """
-    Decorator for Openstack authentication parameters
+    Decorator for OpenStack authentication parameters
 
     :param func:
     :return:
