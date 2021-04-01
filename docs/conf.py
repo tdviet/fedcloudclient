@@ -49,6 +49,13 @@ exclude_patterns = []
 
 # -- Options for HTML output -------------------------------------------------
 
+html_context = {
+  "display_github": True,
+  "github_user": "tdviet",
+  "github_repo": "fedcloudclient",
+  "github_version": "master/docs/",
+}
+
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
