@@ -30,9 +30,9 @@ author = "Viet Tran"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-  "sphinx.ext.todo",
-  "sphinx.ext.viewcode",
-  "sphinx.ext.autodoc",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.autodoc",
 ]
 
 smartquotes = False
@@ -50,10 +50,10 @@ exclude_patterns = []
 # -- Options for HTML output -------------------------------------------------
 
 html_context = {
-  "display_github": True,
-  "github_user": "tdviet",
-  "github_repo": "fedcloudclient",
-  "github_version": "master/docs/",
+    "display_github": True,
+    "github_user": "tdviet",
+    "github_repo": "fedcloudclient",
+    "github_version": "master/docs/",
 }
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
