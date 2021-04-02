@@ -30,9 +30,9 @@ author = "Viet Tran"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    "sphinx.ext.todo",
-    "sphinx.ext.viewcode",
-    "sphinx.ext.autodoc",
+  "sphinx.ext.todo",
+  "sphinx.ext.viewcode",
+  "sphinx.ext.autodoc",
 ]
 
 smartquotes = False
