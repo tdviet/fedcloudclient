@@ -20,6 +20,7 @@ import pkg_resources
 import yaml
 from fedcloudclient.decorators import site_params, site_vo_params
 from jsonschema import validate
+from typing import List
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
@@ -27,7 +28,7 @@ __REMOTE_CONFIG_FILE = (
 
 __LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
 
-__site_config_data = []
+__site_config_data: List[str] = []
 
 __FILE_SIZE_LIMIT = 1024 * 1024  # Max size for config files
 

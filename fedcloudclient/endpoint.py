@@ -242,6 +242,7 @@ def get_projects_from_sites(access_token, site):
             ]
         )
     return project_list
+
 def get_projects_from_sites_dict(access_token, site):
     """
     Get all projects as a dictionary from sites using access token,
@@ -252,16 +253,16 @@ def get_projects_from_sites_dict(access_token, site):
         unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
         project_list.extend(
             [
-                {   "project_id":       p["id"], 
-                    "name":     p["name"],
-                    "enabled":  p["enabled"],
-                    "site":     ep[0]
+                {
+                    "project_id": p["id"],
+                    "name": p["name"],
+                    "enabled": p["enabled"],
+                    "site": ep[0]
                 }
                 for p in get_projects(os_auth_url, unscoped_token)
             ]
         )
     return project_list
-
 
 
 def get_project_id_from_vo_site(access_token, vo, site):
