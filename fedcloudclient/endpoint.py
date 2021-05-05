@@ -252,7 +252,7 @@ def get_projects_from_sites_dict(access_token, site):
         unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
         project_list.extend(
             [
-                {   "id":       p["id"], 
+                {   "project_id":       p["id"], 
                     "name":     p["name"],
                     "enabled":  p["enabled"],
                     "site":     ep[0]
