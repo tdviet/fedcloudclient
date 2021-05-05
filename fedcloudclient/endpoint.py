@@ -242,6 +242,26 @@ def get_projects_from_sites(access_token, site):
             ]
         )
     return project_list
+def get_projects_from_sites_dict(access_token, site):
+    """
+    Get all projects as a dictionary from sites using access token,
+    """
+    project_list = []
+    for ep in find_endpoint("org.openstack.nova", site=site):
+        os_auth_url = ep[2]
+        unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
+        project_list.extend(
+            [
+                {   "id":       p["id"], 
+                    "name":     p["name"],
+                    "enabled":  p["enabled"],
+                    "site":     ep[0]
+                }
+                for p in get_projects(os_auth_url, unscoped_token)
+            ]
+        )
+    return project_list
+
 
 
 def get_project_id_from_vo_site(access_token, vo, site):
