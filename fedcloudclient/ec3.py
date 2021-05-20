@@ -3,28 +3,14 @@ Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performin
 OpenStack commands on sites
 """
 
-import concurrent.futures
-import json
 import os
 import time
-import subprocess  # nosec Subprocess is required for invoking openstack client
-from distutils.spawn import find_executable
 
 import click
 import jwt
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import (
-    DEFAULT_AUTH_TYPE,
-    DEFAULT_IDENTITY_PROVIDER,
-    DEFAULT_PROTOCOL,
-    openstack_params,
-    auth_file_params,
-)
-from fedcloudclient.sites import (
-    find_endpoint_and_project_id,
-    list_sites,
-    site_vo_params,
-)
+from fedcloudclient.decorators import auth_file_params
+from fedcloudclient.sites import find_endpoint_and_project_id, site_vo_params
 
 EC3_REFRESHTOKEN_TEMPLATE = """
 description refreshtoken (
@@ -92,6 +78,7 @@ configure front (
 
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30
+
 
 @click.group()
 def ec3():
@@ -191,10 +178,7 @@ def init(
 
     if site == "ALL_SITES":
         print("ec3 command cannot be used with ALL_SITES")
-        raise click.Abort() 
-    else:
-        sites = [site]
-
+        raise click.Abort()
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     site_auth = [

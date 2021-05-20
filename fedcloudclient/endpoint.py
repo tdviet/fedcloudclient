@@ -9,19 +9,13 @@ test on sites
 
 import os
 import re
-import time
 from urllib import parse
 
 import click
 import defusedxml.ElementTree as ElementTree
-import jwt
 import requests
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import (
-    auth_file_params,
-    project_id_params,
-    site_params,
-)
+from fedcloudclient.decorators import project_id_params, site_params
 from tabulate import tabulate
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
