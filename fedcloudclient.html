@@ -13,6 +13,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
@@ -176,8 +179,8 @@
 <p>Implementation of &quot;fedcloud token&quot; commands for interactions with EGI Check-in and
 access tokens</p>
 <dl class="py function">
-<dt id="fedcloudclient.checkin.get_access_token">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></code><code class="sig-name descname"><span class="pre">get_access_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_access_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.checkin.get_access_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Getting access token.
 Generate new access token from oidc-agent or refresh token (if given)
 or use existing token</p>
@@ -201,8 +204,8 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.checkin.oidc_discover">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></code><code class="sig-name descname"><span class="pre">oidc_discover</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.oidc_discover" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.checkin.oidc_discover">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.oidc_discover" title="Permalink to this definition">¶</a></dt>
 <dd><p>Discover oidc endpoints</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -215,8 +218,8 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.checkin.refresh_access_token">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></code><code class="sig-name descname"><span class="pre">refresh_access_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#refresh_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.refresh_access_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.checkin.refresh_access_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">refresh_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#refresh_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.refresh_access_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Retrieve access token in plain text (string)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,8 +237,8 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.checkin.token_list_vos">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></code><code class="sig-name descname"><span class="pre">token_list_vos</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_list_vos" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.checkin.token_list_vos">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_list_vos" title="Permalink to this definition">¶</a></dt>
 <dd><p>List VO memberships in EGI Check-in</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -251,8 +254,8 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.checkin.token_refresh">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></code><code class="sig-name descname"><span class="pre">token_refresh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_refresh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.checkin.token_refresh">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">token_refresh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_refresh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for retrieving JSON object with access token</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -278,8 +281,8 @@ local disk, the commands try to get site information directly from GOCDB
 (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe
 test on sites</p>
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.find_endpoint">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">find_endpoint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">production</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#find_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.find_endpoint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.find_endpoint">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">find_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">production</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#find_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.find_endpoint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searching GOCDB for endpoints according to service types and status</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -297,45 +300,45 @@ test on sites</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_keystone_url">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_keystone_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_keystone_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_keystone_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_keystone_url">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_keystone_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_keystone_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_keystone_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Helper function for fixing keystone URL</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_project_id_from_vo_site">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_project_id_from_vo_site</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_project_id_from_vo_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_project_id_from_vo_site" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_project_id_from_vo_site">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_project_id_from_vo_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_project_id_from_vo_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_project_id_from_vo_site" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deprecated in favor of new functions in sites.py</p>
 <p>Get project ID from site ID and VO name</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_projects">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_projects</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unscoped_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unscoped_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of projects from unscoped token</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_projects_from_sites">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_projects_from_sites</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all projects from sites using access token</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_projects_from_sites_dict">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_projects_from_sites_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_dict" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites_dict">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_dict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all projects as a dictionary from sites using access token,</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_scoped_token">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_scoped_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_scoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_scoped_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_scoped_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_scoped_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_scoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_scoped_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a scoped token, trying various protocol names if needed</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_sites">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_sites</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_sites" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_sites">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_sites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_sites" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get list of sites (using GOCDB instead of site configuration)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -345,14 +348,14 @@ test on sites</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.get_unscoped_token">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">get_unscoped_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_unscoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_unscoped_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_unscoped_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_unscoped_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_unscoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_unscoped_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get an unscoped token, trying various protocol names if needed</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.endpoint.retrieve_unscoped_token">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></code><code class="sig-name descname"><span class="pre">retrieve_unscoped_token</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'openid'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#retrieve_unscoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.retrieve_unscoped_token" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.retrieve_unscoped_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">retrieve_unscoped_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">protocol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'openid'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#retrieve_unscoped_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.retrieve_unscoped_token" title="Permalink to this definition">¶</a></dt>
 <dd><p>Request an unscoped token</p>
 </dd></dl>
 
@@ -368,8 +371,8 @@ The advantage of having local site configurations, beside faster loading, is to 
 users ability to make customizations, e.g. add additional VOs, remove sites they
 do not have access, and so on.</p>
 <dl class="py function">
-<dt id="fedcloudclient.sites.find_endpoint_and_project_id">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">find_endpoint_and_project_id</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_endpoint_and_project_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_endpoint_and_project_id" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.find_endpoint_and_project_id">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">find_endpoint_and_project_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_endpoint_and_project_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_endpoint_and_project_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Keystone endpoint and project ID from site name and VO according
 to site configuration</p>
 <dl class="field-list simple">
@@ -387,8 +390,8 @@ otherwise None, None, None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.find_site_data">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">find_site_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_site_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_site_data" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.find_site_data">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">find_site_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_site_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_site_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return configuration of the correspondent site with site_name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -401,8 +404,8 @@ otherwise None, None, None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.list_sites">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">list_sites</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#list_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.list_sites" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.list_sites">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">list_sites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#list_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.list_sites" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of all sites IDs in site configurations</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -412,8 +415,8 @@ otherwise None, None, None</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.read_default_site_config">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">read_default_site_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_default_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_default_site_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.read_default_site_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">read_default_site_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_default_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_default_site_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read default site configurations from GitHub.  Storing
 site configurations in a global variable, that will be used by other functions</p>
 <dl class="field-list simple">
@@ -424,8 +427,8 @@ site configurations in a global variable, that will be used by other functions</
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.read_local_site_config">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">read_local_site_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_local_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_local_site_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.read_local_site_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">read_local_site_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_local_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_local_site_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read site configurations from local directory specified in config_dir. Storing
 site configurations in global variable, that will be used by other functions</p>
 <dl class="field-list simple">
@@ -439,8 +442,8 @@ site configurations in global variable, that will be used by other functions</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.read_site_config">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">read_site_config</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_site_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.read_site_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">read_site_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_site_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read site configurations from local config dir if exist, otherwise from default
 GitHub location. Storing site configurations in global variable, that will be
 used by other functions. Call read_local_site_config()
@@ -453,8 +456,8 @@ or read_default_site_config()</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.read_site_schema">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">read_site_schema</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_site_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_site_schema" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.read_site_schema">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">read_site_schema</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_site_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_site_schema" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read schema.json for validating site configuration</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -464,8 +467,8 @@ or read_default_site_config()</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.safe_read_yaml_from_url">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">safe_read_yaml_from_url</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#safe_read_yaml_from_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.safe_read_yaml_from_url" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.safe_read_yaml_from_url">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">safe_read_yaml_from_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_length</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#safe_read_yaml_from_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.safe_read_yaml_from_url" title="Permalink to this definition">¶</a></dt>
 <dd><p>Safe reading from URL. Check URL and size before reading</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -481,8 +484,8 @@ or read_default_site_config()</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.sites.save_site_config">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></code><code class="sig-name descname"><span class="pre">save_site_config</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#save_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.save_site_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.sites.save_site_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">save_site_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#save_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.save_site_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save site configs to local directory specified in config_dir.
 Overwrite local configs if exist</p>
 <dl class="field-list simple">
@@ -501,8 +504,8 @@ Overwrite local configs if exist</p>
 <p>Implementation of &quot;fedcloud openstack&quot; or &quot;fedcloud openstack-int&quot; for performing
 OpenStack commands on sites</p>
 <dl class="py function">
-<dt id="fedcloudclient.openstack.check_openstack_client_installation">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></code><code class="sig-name descname"><span class="pre">check_openstack_client_installation</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#check_openstack_client_installation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.check_openstack_client_installation" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.openstack.check_openstack_client_installation">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">check_openstack_client_installation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#check_openstack_client_installation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.check_openstack_client_installation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if openstack command-line client is installed and available via $PATH</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -512,8 +515,8 @@ OpenStack commands on sites</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.openstack.fedcloud_openstack">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></code><code class="sig-name descname"><span class="pre">fedcloud_openstack</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.openstack.fedcloud_openstack">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">fedcloud_openstack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simplified version of fedcloud_openstack_full() function using
 default EGI setting for identity provider and protocols
 Call openstack client with default options for EGI Check-in</p>
@@ -536,8 +539,8 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.openstack.fedcloud_openstack_full">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></code><code class="sig-name descname"><span class="pre">fedcloud_openstack_full</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_protocol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkin_identity_provider</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack_full" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.openstack.fedcloud_openstack_full">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">fedcloud_openstack_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_protocol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkin_identity_provider</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack_full" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calling openstack client with full options specified, including support
 for other identity providers and protocols</p>
 <dl class="field-list simple">
@@ -565,8 +568,8 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="fedcloudclient.openstack.print_result">
-<code class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></code><code class="sig-name descname"><span class="pre">print_result</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing_vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#print_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.print_result" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.openstack.print_result">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">print_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing_vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#print_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.print_result" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print output from an OpenStack command</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
