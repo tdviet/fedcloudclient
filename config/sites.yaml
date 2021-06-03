@@ -12,7 +12,6 @@
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/GSI-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/IFCA-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/IISAS-FedCloud-cloud.yaml"
-- "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/IISAS-GPUCloud.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/IN2P3-IRES.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/INFN-CATANIA-STACK.yaml"
 - "https://raw.githubusercontent.com/EGI-Foundation/fedcloud-catchall-operations/main/sites/INFN-CLOUD-BARI.yaml"
