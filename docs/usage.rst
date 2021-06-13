@@ -171,15 +171,15 @@ fedcloud ec3 commands
 via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.
 
 * **"fedcloud ec3 init --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat --template-dir
-  ./templates"** : Generate authorization file (by default "auth.dat") and template file (by default
-  "./templates/refresh.radl" for EC3 client.
+  ./templates"** : Generate authorization file (by default *auth.dat*) and template file (by default
+  *./templates/refresh.radl*) for EC3 client.
 
 ::
 
     $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
 
 * **"fedcloud ec3 refresh --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat"** :
-  Refresh the access token stored in authorization file (by default "auth.dat").
+  Refresh the access token stored in authorization file (by default *auth.dat*).
 
 ::
 
