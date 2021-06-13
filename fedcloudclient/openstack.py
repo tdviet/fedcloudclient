@@ -190,7 +190,8 @@ def print_result(
     command = " ".join(command)
     if not json_output:
         if not ignore_missing_vo or (error_code != 11):
-            print("Site: %s, VO: %s, command: %s" % (site, vo, command), file=sys.stderr)
+            print("Site: %s, VO: %s, command: %s" % (site, vo, command),
+                  file=sys.stderr)
         if exc_msg:
             print("%s generated an exception: %s" % (site, exc_msg))
             print("Error message: %s" % result)
