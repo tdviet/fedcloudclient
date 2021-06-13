@@ -98,6 +98,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-help-command">fedcloud --help command</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-token-commands">fedcloud token commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-endpoint-commands">fedcloud endpoint commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-ec3-commands">fedcloud ec3 commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-site-commands">fedcloud site commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-openstack-commands">fedcloud openstack commands</a></li>
 </ul>
@@ -356,6 +357,26 @@ export OS_AUTH_TYPE=&quot;v3oidcaccesstoken&quot;
 export OS_IDENTITY_PROVIDER=&quot;egi.eu&quot;
 export OS_PROTOCOL=&quot;openid&quot;
 export OS_ACCESS_TOKEN=&quot;...&quot;
+</pre></div>
+</div>
+</div>
+<div class="section" id="fedcloud-ec3-commands">
+<h2>fedcloud ec3 commands<a class="headerlink" href="#fedcloud-ec3-commands" title="Permalink to this headline">¶</a></h2>
+<p><strong>&quot;fedcloud ec3&quot;</strong> commands are helper commands for deploying EC3 (Elastic Cloud Compute Cluster) in Cloud
+via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud ec3 init --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --auth-file auth.dat --template-dir
+./templates&quot;</strong> : Generate authorization file (by default &quot;auth.dat&quot;) and template file (by default
+&quot;./templates/refresh.radl&quot; for EC3 client.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud ec3 refresh --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --auth-file auth.dat&quot;</strong> :
+Refresh the access token stored in authorization file (by default &quot;auth.dat&quot;).</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
 </pre></div>
 </div>
 </div>

@@ -20,9 +20,9 @@ the command. For example:
 
     $ fedcloud openstack server list --vo eosc-synergy.eu --site ALL_SITES
 
-Four modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like
+Five modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like
 getting tokens, **fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from
-OpenStack keystone, **fedcloudclient.sites** manages site configurations and finally **fedcloudclient.openstack** for
-performing OpenStack operations.
+OpenStack keystone, **fedcloudclient.sites** manages site configurations, **fedcloudclient.openstack** for
+performing OpenStack operations, and finally **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
 
 
