@@ -6,8 +6,8 @@ OpenStack commands on sites
 import concurrent.futures
 import json
 import os
-import sys
 import subprocess  # nosec Subprocess is required for invoking openstack client
+import sys
 from distutils.spawn import find_executable
 
 import click
