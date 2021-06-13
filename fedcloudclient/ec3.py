@@ -1,6 +1,6 @@
 """
-Implementation of "fedcloud openstack" or "fedcloud openstack-int" for performing
-OpenStack commands on sites
+Implementation of ec3 commands for deploying EC3 (Elastic Cloud Computing
+Cluster) in Cloud via Infrastructure Manager
 """
 
 import os
@@ -100,6 +100,9 @@ def refresh(
     oidc_agent_account,
     auth_file,
 ):
+    """
+    Refreshing token in EC3 authorization file
+    """
     # Get the right endpoint from GOCDB
     auth_file_contents = []
     with open(auth_file, "r") as f:
@@ -161,6 +164,9 @@ def init(
     template_dir,
     force,
 ):
+    """
+    Creating EC3 authorization file and template
+    """
     if os.path.exists(auth_file) and not force:
         print(
             "Auth file already exists, not replacing unless --force option is included"
