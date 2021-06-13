@@ -6,6 +6,7 @@ OpenStack commands on sites
 import concurrent.futures
 import json
 import os
+import sys
 import subprocess  # nosec Subprocess is required for invoking openstack client
 from distutils.spawn import find_executable
 
@@ -188,18 +189,16 @@ def print_result(
 
     command = " ".join(command)
     if not json_output:
+        if not ignore_missing_vo or (error_code != 11):
+            print("Site: %s, VO: %s, command: %s" % (site, vo, command), file=sys.stderr)
         if exc_msg:
-            print("Site: %s, VO: %s, command: %s" % (site, vo, command))
             print("%s generated an exception: %s" % (site, exc_msg))
             print("Error message: %s" % result)
-
         elif error_code != 0:
             if not ignore_missing_vo or (error_code != 11):
-                print("Site: %s, VO: %s, command: %s" % (site, vo, command))
                 print("Error code: ", error_code)
                 print("Error message: ", result)
         else:
-            print("Site: %s, VO: %s, command: %s" % (site, vo, command))
             print(result)
     else:
         site_data = {
