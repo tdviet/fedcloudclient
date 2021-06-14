@@ -66,7 +66,8 @@ For examples, if users want to select flavors with 2 CPUs:
     ]
 
     # The following jq command selects flavors with VCPUs=2 and print their names
-    $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
+    $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
+    jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
     m1.medium
 
 Note that only OpenStack commands that have outputs can be used with *--json-output*. If using the parameters with
