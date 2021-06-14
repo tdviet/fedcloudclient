@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using fedcloud client for development" href="development.html" />
+    <link rel="next" title="Using fedcloudclient in Python" href="development.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
 </head>
 
@@ -103,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-openstack-commands">fedcloud openstack commands</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloud client for development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
 </ul>
@@ -434,8 +434,8 @@ vos:
 <li><p><strong>&quot;fedcloud site show-project-id --site &lt;SITE&gt; --vo &lt;VO&gt;&quot;</strong>: show the project ID of the VO on the site.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
- Endpoint : https://cloud.ui.savba.sk:5000/v3/
- Project ID : 51f736d36ce34b9ebdf196cfcabd24ee
+export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
+export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 </pre></div>
 </div>
 </div>
@@ -491,7 +491,7 @@ be used for successive commands without authentication via CheckIn again.</p></l
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloud client for development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloudclient in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
