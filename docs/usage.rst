@@ -246,8 +246,9 @@ VOs and so on.
 ::
 
     $ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
-     Endpoint : https://cloud.ui.savba.sk:5000/v3/
-     Project ID : 51f736d36ce34b9ebdf196cfcabd24ee
+    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+
 
 
 fedcloud openstack commands

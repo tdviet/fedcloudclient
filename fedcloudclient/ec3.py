@@ -76,10 +76,6 @@ configure front (
 """
 
 
-__OPENSTACK_CLIENT = "openstack"
-__MAX_WORKER_THREAD = 30
-
-
 @click.group()
 def ec3():
     """
