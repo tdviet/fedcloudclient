@@ -75,6 +75,7 @@ configure front (
 )
 """
 
+
 @click.group()
 def ec3():
     """
