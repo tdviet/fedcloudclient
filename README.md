@@ -78,7 +78,7 @@ available at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedclo
   ```
 
 - Save the site configuration to local machine at
-  `\~/.config/fedcloud/site-config/` to speed up the client's start in the next
+  `~/.config/fedcloud/site-config/` to speed up the client's start in the next
   time:
 
   ```shell
