@@ -182,10 +182,10 @@ or processing outputs from OpenStack commands.</p>
 export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
 export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 
-$ # This command will set environment variables
+# This command will set environment variables
 $ eval $(fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu)
 
-$ # Check the value of the variable
+# Check the value of the variable
 $ echo $OS_AUTH_URL
 https://cloud.ui.savba.sk:5000/v3/
 </pre></div>
@@ -228,9 +228,9 @@ For examples, if users want to select flavors with 2 CPUs:</p>
 }
 ]
 
-$ # The following jq command selects flavors with VCPUs=2 and print their names
+# The following jq command selects flavors with VCPUs=2 and print their names
 $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
-jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
+    jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
 m1.medium
 </pre></div>
 </div>
