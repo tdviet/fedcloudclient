@@ -173,11 +173,11 @@
   <div class="section" id="using-fedcloudclient-in-scripts">
 <h1>Using fedcloudclient in scripts<a class="headerlink" href="#using-fedcloudclient-in-scripts" title="Permalink to this headline">¶</a></h1>
 <p>fedcloudclient can be used in scripts for simple automation, either for setting environment variables for other tools
-or processing output from OpenStack commands.</p>
+or processing outputs from OpenStack commands.</p>
 <div class="section" id="setting-environment-variables-for-external-tools">
 <h2>Setting environment variables for external tools<a class="headerlink" href="#setting-environment-variables-for-external-tools" title="Permalink to this headline">¶</a></h2>
-<p>Outputs from fedcloud commands for setting environment variables are already in the forms <em>export VAR=VALUE</em>. Simple
-eval command in script can be used for setting environment variables for external tools:</p>
+<p>Outputs from fedcloud commands for setting environment variables are already in the forms <em>&quot;export VAR=VALUE&quot;</em>. Simple
+<em>eval</em> command in scripts can be used for setting environment variables for external tools:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
 export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
 export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
@@ -185,7 +185,7 @@ export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 $ # This command will set environment variables
 $ eval $(fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu)
 
-$ # Check the value of variable
+$ # Check the value of the variable
 $ echo $OS_AUTH_URL
 https://cloud.ui.savba.sk:5000/v3/
 </pre></div>
@@ -228,13 +228,14 @@ For examples, if users want to select flavors with 2 CPUs:</p>
 }
 ]
 
-# The following jq command selects flavors with VCPUs=2 and print their names
-$ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
+$ # The following jq command selects flavors with VCPUs=2 and print their names
+$ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
+jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
 m1.medium
 </pre></div>
 </div>
-<p>Note that only OpenStack commands that have outputs can be used with <em>--json-output</em>. If using the parameters with
-commands without outputs (e.g. setting properties), that will generate errors of unsupported parameters.</p>
+<p>Note that only OpenStack commands that have outputs can be used with <em>--json-output</em>. Using the parameter with
+commands without outputs (e.g. setting properties) will generate errors of unsupported parameters.</p>
 </div>
 </div>
 
