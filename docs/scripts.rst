@@ -16,10 +16,10 @@ Outputs from fedcloud commands for setting environment variables are already in 
     export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
     export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
 
-    $ # This command will set environment variables
+    # This command will set environment variables
     $ eval $(fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu)
 
-    $ # Check the value of the variable
+    # Check the value of the variable
     $ echo $OS_AUTH_URL
     https://cloud.ui.savba.sk:5000/v3/
 
@@ -65,9 +65,9 @@ For examples, if users want to select flavors with 2 CPUs:
     }
     ]
 
-    $ # The following jq command selects flavors with VCPUs=2 and print their names
+    # The following jq command selects flavors with VCPUs=2 and print their names
     $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
-    jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
+        jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
     m1.medium
 
 Note that only OpenStack commands that have outputs can be used with *--json-output*. Using the parameter with

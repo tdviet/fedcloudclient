@@ -4,19 +4,33 @@
 
 
 **fedcloudclient** is a command-line client and high-level Python package for
-interaction with EGI Federated Cloud. This package is an extension of the
-[egicli](https://github.com/EGI-Foundation/egicli) for OpenStack commands.
+interaction with EGI Federated Cloud. The aim here was to create a simple client
+which would allow users to perform the various OpenStack operations in EGI
+Federated Cloud. Performing any OpenStack command on any site requires only
+three options: site, VO and the command. For example:
 
-The aim here was to create a simple client which would allow users to perform
-the various OpenStack operations in EGI Federated Cloud. Four modules are
+- Listing images in fedcloud.egi.eu VO on CYFRONET-CLOUD site:
+
+  ```shell
+  fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
+  ```
+  
+- Listing all VMs in eosc-synergy.eu VO on all sites in EGI Federated Cloud
+
+   ```shell
+  fedcloud openstack server list --vo eosc-synergy.eu --site ALL_SITES
+  ```
+
+Five modules are
 included: **fedcloudclient.checkin** for operation with EGI Check-in like
 getting tokens, **fedcloudclient.endpoint** for searching endpoints via GOCDB,
-getting unscoped/scoped token from Keystone, **fedcloudclient.sites** manages
-site configuration and finally **fedcloudclient.openstack** for performing
-OpenStack operations.
+getting unscoped/scoped token from OpenStack keystone, **fedcloudclient.sites** manages
+site configuration, **fedcloudclient.openstack** for performing
+OpenStack operations, and finally **fedcloudclient.ec3** for deploying elastic computing
+clusters in Cloud.
 
-A short presentation of the fedcloudclient is available at
-[Tutorial](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing).
+A short tutorial of the fedcloudclient is available in this
+[presentation](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing).
 
 The full documentation, including installation, usage and API description is
 available at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedcloud.eu/).
@@ -65,7 +79,7 @@ available at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedclo
   ```
 
 - Save the site configuration to local machine at
-  `\~/.config/fedcloud/site-config/` to speed up the client's start in the next
+  `~/.config/fedcloud/site-config/` to speed up the client's start in the next
   time:
 
   ```shell
@@ -149,7 +163,7 @@ The documentation of fedcloudclient API is available at
    in default distribution, so `fedcloud` client cannot verify them. Follow this
    [instruction](https://github.com/tdviet/python-requests-bundle-certs/blob/main/docs/Install_certificates.md)
    to install
-   [EGI Core Trust Anchor](http://repository.egi.eu/category/production/cas/)
+   [EGI Core Trust Anchor](https://repository.egi.eu/sw/production/cas/)
    and add certificates to Python request certificate bundle.
 
    In the case of using virtual environment for quick test, you can download and
