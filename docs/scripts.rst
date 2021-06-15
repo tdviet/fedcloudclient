@@ -2,13 +2,13 @@ Using fedcloudclient in scripts
 ===============================
 
 fedcloudclient can be used in scripts for simple automation, either for setting environment variables for other tools
-or processing output from OpenStack commands.
+or processing outputs from OpenStack commands.
 
 Setting environment variables for external tools
 ************************************************
 
-Outputs from fedcloud commands for setting environment variables are already in the forms *export VAR=VALUE*. Simple
-eval command in script can be used for setting environment variables for external tools:
+Outputs from fedcloud commands for setting environment variables are already in the forms *"export VAR=VALUE"*. Simple
+*eval* command in scripts can be used for setting environment variables for external tools:
 
 ::
 
@@ -19,7 +19,7 @@ eval command in script can be used for setting environment variables for externa
     $ # This command will set environment variables
     $ eval $(fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu)
 
-    $ # Check the value of variable
+    $ # Check the value of the variable
     $ echo $OS_AUTH_URL
     https://cloud.ui.savba.sk:5000/v3/
 
@@ -65,11 +65,12 @@ For examples, if users want to select flavors with 2 CPUs:
     }
     ]
 
-    # The following jq command selects flavors with VCPUs=2 and print their names
-    $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
+    $ # The following jq command selects flavors with VCPUs=2 and print their names
+    $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
+    jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
     m1.medium
 
-Note that only OpenStack commands that have outputs can be used with *--json-output*. If using the parameters with
-commands without outputs (e.g. setting properties), that will generate errors of unsupported parameters.
+Note that only OpenStack commands that have outputs can be used with *--json-output*. Using the parameter with
+commands without outputs (e.g. setting properties) will generate errors of unsupported parameters.
 
 
