@@ -48,6 +48,13 @@
       "description": "The URL of keystone endpoint (should match GOCDB entry).",
       "default": ""
     },
+    "region": {
+      "$id": "#/properties/region",
+      "type": "string",
+      "title": "OpenStack region to use",
+      "description": "OpenStack region to use if not the default one.",
+      "default": ""
+    },
     "protocol": {
       "$id": "#/properties/protocol",
       "type": "string",
