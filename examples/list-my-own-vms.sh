@@ -14,9 +14,9 @@ cat << EOF
 Usage: ${0##*/} [-h] --site  <SITE> --vo <VO>
 List all VMs owned by the user in the given VO/site
 Arguments:
-	  -h, --help, help  : Display this help message and exit
-	  --site <SITE>     :	Site name
-	  --vo <VO>         : VO name
+    -h, --help, help  : Display this help message and exit
+    --site <SITE>     : Site name
+    --vo <VO>         : VO name
 EOF
 }
 
