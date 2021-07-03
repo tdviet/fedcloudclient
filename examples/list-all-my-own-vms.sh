@@ -56,8 +56,10 @@ if [[ $VO == "UNKNOWN" ]]; then
     exit 1
 fi
 
+# Get list of all sites
 SITES=$(fedcloud site list)
 
+# and call list-my-own-vms.sh script for each site in parallel
 for SITE in $SITES; do
   ./list-my-own-vms.sh --site "$SITE" --vo "$VO" &
 done

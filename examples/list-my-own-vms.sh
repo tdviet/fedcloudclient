@@ -77,8 +77,9 @@ fi
 # shellcheck disable=SC2086
 LIST_ALL_VM=$(fedcloud openstack server list --site $SITE --vo $VO $COLUMNS -c "User ID" --json-output)
 
+# for usability, ignore the site and print nothing if some errors occur in openstack commands,
+# mostly because the VO is not supported on the site
 error_code=$(echo "$LIST_ALL_VM" | jq -r '.[]."Error code"')
-
 if [ "$error_code" != "0" ]; then
   exit 0
 fi
