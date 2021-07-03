@@ -66,17 +66,19 @@ if [[ $SITE == "UNKNOWN" || $VO == "UNKNOWN" ]]; then
     exit 1
 fi
 
-if [ $SITE == "ALL_SITES" ]; then
+if [ "$SITE" == "ALL_SITES" ]; then
     echo "Error: Due to different local user IDs at different sites, ALL_SITES operation is not supported."
     exit 1
 fi
 
 
 # List all VMs in the VO on the site in JSON format
+# shellcheck disable=SC2086
 LIST_ALL_VM=$(fedcloud openstack server list --site $SITE --vo $VO $COLUMNS -c "User ID" --json-output)
 
 # Get local User ID on the site
-USER_ID=$(fedcloud openstack token issue -c user_id -f value --site $SITE --vo $VO 2> /dev/null)
+USER_ID=$(fedcloud openstack token issue -c user_id -f value --site "$SITE" --vo "$VO" 2> /dev/null)
 
 # Select only VMs with the User ID
+# shellcheck disable=SC2086
 echo $LIST_ALL_VM | jq -r  '.[].Result | map(select(."User ID" == "'$USER_ID'")) | .'
