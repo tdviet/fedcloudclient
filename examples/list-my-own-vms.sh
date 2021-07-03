@@ -14,9 +14,9 @@ cat << EOF
 Usage: ${0##*/} [-h] --site  <SITE> --vo <VO>
 List all VMs owned by the user in the given VO/site
 Arguments:
-	-h, --help, help		Display this help message and exit
-	--site SITE :	Site name
-	--vo VO : VO name
+	  -h, --help, help  : Display this help message and exit
+	  --site <SITE>     :	Site name
+	  --vo <VO>         : VO name
 EOF
 }
 
@@ -77,21 +77,23 @@ fi
 # shellcheck disable=SC2086
 LIST_ALL_VM=$(fedcloud openstack server list --site $SITE --vo $VO $COLUMNS -c "User ID" --json-output)
 
-# for usability, ignore the site and print nothing if some errors occur in openstack commands,
+# For cleanliness of outputs, ignore the site if some errors occur in openstack commands,
 # mostly because the VO is not supported on the site
 error_code=$(echo "$LIST_ALL_VM" | jq -r '.[]."Error code"')
 if [ "$error_code" != "0" ]; then
-  exit 0
+    exit 0
 fi
 
 # Get local User ID on the site
 USER_ID=$(fedcloud openstack token issue -c user_id -f value --site "$SITE" --vo "$VO" 2> /dev/null)
 
-# Select only VMs with the User ID
+# Select only VMs with the User ID and store whole JSON in output
+# For printing outputs in other format, just change the last part of jq outputs in the command bellow
+# eg. for printing only VM name:  jq -r  '.[].Result | map(select(."User ID" == "'$USER_ID'")) | .[].Name')
 # shellcheck disable=SC2086
 LIST_OWN_VM=$(echo $LIST_ALL_VM | jq -r  '.[].Result | map(select(."User ID" == "'$USER_ID'")) | .')
 
-# Only print non-empty list
+# Only print non-empty list for cleaner outputs
 if [ "$LIST_OWN_VM" != "[]" ]; then
-  printf "List of VMs on site %s:\n%s\n" "$SITE" "$LIST_OWN_VM"
+    printf "List of VMs on site %s:\n%s\n" "$SITE" "$LIST_OWN_VM"
 fi

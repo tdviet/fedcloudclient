@@ -14,8 +14,8 @@ cat << EOF
 Usage: ${0##*/} [-h] --vo <VO>
 List all VMs owned by the user in the given VO on all sites in EGI Cloud federation
 Arguments:
-	-h, --help, help		Display this help message and exit
-	--vo VO : VO name
+    -h, --help, help  : Display this help message and exit
+    --vo <VO>         : VO name
 EOF
 }
 
@@ -61,7 +61,6 @@ SITES=$(fedcloud site list)
 
 # and call list-my-own-vms.sh script for each site in parallel
 for SITE in $SITES; do
-  ./list-my-own-vms.sh --site "$SITE" --vo "$VO" &
+    list-my-own-vms.sh --site "$SITE" --vo "$VO" &
 done
 wait
-
