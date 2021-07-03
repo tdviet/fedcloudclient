@@ -27,6 +27,8 @@ __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 )
 
+# ALL FILES in this site-config directory WILL BE DELETED  at every execution
+# of "fedcloud site save-config" command. Do not change it to a common directory
 __LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
 
 __site_config_data: List[dict] = []
