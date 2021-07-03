@@ -6,7 +6,7 @@
 # either via OIDC_ACCESS_TOKEN or OIDC_AGENT_ACCOUNT
 # See https://fedcloudclient.fedcloud.eu/quickstart.html for more information
 
-# Usage: list-own-vm.sh --site <SITE> --vo <VO>
+# Usage: list-my-own-vms.sh --site <SITE> --vo <VO>
 
 # Usage info
 show_help() {
@@ -49,7 +49,8 @@ case $key in
     shift # past argument
     ;;
     *)
-    echo "Invalid argument: $key"
+    echo "Error: Invalid argument: $key"
+    show_help
     exit 1
     ;;
 esac
@@ -75,6 +76,12 @@ fi
 # List all VMs in the VO on the site in JSON format
 # shellcheck disable=SC2086
 LIST_ALL_VM=$(fedcloud openstack server list --site $SITE --vo $VO $COLUMNS -c "User ID" --json-output)
+
+error_code=$(echo "$LIST_ALL_VM" | jq -r '.[]."Error code"')
+
+if [ "$error_code" != "0" ]; then
+  exit 0
+fi
 
 # Get local User ID on the site
 USER_ID=$(fedcloud openstack token issue -c user_id -f value --site "$SITE" --vo "$VO" 2> /dev/null)
