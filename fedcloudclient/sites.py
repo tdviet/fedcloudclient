@@ -12,6 +12,7 @@ do not have access, and so on.
 
 import builtins
 import json
+import shutil
 from pathlib import Path
 from typing import List
 from urllib.request import Request, urlopen
@@ -159,6 +160,16 @@ def save_site_config(config_dir):
             yaml.dump(site_info, f)
 
 
+def delete_site_config(config_dir):
+    """
+    Delete site configs to local directory specified in config_dir.
+
+    :param config_dir: path to directory containing site configuration
+    :return: None
+    """
+    shutil.rmtree(config_dir, ignore_errors=True)
+
+
 def list_sites():
     """
     List of all sites IDs in site configurations
@@ -271,6 +282,7 @@ def save_config():
     read_default_site_config()
     config_dir = Path.home() / __LOCAL_CONFIG_DIR
     print("Saving site configs to directory %s" % config_dir)
+    delete_site_config(config_dir)
     save_site_config(config_dir)
 
 
