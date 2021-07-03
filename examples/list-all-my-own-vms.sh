@@ -59,6 +59,7 @@ fi
 SITES=$(fedcloud site list)
 
 for SITE in $SITES; do
-  echo "Checking site $SITE"
-  ./list-my-own-vms.sh --site "$SITE" --vo "$VO"
+  ./list-my-own-vms.sh --site "$SITE" --vo "$VO" &
 done
+wait
+

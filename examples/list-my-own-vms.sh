@@ -88,4 +88,9 @@ USER_ID=$(fedcloud openstack token issue -c user_id -f value --site "$SITE" --vo
 
 # Select only VMs with the User ID
 # shellcheck disable=SC2086
-echo $LIST_ALL_VM | jq -r  '.[].Result | map(select(."User ID" == "'$USER_ID'")) | .'
+LIST_OWN_VM=$(echo $LIST_ALL_VM | jq -r  '.[].Result | map(select(."User ID" == "'$USER_ID'")) | .')
+
+# Only print non-empty list
+if [ "$LIST_OWN_VM" != "[]" ]; then
+  printf "List of VMs on site %s:\n%s\n" "$SITE" "$LIST_OWN_VM"
+fi
