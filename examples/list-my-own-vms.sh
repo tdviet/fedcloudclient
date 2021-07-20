@@ -46,7 +46,6 @@ case $key in
     -h|--help|help)
     show_help
     exit 0
-    shift # past argument
     ;;
     *)
     echo "Error: Invalid argument: $key"
