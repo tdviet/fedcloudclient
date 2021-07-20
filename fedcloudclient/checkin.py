@@ -170,12 +170,12 @@ def token_list_vos(oidc_access_token, oidc_url):
     )
 
     r.raise_for_status()
-    vos = []
+    vos = set()
     m = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
     for claim in r.json().get("eduperson_entitlement", []):
         vo = m.match(claim)
         if vo:
-            vos.append(vo.groups()[0])
+            vos.add(vo.groups()[0])
     return sorted(vos)
 
 
