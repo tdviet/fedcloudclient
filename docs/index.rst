@@ -30,6 +30,7 @@ Welcome to fedcloudclient's documentation!
    scripts
    fedcloudclient
    FAQ
+   cheat
 
 
 
