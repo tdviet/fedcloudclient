@@ -178,13 +178,13 @@
 <div class="section" id="local-install-via-pip3">
 <h2>Local install via pip3<a class="headerlink" href="#local-install-via-pip3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><p>Creating Python virtual environment:</p></li>
+<li><p>Create a Python virtual environment:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m venv env
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Activate virtual environment</p></li>
+<li><p>Activate the virtual environment</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source env/bin/activate
 </pre></div>
@@ -251,13 +251,13 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Print only selected values for scripting</p></li>
+<li><p>Print only selected values (for scripting):</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export OS_TOKEN=$(fedcloud openstack --site CESGA --vo vo.access.egi.eu token issue -c id -f value)
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>All-sites commands with full JSON output</p></li>
+<li><p>All-sites commands with full JSON output:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --site ALL_SITES --vo eosc-synergy.eu --json-output
 </pre></div>
@@ -273,13 +273,19 @@ jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>Check GPU properties of flavors:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu -f yaml
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>Search images with appliance title in AppDB:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --property &quot;dc:title&quot;=&quot;Image for EGI Docker [Ubuntu/18.04/VirtualBox]&quot; --site CESNET-MCC  --vo eosc-synergy.eu
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>List all my own VMs</p></li>
+<li><p>List all my own VMs:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$  list-all-my-own-vms.sh --vo fedcloud.egi.eu
 </pre></div>
