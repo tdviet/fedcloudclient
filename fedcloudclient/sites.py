@@ -20,13 +20,18 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
-from fedcloudclient.decorators import site_params, site_vo_params
+from fedcloudclient.decorators import (
+    DEFAULT_PROTOCOL,
+    site_params,
+    site_vo_params,
+)
 from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
 )
 
+# WARNING:
 # ALL FILES in this site-config directory WILL BE DELETED  at every execution
 # of "fedcloud site save-config" command. Do not change it to a common directory
 __LOCAL_CONFIG_DIR = ".config/fedcloud/site-config/"
@@ -296,3 +301,26 @@ def list():
     read_site_config()
     for site_info in __site_config_data:
         print(site_info["gocdb"])
+
+
+@site.command()
+@site_vo_params
+def env(site, vo):
+    """
+    Generating OpenStack environment variables for site and VO
+    Does not set OS token, need to set separately, e.g. via oidc-token command
+    """
+    endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
+    if endpoint:
+        if protocol is None:
+            protocol = DEFAULT_PROTOCOL
+        print('export OS_AUTH_URL="%s"' % endpoint)
+        print('export OS_AUTH_TYPE="v3oidcaccesstoken"')
+        print('export OS_IDENTITY_PROVIDER="egi.eu"')
+        print('export OS_PROTOCOL="%s"' % protocol)
+        print('export OS_PROJECT_ID="%s"' % project_id)
+        print("# Remember to set OS_ACCESS_TOKEN, e.g. :")
+        print("# export OS_ACCESS_TOKEN=`oidc-token egi`")
+    else:
+        print("VO %s not found on site %s" % (vo, site))
+        return 1

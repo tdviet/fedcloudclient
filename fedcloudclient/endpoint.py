@@ -165,13 +165,16 @@ def get_projects_from_sites(access_token, site):
     project_list = []
     for ep in find_endpoint("org.openstack.nova", site=site):
         os_auth_url = ep[2]
-        unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
-        project_list.extend(
-            [
-                [p["id"], p["name"], p["enabled"], ep[0]]
-                for p in get_projects(os_auth_url, unscoped_token)
-            ]
-        )
+        try:
+            unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
+            project_list.extend(
+                [
+                    [p["id"], p["name"], p["enabled"], ep[0]]
+                    for p in get_projects(os_auth_url, unscoped_token)
+                ]
+            )
+        except RuntimeError:
+            pass
     return project_list
 
 
@@ -182,18 +185,21 @@ def get_projects_from_sites_dict(access_token, site):
     project_list = []
     for ep in find_endpoint("org.openstack.nova", site=site):
         os_auth_url = ep[2]
-        unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
-        project_list.extend(
-            [
-                {
-                    "project_id": p["id"],
-                    "name": p["name"],
-                    "enabled": p["enabled"],
-                    "site": ep[0],
-                }
-                for p in get_projects(os_auth_url, unscoped_token)
-            ]
-        )
+        try:
+            unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
+            project_list.extend(
+                [
+                    {
+                        "project_id": p["id"],
+                        "name": p["name"],
+                        "enabled": p["enabled"],
+                        "site": ep[0],
+                    }
+                    for p in get_projects(os_auth_url, unscoped_token)
+                ]
+            )
+        except RuntimeError:
+            pass
     return project_list
 
 
@@ -249,7 +255,13 @@ def projects(
         site = None
 
     project_list = get_projects_from_sites(access_token, site)
-    print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
+    if len(project_list) > 0:
+        print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
+    else:
+        print("Error: You probably do not have access to any project at site %s" % site)
+        print(
+            'Check your access token and VO memberships via command "fedcloud token list-vos"'
+        )
 
 
 @endpoint.command()
@@ -281,8 +293,11 @@ def token(
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
     os_auth_url = ep[2]
-    scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
-    print('export OS_TOKEN="%s"' % scoped_token)
+    try:
+        scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
+        print('export OS_TOKEN="%s"' % scoped_token)
+    except RuntimeError:
+        print("Error: Unable to get keystone token from site %s " % site)
 
 
 @endpoint.command()
@@ -346,11 +361,15 @@ def env(
     # assume first one is ok
     ep = find_endpoint("org.openstack.nova", site=site).pop()
     os_auth_url = ep[2]
-    scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
-    print("# environment for %s" % site)
-    print('export OS_AUTH_URL="%s"' % os_auth_url)
-    print('export OS_AUTH_TYPE="v3oidcaccesstoken"')
-    print('export OS_IDENTITY_PROVIDER="egi.eu"')
-    print('export OS_PROTOCOL="%s"' % protocol)
-    print('export OS_ACCESS_TOKEN="%s"' % access_token)
-    print('export OS_PROJECT_ID="%s"' % project_id)
+
+    try:
+        scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
+        print("# environment for %s" % site)
+        print('export OS_AUTH_URL="%s"' % os_auth_url)
+        print('export OS_AUTH_TYPE="v3oidcaccesstoken"')
+        print('export OS_IDENTITY_PROVIDER="egi.eu"')
+        print('export OS_PROTOCOL="%s"' % protocol)
+        print('export OS_ACCESS_TOKEN="%s"' % access_token)
+        print('export OS_PROJECT_ID="%s"' % project_id)
+    except RuntimeError:
+        print("Error: Unable to get keystone token from site %s " % site)
