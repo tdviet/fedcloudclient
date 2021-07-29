@@ -259,7 +259,9 @@ def projects(
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
         print("Error: You probably do not have access to any project at site %s" % site)
-        print("Check your access token and VO memberships via command \"fedcloud token list-vos\"")
+        print(
+            'Check your access token and VO memberships via command "fedcloud token list-vos"'
+        )
 
 
 @endpoint.command()
