@@ -20,7 +20,11 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
-from fedcloudclient.decorators import site_params, site_vo_params, DEFAULT_PROTOCOL
+from fedcloudclient.decorators import (
+    DEFAULT_PROTOCOL,
+    site_params,
+    site_vo_params,
+)
 from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
