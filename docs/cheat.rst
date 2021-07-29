@@ -4,13 +4,13 @@ Cheat sheet
 Local install via pip3
 **********************
 
-* Creating Python virtual environment:
+* Create a Python virtual environment:
 
 ::
 
     $ python3 -m venv env
 
-* Activate virtual environment
+* Activate the virtual environment
 
 ::
 
@@ -78,13 +78,13 @@ Basic usages
 
     $ fedcloud openstack image list --site IISAS-FedCloud --vo eosc-synergy.eu
 
-* Print only selected values for scripting
+* Print only selected values (for scripting):
 
 ::
 
     $ export OS_TOKEN=$(fedcloud openstack --site CESGA --vo vo.access.egi.eu token issue -c id -f value)
 
-* All-sites commands with full JSON output
+* All-sites commands with full JSON output:
 
 ::
 
@@ -100,13 +100,19 @@ Useful commands
     $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
     jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
 
+* Check GPU properties of flavors:
+
+::
+
+    $ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu -f yaml
+
 * Search images with appliance title in AppDB:
 
 ::
 
     $ fedcloud openstack image list --property "dc:title"="Image for EGI Docker [Ubuntu/18.04/VirtualBox]" --site CESNET-MCC  --vo eosc-synergy.eu
 
-* List all my own VMs
+* List all my own VMs:
 
 ::
 
