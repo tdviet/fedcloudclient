@@ -232,13 +232,13 @@ def endpoint():
 @oidc_params
 @site_params
 def projects(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-    site,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
+        oidc_agent_account,
+        site,
 ):
     """
     List of all project from specific site/sites
@@ -259,9 +259,9 @@ def projects(
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
         print("Error: You probably do not have access to any project at site %s" % site)
-        print(
-            'Check your access token and VO memberships via command "fedcloud token list-vos"'
-        )
+        print('Check your access token and VO memberships via'
+              'command "fedcloud token list-vos"'
+              )
 
 
 @endpoint.command()
@@ -269,14 +269,14 @@ def projects(
 @site_params
 @project_id_params
 def token(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-    site,
-    project_id,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
+        oidc_agent_account,
+        site,
+        project_id,
 ):
     """
     Get scoped keystone token from site and project ID
@@ -336,14 +336,14 @@ def list(service_type, production, monitored, site):
 @site_params
 @project_id_params
 def env(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-    site,
-    project_id,
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_access_token,
+        oidc_url,
+        oidc_agent_account,
+        site,
+        project_id,
 ):
     """
     Generating OS environment variables for specific project/site
