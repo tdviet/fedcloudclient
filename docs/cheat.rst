@@ -1,6 +1,9 @@
 Cheat sheet
 ===========
 
+See `Tutorial <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
+for more details of commands.
+
 Local install via pip3
 **********************
 
@@ -45,17 +48,26 @@ Using Docker container
 
     $ sudo docker run -it -v ~/.config/oidc-agent/egi:/root/.config/oidc-agent/egi --name fedcloud tdviet/fedcloudclient bash
 
-* Load oidc-agent account:
-
-::
-
-    $ eval `oidc-keychain --accounts egi` && export OIDC_AGENT_ACCOUNT=egi
-
 * Restart previously terminated container:
 
 ::
 
     $ sudo docker start -i fedcloud
+
+Using oidc-agent
+****************
+
+* Create an oidc-agent account (if not done):
+
+::
+
+    $ oidc-gen --pub --issuer https://aai.egi.eu/oidc --scope eduperson_entitlement egi
+
+* Load oidc-agent account and set environment for fedcloudclient:
+
+::
+
+    $ eval `oidc-keychain --accounts egi` && export OIDC_AGENT_ACCOUNT=egi
 
 Basic usages
 ************
