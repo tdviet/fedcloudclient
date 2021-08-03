@@ -99,6 +99,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Cheat sheet</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#local-install-via-pip3">Local install via pip3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-docker-container">Using Docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-oidc-agent">Using oidc-agent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usages">Basic usages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#useful-commands">Useful commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-information">More information</a></li>
@@ -175,6 +176,8 @@
             
   <div class="section" id="cheat-sheet">
 <h1>Cheat sheet<a class="headerlink" href="#cheat-sheet" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference external" href="https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing">Tutorial</a>
+for more details of commands.</p>
 <div class="section" id="local-install-via-pip3">
 <h2>Local install via pip3<a class="headerlink" href="#local-install-via-pip3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
@@ -218,15 +221,24 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Load oidc-agent account:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval `oidc-keychain --accounts egi` &amp;&amp; export OIDC_AGENT_ACCOUNT=egi
-</pre></div>
-</div>
-<ul class="simple">
 <li><p>Restart previously terminated container:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker start -i fedcloud
+</pre></div>
+</div>
+</div>
+<div class="section" id="using-oidc-agent">
+<h2>Using oidc-agent<a class="headerlink" href="#using-oidc-agent" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Create an oidc-agent account (if not done):</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ oidc-gen --pub --issuer https://aai.egi.eu/oidc --scope eduperson_entitlement egi
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Load oidc-agent account and set environment for fedcloudclient:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval `oidc-keychain --accounts egi` &amp;&amp; export OIDC_AGENT_ACCOUNT=egi
 </pre></div>
 </div>
 </div>
