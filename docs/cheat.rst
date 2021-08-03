@@ -1,6 +1,9 @@
 Cheat sheet
 ===========
 
+See `Tutorial <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
+for more details of commands.
+
 Local install via pip3
 **********************
 
