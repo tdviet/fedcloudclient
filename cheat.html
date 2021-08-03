@@ -273,9 +273,10 @@ jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Check GPU properties of flavors:</p></li>
+<li><p>Select GPU flavors and show their GPU properties:</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu -f yaml
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu --json-output | \
+jq -r &#39;.[].Result | map(select(.Properties.&quot;Accelerator:Type&quot; == &quot;GPU&quot;)) | .&#39;
 </pre></div>
 </div>
 <ul class="simple">

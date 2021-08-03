@@ -100,11 +100,12 @@ Useful commands
     $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
     jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
 
-* Check GPU properties of flavors:
+* Select GPU flavors and show their GPU properties:
 
 ::
 
-    $ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu -f yaml
+    $ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu --json-output | \
+    jq -r '.[].Result | map(select(.Properties."Accelerator:Type" == "GPU")) | .'
 
 * Search images with appliance title in AppDB:
 
