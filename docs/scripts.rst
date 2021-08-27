@@ -70,6 +70,25 @@ For examples, if users want to select flavors with 2 CPUs:
         jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
     m1.medium
 
+The following example is more complex:
+
+* List all flavors in the VO vo.access.egi.eu on all sites and print them in JSON format
+
+* Filter out sites with error code > 0
+
+* Select only GPU flavors
+
+* Filter out sites with empty list of GPU flavors
+
+* Print the result (list of all GPU flavors on all sites) in JSON format
+
+::
+
+    fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+        jq -r 'map(select(."Error code" ==  0)) |
+               map(.Result = (.Result| map(select(.Properties."Accelerator:Type" == "GPU")))) |
+               map(select(.Result | length >  0))'
+
 Note that only OpenStack commands that have outputs can be used with *--json-output*. Using the parameter with
 commands without outputs (e.g. setting properties) will generate errors of unsupported parameters.
 
