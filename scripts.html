@@ -235,6 +235,20 @@ $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --j
 m1.medium
 </pre></div>
 </div>
+<p>The following example is more complex:</p>
+<ul class="simple">
+<li><p>List all flavors in the VO vo.access.egi.eu on all sites and print them in JSON format</p></li>
+<li><p>Filter out sites with error code &gt; 0</p></li>
+<li><p>Select only GPU flavors</p></li>
+<li><p>Filter out sites with empty list of GPU flavors</p></li>
+<li><p>Print the result (list of all GPU flavors on all sites) in JSON format</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fedcloud</span> <span class="n">openstack</span> <span class="n">flavor</span> <span class="nb">list</span> <span class="o">--</span><span class="n">long</span> <span class="o">--</span><span class="n">site</span> <span class="n">ALL_SITES</span> <span class="o">--</span><span class="n">vo</span> <span class="n">vo</span><span class="o">.</span><span class="n">access</span><span class="o">.</span><span class="n">egi</span><span class="o">.</span><span class="n">eu</span> <span class="o">--</span><span class="n">json</span><span class="o">-</span><span class="n">output</span> <span class="o">|</span> \
+    <span class="n">jq</span> <span class="o">-</span><span class="n">r</span> <span class="s1">&#39;map(select(.&quot;Error code&quot; ==  0)) |</span>
+           <span class="nb">map</span><span class="p">(</span><span class="o">.</span><span class="n">Result</span> <span class="o">=</span> <span class="p">(</span><span class="o">.</span><span class="n">Result</span><span class="o">|</span> <span class="nb">map</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="o">.</span><span class="n">Properties</span><span class="o">.</span><span class="s2">&quot;Accelerator:Type&quot;</span> <span class="o">==</span> <span class="s2">&quot;GPU&quot;</span><span class="p">))))</span> <span class="o">|</span>
+           <span class="nb">map</span><span class="p">(</span><span class="n">select</span><span class="p">(</span><span class="o">.</span><span class="n">Result</span> <span class="o">|</span> <span class="n">length</span> <span class="o">&gt;</span>  <span class="mi">0</span><span class="p">))</span><span class="s1">&#39;</span>
+</pre></div>
+</div>
 <p>Note that only OpenStack commands that have outputs can be used with <em>--json-output</em>. Using the parameter with
 commands without outputs (e.g. setting properties) will generate errors of unsupported parameters.</p>
 </div>
