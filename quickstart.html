@@ -233,6 +233,29 @@ Site: IISAS-FedCloud, VO: eosc-synergy.eu
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>Execute an OpenStack command, e.g. list VMs in eosc-synergy.eu VO on all sites
+and print output in JSON format for further machine processing:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu --json-output
+[
+{
+  &quot;Site&quot;: &quot;IISAS-FedCloud&quot;,
+  &quot;VO&quot;: &quot;eosc-synergy.eu&quot;,
+  &quot;command&quot;: &quot;server list&quot;,
+  &quot;Exception&quot;: null,
+  &quot;Error code&quot;: 0,
+  &quot;Result&quot;: [
+    {
+      ...
+    },
+    ...
+  ]
+},
+...
+]
+</pre></div>
+</div>
+<ul class="simple">
 <li><p>Get helps from the client</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud --help

@@ -211,7 +211,7 @@ $ bash install_certs.sh
 <ul class="simple">
 <li><p>Pull latest version of fedcloudclient container</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker pull  tdviet/fedcloudclient bash
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker pull tdviet/fedcloudclient
 </pre></div>
 </div>
 <ul class="simple">
@@ -260,6 +260,12 @@ $ bash install_certs.sh
 <li><p>Execute an OpenStack command:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --site IISAS-FedCloud --vo eosc-synergy.eu
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Execute an OpenStack command on all sites:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu
 </pre></div>
 </div>
 <ul class="simple">
