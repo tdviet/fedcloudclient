@@ -65,6 +65,29 @@ Basic usages
     | 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
     ...
 
+* Execute an OpenStack command, e.g. list VMs in eosc-synergy.eu VO on all sites
+  and print output in JSON format for further machine processing:
+
+::
+
+    $ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu --json-output
+    [
+    {
+      "Site": "IISAS-FedCloud",
+      "VO": "eosc-synergy.eu",
+      "command": "server list",
+      "Exception": null,
+      "Error code": 0,
+      "Result": [
+        {
+          ...
+        },
+        ...
+      ]
+    },
+    ...
+    ]
+
 * Get helps from the client
 
 ::

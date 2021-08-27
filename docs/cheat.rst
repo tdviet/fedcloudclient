@@ -39,8 +39,7 @@ Using Docker container
 
 ::
 
-    $ sudo docker pull  tdviet/fedcloudclient bash
-
+    $ sudo docker pull tdviet/fedcloudclient
 
 * Start fedcloudclient container with oidc-agent account:
 
@@ -89,6 +88,13 @@ Basic usages
 ::
 
     $ fedcloud openstack image list --site IISAS-FedCloud --vo eosc-synergy.eu
+
+* Execute an OpenStack command on all sites:
+
+::
+
+    $ fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu
+
 
 * Print only selected values (for scripting):
 

@@ -142,6 +142,8 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     3b9754ad8c6046b4aec43ec21abe7d8c  VO:eosc-synergy.eu          True       IFCA-LCG2
     ...
 
+If the site is *ALL_SITES*, the command will show projects on all sites in EGI Federated Cloud.
+
 * **"fedcloud endpoint token --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Get
   OpenStack keystone scoped token on the site for the project ID.
 
@@ -295,8 +297,5 @@ If the site is *ALL_SITES*, the OpenStack command will be executed on all sites 
     | df25f80f-ed19-4e0b-805e-d34620ba0334 | m1.medium |  4096 |   40 |         0 |     2 | True      |
     ...
     (openstack)
-
-
-
 
 
