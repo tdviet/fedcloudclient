@@ -37,6 +37,6 @@ def printSetEnvCommand(name, value):
     if shellType == Shell.Linux:
         print(f'export {name!s}="{value!s}";')
     elif shellType == Shell.PowerShell:
-        print(f'[Environment]::SetEnvironmentVariable("{name!s}","{value!s}");')
+        print(f'$Env:{name!s}="{value!s}";')
     else:
         print(f"set {name!s}={value!s}")
