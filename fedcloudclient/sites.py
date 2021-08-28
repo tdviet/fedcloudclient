@@ -20,7 +20,6 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
-
 from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
     site_params,
