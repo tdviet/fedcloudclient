@@ -7,13 +7,14 @@ local disk, the commands try to get site information directly from GOCDB
 test on sites
 """
 
+from fedcloudclient.shell import printSetEnvCommand
 import os
 import re
 from urllib import parse
+
 import click
 import defusedxml.ElementTree as ElementTree
 import requests
-from fedcloudclient.shell import printSetEnvCommand
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import project_id_params, site_params
 from tabulate import tabulate

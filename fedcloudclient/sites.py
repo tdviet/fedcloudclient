@@ -11,16 +11,16 @@ do not have access, and so on.
 """
 
 import builtins
+from fedcloudclient.shell import printSetEnvCommand
 import json
 import shutil
 from pathlib import Path
 from typing import List
 from urllib.request import Request, urlopen
+
 import click
 import pkg_resources
 import yaml
-from jsonschema import validate
-from fedcloudclient.shell import printSetEnvCommand
 from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
     site_params,
