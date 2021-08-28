@@ -4,10 +4,12 @@ import re
 from enum import Enum
 from psutil import Process
 
+
 class Shell(Enum):
     Linux = 1
     WindowsCommandPrompt = 2
     PowerShell = 3
+
 
 def getShellType():
     """
@@ -21,8 +23,9 @@ def getShellType():
             return Shell.PowerShell
         else:
             return Shell.WindowsCommandPrompt
-    
+
     return Shell.Linux
+
 
 def printSetEnvCommand(name, value):
     """
