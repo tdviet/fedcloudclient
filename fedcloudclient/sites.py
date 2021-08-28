@@ -20,7 +20,6 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
-from jsonschema import validate
 
 from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
@@ -28,6 +27,7 @@ from fedcloudclient.decorators import (
     site_vo_params
 )
 from fedcloudclient.shell import printSetEnvCommand
+from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
