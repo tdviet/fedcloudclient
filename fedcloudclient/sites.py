@@ -11,7 +11,6 @@ do not have access, and so on.
 """
 
 import builtins
-from fedcloudclient.shell import printSetEnvCommand
 import json
 import shutil
 from pathlib import Path
@@ -21,12 +20,11 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
-from fedcloudclient.decorators import (
-    DEFAULT_PROTOCOL,
-    site_params,
-    site_vo_params,
-)
 from jsonschema import validate
+
+from fedcloudclient.decorators import (DEFAULT_PROTOCOL, site_params,
+                                       site_vo_params)
+from fedcloudclient.shell import printSetEnvCommand
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
