@@ -295,7 +295,7 @@ def token(
     os_auth_url = ep[2]
     try:
         scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
-        printSetEnvCommand('OS_TOKEN', scoped_token)
+        printSetEnvCommand("OS_TOKEN", scoped_token)
     except RuntimeError:
         print("Error: Unable to get keystone token from site %s " % site)
 
@@ -365,11 +365,11 @@ def env(
     try:
         scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
         print("# environment for %s" % site)
-        printSetEnvCommand('OS_AUTH_URL', os_auth_url)
-        printSetEnvCommand('OS_AUTH_TYPE', 'v3oidcaccesstoken')
-        printSetEnvCommand('OS_IDENTITY_PROVIDER', 'egi.eu')
-        printSetEnvCommand('OS_PROTOCOL', protocol)
-        printSetEnvCommand('OS_ACCESS_TOKEN', access_token)
-        printSetEnvCommand('OS_PROJECT_ID', project_id)
+        printSetEnvCommand("OS_AUTH_URL", os_auth_url)
+        printSetEnvCommand("OS_AUTH_TYPE", "v3oidcaccesstoken")
+        printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
+        printSetEnvCommand("OS_PROTOCOL", protocol)
+        printSetEnvCommand("OS_ACCESS_TOKEN", access_token)
+        printSetEnvCommand("OS_PROJECT_ID", project_id)
     except RuntimeError:
         print("Error: Unable to get keystone token from site %s " % site)
