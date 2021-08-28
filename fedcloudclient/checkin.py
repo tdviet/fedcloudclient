@@ -207,7 +207,7 @@ def check(oidc_refresh_token, oidc_access_token):
         expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print("Refresh token is valid to %s UTC" % expiration_time)
+        print("Refresh token is valid until %s UTC" % expiration_time)
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             print(
@@ -227,7 +227,7 @@ def check(oidc_refresh_token, oidc_access_token):
         expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print("Access token is valid to %s UTC" % expiration_time)
+        print("Access token is valid until %s UTC" % expiration_time)
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             print(

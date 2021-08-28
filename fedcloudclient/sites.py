@@ -25,6 +25,7 @@ from fedcloudclient.decorators import (
     site_params,
     site_vo_params,
 )
+from fedcloudclient.shell import printSetEnvCommand
 from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
@@ -262,8 +263,8 @@ def show_project_id(site, vo):
     """
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
-        print('export OS_AUTH_URL="%s"' % endpoint)
-        print('export OS_PROJECT_ID="%s"' % project_id)
+        printSetEnvCommand("OS_AUTH_URL", endpoint)
+        printSetEnvCommand("OS_PROJECT_ID", project_id)
     else:
         print("VO %s not found on site %s" % (vo, site))
         return 1
@@ -314,13 +315,13 @@ def env(site, vo):
     if endpoint:
         if protocol is None:
             protocol = DEFAULT_PROTOCOL
-        print('export OS_AUTH_URL="%s"' % endpoint)
-        print('export OS_AUTH_TYPE="v3oidcaccesstoken"')
-        print('export OS_IDENTITY_PROVIDER="egi.eu"')
-        print('export OS_PROTOCOL="%s"' % protocol)
-        print('export OS_PROJECT_ID="%s"' % project_id)
+        printSetEnvCommand("OS_AUTH_URL", endpoint)
+        printSetEnvCommand("OS_AUTH_TYPE", "v3oidcaccesstoken")
+        printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
+        printSetEnvCommand("OS_PROTOCOL", protocol)
+        printSetEnvCommand("OS_PROJECT_ID", project_id)
         print("# Remember to set OS_ACCESS_TOKEN, e.g. :")
-        print("# export OS_ACCESS_TOKEN=`oidc-token egi`")
+        printSetEnvCommand("OS_ACCESS_TOKEN", "<token>")
     else:
         print("VO %s not found on site %s" % (vo, site))
         return 1
