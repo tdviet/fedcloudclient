@@ -10,10 +10,10 @@ test on sites
 import os
 import re
 from urllib import parse
-
 import click
 import defusedxml.ElementTree as ElementTree
 import requests
+from fedcloudclient.shell import printSetEnvCommand
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import project_id_params, site_params
 from tabulate import tabulate
@@ -109,7 +109,7 @@ def get_unscoped_token(os_auth_url, access_token):
             return unscoped_token, p
         except RuntimeError:
             pass
-    raise RuntimeError("Unable to get an scoped token")
+    raise RuntimeError("Unable to get a scoped token")
 
 
 def get_scoped_token(os_auth_url, access_token, project_id):
@@ -127,7 +127,7 @@ def get_scoped_token(os_auth_url, access_token, project_id):
     r = requests.post(url, json=body)
     # pylint: disable=no-member
     if r.status_code != requests.codes.created:
-        raise RuntimeError("Unable to get an scoped token")
+        raise RuntimeError("Unable to get a scoped token")
     else:
         return r.headers["X-Subject-Token"], protocol
 
@@ -295,7 +295,7 @@ def token(
     os_auth_url = ep[2]
     try:
         scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
-        print('export OS_TOKEN="%s"' % scoped_token)
+        printSetEnvCommand('OS_TOKEN', scoped_token)
     except RuntimeError:
         print("Error: Unable to get keystone token from site %s " % site)
 
@@ -365,11 +365,11 @@ def env(
     try:
         scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
         print("# environment for %s" % site)
-        print('export OS_AUTH_URL="%s"' % os_auth_url)
-        print('export OS_AUTH_TYPE="v3oidcaccesstoken"')
-        print('export OS_IDENTITY_PROVIDER="egi.eu"')
-        print('export OS_PROTOCOL="%s"' % protocol)
-        print('export OS_ACCESS_TOKEN="%s"' % access_token)
-        print('export OS_PROJECT_ID="%s"' % project_id)
+        printSetEnvCommand('OS_AUTH_URL', os_auth_url)
+        printSetEnvCommand('OS_AUTH_TYPE', 'v3oidcaccesstoken')
+        printSetEnvCommand('OS_IDENTITY_PROVIDER', 'egi.eu')
+        printSetEnvCommand('OS_PROTOCOL', protocol)
+        printSetEnvCommand('OS_ACCESS_TOKEN', access_token)
+        printSetEnvCommand('OS_PROJECT_ID', project_id)
     except RuntimeError:
         print("Error: Unable to get keystone token from site %s " % site)
