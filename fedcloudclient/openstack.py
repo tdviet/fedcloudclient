@@ -13,11 +13,15 @@ from distutils.spawn import find_executable
 import click
 
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import (DEFAULT_AUTH_TYPE,
-                                       DEFAULT_IDENTITY_PROVIDER,
-                                       DEFAULT_PROTOCOL, openstack_params)
-from fedcloudclient.sites import (find_endpoint_and_project_id, list_sites,
-                                  site_vo_params)
+from fedcloudclient.decorators import (
+    DEFAULT_AUTH_TYPE,
+    DEFAULT_IDENTITY_PROVIDER,
+    DEFAULT_PROTOCOL, openstack_params
+)
+from fedcloudclient.sites import (
+    find_endpoint_and_project_id, list_sites,
+    site_vo_params
+)
 
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30

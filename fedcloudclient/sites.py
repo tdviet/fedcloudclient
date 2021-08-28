@@ -22,8 +22,11 @@ import pkg_resources
 import yaml
 from jsonschema import validate
 
-from fedcloudclient.decorators import (DEFAULT_PROTOCOL, site_params,
-                                       site_vo_params)
+from fedcloudclient.decorators import (
+    DEFAULT_PROTOCOL,
+    site_params,
+    site_vo_params
+)
 from fedcloudclient.shell import printSetEnvCommand
 
 __REMOTE_CONFIG_FILE = (
