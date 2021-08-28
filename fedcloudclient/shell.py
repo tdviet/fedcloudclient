@@ -13,11 +13,11 @@ def getShellType():
     """
     Check if running on Windows and what shell type were we launched from
     """
-    if sys.platform.startswith('win'):
+    if sys.platform.startswith("win"):
         parentProc = os.getppid()
         parentName = Process(parentProc).name()
 
-        if bool(re.fullmatch('pwsh|pwsh.exe|powershell.exe', parentName)):
+        if bool(re.fullmatch("pwsh|pwsh.exe|powershell.exe", parentName)):
             return Shell.PowerShell
         else:
             return Shell.WindowsCommandPrompt
@@ -31,7 +31,7 @@ def printSetEnvCommand(name, value):
     """
     shellType = getShellType()
     if shellType == Shell.Linux:
-        print(f"export {name!s}={value!s}")
+        print(f"export {name!s}={value!s};")
     elif shellType == Shell.PowerShell:
         print(f"[Environment]::SetEnvironmentVariable(\"{name!s}\",\"{value!s}\");")
     else:
