@@ -16,12 +16,12 @@ from fedcloudclient.decorators import (
     DEFAULT_AUTH_TYPE,
     DEFAULT_IDENTITY_PROVIDER,
     DEFAULT_PROTOCOL,
-    openstack_params
+    openstack_params,
 )
 from fedcloudclient.sites import (
     find_endpoint_and_project_id,
     list_sites,
-    site_vo_params
+    site_vo_params,
 )
 
 __OPENSTACK_CLIENT = "openstack"
