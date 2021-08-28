@@ -26,6 +26,7 @@ from fedcloudclient.decorators import (
     site_params,
     site_vo_params,
 )
+from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
