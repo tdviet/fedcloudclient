@@ -20,10 +20,10 @@ def getShellType():
         parentProc = os.getppid()
         parentName = Process(parentProc).name()
 
-        if bool(re.fullmatch("pwsh|pwsh.exe|powershell.exe", parentName)):
+        if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parentName)):
             return Shell.PowerShell
-        else:
-            return Shell.WindowsCommandPrompt
+        
+        return Shell.WindowsCommandPrompt
 
     return Shell.Linux
 
