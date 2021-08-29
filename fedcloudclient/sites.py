@@ -25,7 +25,7 @@ from fedcloudclient.decorators import (
     site_params,
     site_vo_params,
 )
-from fedcloudclient.shell import printSetEnvCommand, printComment
+from fedcloudclient.shell import printComment, printSetEnvCommand
 from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
