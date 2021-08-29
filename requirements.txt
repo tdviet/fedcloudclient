@@ -10,3 +10,4 @@ liboidcagent
 PyYAML
 setuptools
 jsonschema
+psutil
