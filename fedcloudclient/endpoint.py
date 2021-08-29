@@ -8,7 +8,6 @@ test on sites
 """
 
 import os
-import re
 from urllib import parse
 
 import click
