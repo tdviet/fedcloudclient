@@ -21,7 +21,7 @@ from fedcloudclient.decorators import (
 
 def oidc_discover(oidc_url):
     """
-    Discover oidc endpoints
+    Discover OIDC endpoints
 
     :param oidc_url: CheckIn URL
     :return: JSON object of OIDC configuration
@@ -90,9 +90,9 @@ def get_access_token(
     oidc_agent_account,
 ):
     """
-    Getting access token.
-    Generate new access token from oidc-agent or refresh token (if given)
-    or use existing token
+    Get access token
+    Generates new access token from oidc-agent or
+    refresh token (if given), or use existing token
 
     Check expiration time of access token
     Raise error if no valid token exists
@@ -122,8 +122,7 @@ def get_access_token(
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
         print(
-            "WARNING: exposing refresh tokens is insecure and will be disabled in "
-            "next version!",
+            "Warning: Exposing refresh tokens is insecure and will be deprecated!",
             file=sys.stderr,
         )
         return token_refresh(
@@ -182,7 +181,7 @@ def token_list_vos(oidc_access_token, oidc_url):
 @click.group()
 def token():
     """
-    Token command group for manipulation with tokens
+    Get details of access/refresh tokens
     """
     pass
 
@@ -192,7 +191,7 @@ def token():
 @oidc_access_token_params
 def check(oidc_refresh_token, oidc_access_token):
     """
-    CLI command for printing validity of access or refresh token
+    Check validity of access/refresh token
     """
 
     if oidc_refresh_token:
@@ -252,7 +251,7 @@ def list_vos(
     oidc_agent_account,
 ):
     """
-    CLI command for listing VO memberships according to access token
+    List VO membership(s) of access token
     """
     oidc_access_token = get_access_token(
         oidc_access_token,
