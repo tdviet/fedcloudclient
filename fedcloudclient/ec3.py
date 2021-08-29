@@ -79,7 +79,7 @@ configure front (
 @click.group()
 def ec3():
     """
-    EC3 related comands
+    EC3 cluster provisioning
     """
     pass
 
@@ -97,7 +97,7 @@ def refresh(
     auth_file,
 ):
     """
-    Refreshing token in EC3 authorization file
+    Refresh token in EC3 authorization file
     """
     # Get the right endpoint from GOCDB
     auth_file_contents = []
@@ -161,12 +161,16 @@ def init(
     force,
 ):
     """
-    Creating EC3 authorization file and template
+    Create EC3 authorization file and template
     """
     if os.path.exists(auth_file) and not force:
         print(
             "Auth file already exists, not replacing unless --force option is included"
         )
+        raise click.Abort()
+
+    if site == "ALL_SITES":
+        print("EC3 commands cannot be used with ALL_SITES")
         raise click.Abort()
 
     access_token = get_access_token(
@@ -177,10 +181,6 @@ def init(
         oidc_url,
         oidc_agent_account,
     )
-
-    if site == "ALL_SITES":
-        print("ec3 command cannot be used with ALL_SITES")
-        raise click.Abort()
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     site_auth = [

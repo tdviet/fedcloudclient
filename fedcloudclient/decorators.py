@@ -131,7 +131,7 @@ def oidc_params(func):
     )
     @click.option(
         "--oidc-agent-account",
-        help="short account name in oidc-agent",
+        help="Account name in oidc-agent",
         envvar="OIDC_AGENT_ACCOUNT",
     )
     @functools.wraps(func)
@@ -151,21 +151,21 @@ def openstack_params(func):
 
     @click.option(
         "--openstack-auth-protocol",
-        help="Check-in protocol",
+        help="Authentication protocol",
         envvar="OPENSTACK_AUTH_PROTOCOL",
         default=DEFAULT_PROTOCOL,
         show_default=True,
     )
     @click.option(
         "--openstack-auth-type",
-        help="Check-in authentication type",
+        help="Authentication type",
         envvar="OPENSTACK_AUTH_TYPE",
         default=DEFAULT_AUTH_TYPE,
         show_default=True,
     )
     @click.option(
         "--openstack-auth-provider",
-        help="Check-in identity provider",
+        help="Identity provider",
         envvar="OPENSTACK_AUTH_PROVIDER",
         default=DEFAULT_IDENTITY_PROVIDER,
         show_default=True,

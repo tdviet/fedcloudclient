@@ -20,10 +20,10 @@ def getShellType():
         parentProc = os.getppid()
         parentName = Process(parentProc).name()
 
-        if bool(re.fullmatch("pwsh|pwsh.exe|powershell.exe", parentName)):
+        if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parentName)):
             return Shell.PowerShell
-        else:
-            return Shell.WindowsCommandPrompt
+
+        return Shell.WindowsCommandPrompt
 
     return Shell.Linux
 
@@ -40,3 +40,17 @@ def printSetEnvCommand(name, value):
         print(f'$Env:{name!s}="{value!s}";')
     else:
         print(f"set {name!s}={value!s}")
+
+
+def printComment(comment):
+    """
+    Print comment command,
+    format it correctly for the current platfom
+    """
+    shellType = getShellType()
+    if shellType == Shell.Linux:
+        print(f"# {comment!s}")
+    elif shellType == Shell.PowerShell:
+        print(f"# {comment!s}")
+    else:
+        print(f"rem {comment!s}")

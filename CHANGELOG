@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.9]
+- Outputs platform-specific set environment commands
+- Better help messages
+
 ## [1.2.0]
 - New JSON output
 - Code cleaning
@@ -7,7 +11,6 @@
 ## [1.1.2]
 - Changing CHECKIN_* to OIDC_*
 - Start deprecation of using refresh token
-
 
 ## [1.1.1]
 - Small bug fixes and documentation update
@@ -30,7 +33,6 @@
 ## [1.0.1]
 - Multi-thread execution of OpenStack all-sites operation
 - Update documentation
-
 
 ## [1.0.00]
 - First public release

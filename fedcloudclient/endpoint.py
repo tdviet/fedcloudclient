@@ -8,7 +8,6 @@ test on sites
 """
 
 import os
-import re
 from urllib import parse
 
 import click
@@ -89,7 +88,7 @@ def find_endpoint(service_type, production=True, monitored=True, site=None):
 
 def get_keystone_url(os_auth_url, path):
     """
-    Helper function for fixing keystone URL
+    Helper function for fixing Keystone URL
     """
     url = parse.urlparse(os_auth_url)
     prefix = url.path.rstrip("/")
@@ -101,7 +100,7 @@ def get_keystone_url(os_auth_url, path):
 
 def get_unscoped_token(os_auth_url, access_token):
     """
-    Get an unscoped token, trying various protocol names if needed
+    Get an unscoped token, will try all protocols if needed
     """
     protocols = ["openid", "oidc"]
     for p in protocols:
@@ -115,7 +114,7 @@ def get_unscoped_token(os_auth_url, access_token):
 
 def get_scoped_token(os_auth_url, access_token, project_id):
     """
-    Get a scoped token, trying various protocol names if needed
+    Get a scoped token, will try all protocols if needed
     """
     unscoped_token, protocol = get_unscoped_token(os_auth_url, access_token)
     url = get_keystone_url(os_auth_url, "/v3/auth/tokens")
@@ -161,7 +160,7 @@ def get_projects(os_auth_url, unscoped_token):
 
 def get_projects_from_sites(access_token, site):
     """
-    Get all projects from sites using access token
+    Get all projects from site(s) using access token
     """
     project_list = []
     for ep in find_endpoint("org.openstack.nova", site=site):
@@ -181,7 +180,7 @@ def get_projects_from_sites(access_token, site):
 
 def get_projects_from_sites_dict(access_token, site):
     """
-    Get all projects as a dictionary from sites using access token,
+    Get all projects as a dictionary from site(s) using access token
     """
     project_list = []
     for ep in find_endpoint("org.openstack.nova", site=site):
@@ -204,27 +203,10 @@ def get_projects_from_sites_dict(access_token, site):
     return project_list
 
 
-def get_project_id_from_vo_site(access_token, vo, site):
-    """
-    Deprecated in favor of new functions in sites.py
-
-    Get project ID from site ID and VO name
-    """
-    if site is None:
-        return None
-    project_list = get_projects_from_sites(access_token, site)
-    m = re.compile("^(VO:|vo_)*" + vo + "$")
-    for project in project_list:
-        if m.match(project[1]):
-            print(project)
-            return project[0]
-    return None
-
-
 @click.group()
 def endpoint():
     """
-    endpoint command group for interaction with GOCDB and endpoints
+    Obtain endpoint details and scoped tokens
     """
     pass
 
@@ -242,7 +224,7 @@ def projects(
     site,
 ):
     """
-    List of all project from specific site/sites
+    List projects from site(s)
     """
     access_token = get_access_token(
         oidc_access_token,
@@ -261,7 +243,7 @@ def projects(
     else:
         print("Error: You probably do not have access to any project at site %s" % site)
         print(
-            'Check your access token and VO memberships via command "fedcloud token list-vos"'
+            'Check your access token and VO memberships using "fedcloud token list-vos"'
         )
 
 
@@ -280,8 +262,13 @@ def token(
     project_id,
 ):
     """
-    Get scoped keystone token from site and project ID
+    Get scoped Keystone token for site and project
     """
+    if site == "ALL_SITES":
+        print("Cannot get tokens for ALL_SITES")
+        raise click.Abort()
+
+    # Get an access token
     access_token = get_access_token(
         oidc_access_token,
         oidc_refresh_token,
@@ -298,7 +285,7 @@ def token(
         scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
         printSetEnvCommand("OS_TOKEN", scoped_token)
     except RuntimeError:
-        print("Error: Unable to get keystone token from site %s " % site)
+        print("Error: Unable to get Keystone token from site %s " % site)
 
 
 @endpoint.command()
@@ -323,7 +310,7 @@ def token(
 @site_params
 def list(service_type, production, monitored, site):
     """
-    List of endpoints of site/sites according info in GOCDB
+    List endpoints in site(s), will query GOCDB
     """
     if site == "ALL_SITES":
         site = None
@@ -347,9 +334,13 @@ def env(
     project_id,
 ):
     """
-    Generating OS environment variables for specific project/site
+    Generate OS environment variables for site and project
     """
+    if site == "ALL_SITES":
+        print("Cannot generate environment variables for ALL_SITES")
+        raise click.Abort()
 
+    # Get an access token
     access_token = get_access_token(
         oidc_access_token,
         oidc_refresh_token,
@@ -366,11 +357,11 @@ def env(
     try:
         scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
         print("# environment for %s" % site)
+        printSetEnvCommand("OS_PROJECT_ID", project_id)
         printSetEnvCommand("OS_AUTH_URL", os_auth_url)
         printSetEnvCommand("OS_AUTH_TYPE", "v3oidcaccesstoken")
         printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
         printSetEnvCommand("OS_PROTOCOL", protocol)
         printSetEnvCommand("OS_ACCESS_TOKEN", access_token)
-        printSetEnvCommand("OS_PROJECT_ID", project_id)
     except RuntimeError:
-        print("Error: Unable to get keystone token from site %s " % site)
+        print("Error: Unable to get Keystone token from site %s " % site)
