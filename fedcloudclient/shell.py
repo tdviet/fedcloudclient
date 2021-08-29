@@ -22,7 +22,7 @@ def getShellType():
 
         if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parentName)):
             return Shell.PowerShell
-        
+
         return Shell.WindowsCommandPrompt
 
     return Shell.Linux
@@ -40,6 +40,7 @@ def printSetEnvCommand(name, value):
         print(f'$Env:{name!s}="{value!s}";')
     else:
         print(f"set {name!s}={value!s}")
+
 
 def printComment(comment):
     """

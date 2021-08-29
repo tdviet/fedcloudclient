@@ -17,7 +17,6 @@ import requests
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import project_id_params, site_params
 from fedcloudclient.shell import printSetEnvCommand
-from fedcloudclient.shell import printComment
 from tabulate import tabulate
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
@@ -244,7 +243,9 @@ def projects(
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
         print("Error: You probably do not have access to any project at site %s" % site)
-        print('Check your access token and VO memberships using "fedcloud token list-vos"')
+        print(
+            'Check your access token and VO memberships using "fedcloud token list-vos"'
+        )
 
 
 @endpoint.command()

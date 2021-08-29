@@ -25,8 +25,7 @@ from fedcloudclient.decorators import (
     site_params,
     site_vo_params,
 )
-from fedcloudclient.shell import printSetEnvCommand
-from fedcloudclient.shell import printComment
+from fedcloudclient.shell import printSetEnvCommand, printComment
 from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
@@ -249,7 +248,7 @@ def show(site):
     """
     Print configuration of specified site(s)
     """
-    if site == "ALL_SITES":        
+    if site == "ALL_SITES":
         read_site_config()
         for site_info in __site_config_data:
             site_info_str = yaml.dump(site_info, sort_keys=True)
@@ -307,7 +306,7 @@ def list():
 def env(site, vo):
     """
     Generate OS environment variables for site
-    Does not set token environment variable, 
+    Does not set token environment variable,
     need to set separately (e.g. via oidc-token command)
     """
     if site == "ALL_SITES":
