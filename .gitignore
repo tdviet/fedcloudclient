@@ -6,6 +6,7 @@
 *.swp
 *~
 .venv
+.vscode
 build/*
 dist/*
 etc/test.conf

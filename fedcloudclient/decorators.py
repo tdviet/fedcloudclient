@@ -41,7 +41,7 @@ def oidc_refresh_token_params(func):
 def site_params(func):
     @click.option(
         "--site",
-        help="Name of the site",
+        help="Name of the site or ALL_SITES",
         required=True,
         envvar="EGI_SITE",
     )
