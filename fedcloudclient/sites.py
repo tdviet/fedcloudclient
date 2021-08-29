@@ -20,13 +20,14 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
+from jsonschema import validate
+
 from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
     site_params,
     site_vo_params,
 )
-from fedcloudclient.shell import printSetEnvCommand
-from jsonschema import validate
+from fedcloudclient.shell import printComment, printSetEnvCommand
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
@@ -73,7 +74,8 @@ def read_site_config():
 
 def safe_read_yaml_from_url(url, max_length):
     """
-    Safe reading from URL. Check URL and size before reading
+    Safe reading from URL
+    Check URL and size before reading
 
     :param url:
     :param max_length:
@@ -103,8 +105,8 @@ def safe_read_yaml_from_url(url, max_length):
 
 def read_default_site_config():
     """
-    Read default site configurations from GitHub.  Storing
-    site configurations in a global variable, that will be used by other functions
+    Read default site configurations from GitHub
+    Storing site configurations in a global variable that will be used by other functions
 
     :return: None
     """
@@ -132,8 +134,8 @@ def read_default_site_config():
 
 def read_local_site_config(config_dir):
     """
-    Read site configurations from local directory specified in config_dir. Storing
-    site configurations in global variable, that will be used by other functions
+    Read site configurations from local directory specified in config_dir
+    Storing site configurations in global variable, that will be used by other functions
 
     :param config_dir: path to directory containing site configuration
     :return: None
@@ -154,7 +156,7 @@ def read_local_site_config(config_dir):
 
 def save_site_config(config_dir):
     """
-    Save site configs to local directory specified in config_dir.
+    Save site configs to local directory specified in config_dir
     Overwrite local configs if exist
 
     :param config_dir: path to directory containing site configuration
@@ -170,7 +172,7 @@ def save_site_config(config_dir):
 
 def delete_site_config(config_dir):
     """
-    Delete site configs to local directory specified in config_dir.
+    Delete site configs to local directory specified in config_dir
 
     :param config_dir: path to directory containing site configuration
     :return: None
@@ -212,8 +214,8 @@ def find_endpoint_and_project_id(site_name, vo):
     to site configuration
 
     :param site_name: site ID in GOCDB
-    :param vo: VO name. None if finding only site endpoint
-    :return: endpoint, project_id, protocol if the VO exist on the site,
+    :param vo: VO name or None to find site endpoint only
+    :return: endpoint, project_id, protocol if the VO has access to the site,
              otherwise None, None, None
     """
     site_info = find_site_data(site_name)
@@ -229,14 +231,14 @@ def find_endpoint_and_project_id(site_name, vo):
         if vo_info["name"] == vo:
             return site_info["endpoint"], vo_info["auth"]["project_id"], protocol
 
-    # Return None, None if VO not found
+    # Return None if VO not found among those that have access to site
     return None, None, None
 
 
 @click.group()
 def site():
     """
-    Site command group for manipulation with site configurations
+    Obtain site configurations
     """
     pass
 
@@ -245,8 +247,15 @@ def site():
 @site_params
 def show(site):
     """
-    Print configuration of the specified site
+    Print configuration of specified site(s)
     """
+    if site == "ALL_SITES":
+        read_site_config()
+        for site_info in __site_config_data:
+            site_info_str = yaml.dump(site_info, sort_keys=True)
+            print(site_info_str)
+        return 0
+
     site_info = find_site_data(site)
     if site_info:
         print(yaml.dump(site_info, sort_keys=True))
@@ -259,7 +268,7 @@ def show(site):
 @site_vo_params
 def show_project_id(site, vo):
     """
-    Printing Keystone endpoint and project ID of the VO on the site
+    Print Keystone endpoint and project ID
     """
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
@@ -271,21 +280,10 @@ def show_project_id(site, vo):
 
 
 @site.command()
-def show_all():
-    """
-    Print all site configuration
-    """
-    read_site_config()
-    for site_info in __site_config_data:
-        site_info_str = yaml.dump(site_info, sort_keys=True)
-        print(site_info_str)
-
-
-@site.command()
 def save_config():
     """
-    Read default site configs from GitHub and save them to local folder in $HOME
-    Overwrite local configs if exist
+    Load site configs from GitHub, save them to local folder in $HOME
+    Overwrite local configs if exist.
     """
     read_default_site_config()
     config_dir = Path.home() / __LOCAL_CONFIG_DIR
@@ -297,7 +295,7 @@ def save_config():
 @site.command()
 def list():
     """
-    List site IDs
+    List all sites
     """
     read_site_config()
     for site_info in __site_config_data:
@@ -308,9 +306,14 @@ def list():
 @site_vo_params
 def env(site, vo):
     """
-    Generating OpenStack environment variables for site and VO
-    Does not set OS token, need to set separately, e.g. via oidc-token command
+    Generate OS environment variables for site.
+    Does not set token environment variable,
+    need to set separately (e.g. via oidc-token command)
     """
+    if site == "ALL_SITES":
+        print("Cannot generate environment variables for ALL_SITES")
+        raise click.Abort()
+
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
         if protocol is None:
@@ -320,8 +323,7 @@ def env(site, vo):
         printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
         printSetEnvCommand("OS_PROTOCOL", protocol)
         printSetEnvCommand("OS_PROJECT_ID", project_id)
-        print("# Remember to set OS_ACCESS_TOKEN, e.g. :")
-        printSetEnvCommand("OS_ACCESS_TOKEN", "<token>")
+        printComment("Remember to also set OS_ACCESS_TOKEN")
     else:
-        print("VO %s not found on site %s" % (vo, site))
+        print("VO %s not found to have access to site %s" % (vo, site))
         return 1

@@ -20,7 +20,6 @@ cli.add_command(token)
 cli.add_command(endpoint)
 cli.add_command(ec3)
 cli.add_command(site)
-
 cli.add_command(openstack)
 cli.add_command(openstack_int)
 

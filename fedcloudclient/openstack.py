@@ -124,9 +124,9 @@ def fedcloud_openstack(
     oidc_access_token, site, vo, openstack_command, json_output=True
 ):
     """
-    Simplified version of fedcloud_openstack_full() function using
+    Simplified version of fedcloud_openstack_full() using
     default EGI setting for identity provider and protocols
-    Call openstack client with default options for EGI Check-in
+    Calls OpenStack CLI with default options for EGI Check-in
 
     :param oidc_access_token: Checkin access token.
            Passed to openstack client as --os-access-token
@@ -229,7 +229,7 @@ def print_result(
 @click.option(
     "--json-output",
     "-j",
-    help="Print output as a big JSON object",
+    help="Print output as JSON object",
     is_flag=True,
 )
 @click.argument("openstack_command", required=True, nargs=-1)
@@ -250,7 +250,7 @@ def openstack(
     openstack_command,
 ):
     """
-    Executing OpenStack commands on site and VO
+    Execute OpenStack commands on site and VO
     """
 
     if not check_openstack_client_installation():
