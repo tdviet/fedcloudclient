@@ -23,7 +23,8 @@ jobs:
       - name: Run Super-Linter on new changes
         uses: github/super-linter@v3
         env:
-          DEFAULT_BRANCH: master 
+          DEFAULT_BRANCH: master
+          VALIDATE_PYTHON_ISORT: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Fail on errors
           DISABLE_ERRORS: false
