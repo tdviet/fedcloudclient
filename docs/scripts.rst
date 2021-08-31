@@ -84,7 +84,7 @@ The following example is more complex:
 
 ::
 
-    fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+    $ fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
         jq -r 'map(select(."Error code" ==  0)) |
                map(.Result = (.Result| map(select(.Properties."Accelerator:Type" == "GPU")))) |
                map(select(.Result | length >  0))'

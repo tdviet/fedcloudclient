@@ -252,6 +252,23 @@ VOs and so on.
     export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
 
 
+* **"fedcloud site env --site <SITE> --vo <VO>"**: set OpenStack environment variable for the VO on the site.
+
+::
+
+    $ fedcloud site env --site IISAS-FedCloud --vo eosc-synergy.eu
+    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export OS_AUTH_TYPE="v3oidcaccesstoken"
+    export OS_IDENTITY_PROVIDER="egi.eu"
+    export OS_PROTOCOL="openid"
+    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+    # Remember to set OS_ACCESS_TOKEN, e.g. :
+    # export OS_ACCESS_TOKEN=`oidc-token egi`
+
+The main differences between *"fedcloud endpoint env"* and *"fedcloud site env"* commands are that the second command
+needs VO name as input parameter instead of project ID; and it does not need access token (and therefore it does not
+set OS_ACCESS_TOKEN).
+
 
 fedcloud openstack commands
 ***************************

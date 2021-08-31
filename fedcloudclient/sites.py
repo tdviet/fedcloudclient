@@ -20,13 +20,14 @@ from urllib.request import Request, urlopen
 import click
 import pkg_resources
 import yaml
+from jsonschema import validate
+
 from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
     site_params,
     site_vo_params,
 )
 from fedcloudclient.shell import printComment, printSetEnvCommand
-from jsonschema import validate
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
@@ -305,7 +306,7 @@ def list():
 @site_vo_params
 def env(site, vo):
     """
-    Generate OS environment variables for site
+    Generate OS environment variables for site.
     Does not set token environment variable,
     need to set separately (e.g. via oidc-token command)
     """

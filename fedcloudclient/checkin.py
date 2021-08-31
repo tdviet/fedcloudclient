@@ -12,6 +12,7 @@ import click
 import jwt
 import liboidcagent as agent
 import requests
+
 from fedcloudclient.decorators import (
     oidc_access_token_params,
     oidc_params,

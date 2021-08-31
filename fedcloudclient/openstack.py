@@ -11,6 +11,7 @@ import sys
 from distutils.spawn import find_executable
 
 import click
+
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
     DEFAULT_AUTH_TYPE,
