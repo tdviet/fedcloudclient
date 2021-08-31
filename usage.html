@@ -441,6 +441,22 @@ export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
 export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 </pre></div>
 </div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud site env --site &lt;SITE&gt; --vo &lt;VO&gt;&quot;</strong>: set OpenStack environment variable for the VO on the site.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site env --site IISAS-FedCloud --vo eosc-synergy.eu
+export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
+export OS_AUTH_TYPE=&quot;v3oidcaccesstoken&quot;
+export OS_IDENTITY_PROVIDER=&quot;egi.eu&quot;
+export OS_PROTOCOL=&quot;openid&quot;
+export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
+# Remember to set OS_ACCESS_TOKEN, e.g. :
+# export OS_ACCESS_TOKEN=`oidc-token egi`
+</pre></div>
+</div>
+<p>The main differences between <em>&quot;fedcloud endpoint env&quot;</em> and <em>&quot;fedcloud site env&quot;</em> commands are that the second command
+needs VO name as input parameter instead of project ID; and it does not need access token (and therefore it does not
+set OS_ACCESS_TOKEN).</p>
 </div>
 <div class="section" id="fedcloud-openstack-commands">
 <h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline">¶</a></h2>
