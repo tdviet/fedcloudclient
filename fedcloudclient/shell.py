@@ -31,7 +31,7 @@ def getShellType():
 def printSetEnvCommand(name, value):
     """
     Print command to set environment variable,
-    format it correctly for the current platfom
+    format it correctly for the current platform
     """
     shellType = getShellType()
     if shellType == Shell.Linux:
@@ -45,7 +45,7 @@ def printSetEnvCommand(name, value):
 def printComment(comment):
     """
     Print comment command,
-    format it correctly for the current platfom
+    format it correctly for the current platform
     """
     shellType = getShellType()
     if shellType == Shell.Linux:

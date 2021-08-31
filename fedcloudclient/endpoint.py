@@ -13,10 +13,11 @@ from urllib import parse
 import click
 import defusedxml.ElementTree as ElementTree
 import requests
+from tabulate import tabulate
+
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import project_id_params, site_params
 from fedcloudclient.shell import printSetEnvCommand
-from tabulate import tabulate
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 
