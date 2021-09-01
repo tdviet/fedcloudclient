@@ -24,6 +24,7 @@ jobs:
         env:
           DEFAULT_BRANCH: master
           VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_MYPY: false
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Fail on errors
           DISABLE_ERRORS: false
