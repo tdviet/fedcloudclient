@@ -1,8 +1,8 @@
 Introduction
 ============
 
-.. image::https://zenodo.org/badge/336671726.svg
-   :target:https://zenodo.org/badge/latestdoi/336671726
+.. image:: https://zenodo.org/badge/336671726.svg
+   :target: https://zenodo.org/badge/latestdoi/336671726
 
 The `FedCloud client <https://fedcloudclient.fedcloud.eu/>`_ is a high-level Python package for a command-line client
 designed for interaction with the OpenStack services in the EGI infrastructure. The client can access various EGI
