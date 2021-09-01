@@ -16,7 +16,7 @@ The most notable features of FedCloud client are following:
   run the following command:
 
   ```shell
-  $ fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
+  fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
   ```
 
 - can perform an action/command on all OpenStack sites in EGI infrastructure by specifying `--site ALL_SITES`.
