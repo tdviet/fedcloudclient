@@ -2,31 +2,34 @@
 
 [![DOI](https://zenodo.org/badge/336671726.svg)](https://zenodo.org/badge/latestdoi/336671726)
 
-**fedcloudclient** is a command-line client and high-level Python package for interaction with EGI Federated Cloud. The
-aim here was to create a simple client which would allow users to perform the various OpenStack operations in EGI
-Federated Cloud. Performing any OpenStack command on any site requires only three options: site, VO and the command. For
-example:
+The [FedCloud client](https://fedcloudclient.fedcloud.eu/) is a high-level Python package for a command-line client
+designed for interaction with the OpenStack services in the EGI infrastructure. The client can access various EGI
+services and can perform many tasks for users including managing access tokens, listing services, and mainly execute
+commands on OpenStack sites in EGI infrastructure.
 
-- Listing images in fedcloud.egi.eu VO on CYFRONET-CLOUD site:
+The most notable features of FedCloud client are following:
+
+- have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs
+  and interaction with OpenStack sites.
+- can perform any OpenStack command on any sites with only three parameters: the site, the VO and the command. For
+  example, to list virtual machines (VM) images available to members of VO fedcloud.egi.eu on the site CYFRONET-CLOUD,
+  run the following command:
 
   ```shell
-  fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
+  $ fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
   ```
 
-- Listing all VMs in eosc-synergy.eu VO on all sites in EGI Federated Cloud
-
-   ```shell
-  fedcloud openstack server list --vo eosc-synergy.eu --site ALL_SITES
-  ```
+- can perform an action/command on all OpenStack sites in EGI infrastructure by specifying `--site ALL_SITES`.
+- can be used in [scripts](https://fedcloudclient.fedcloud.eu/scripts.html) for automation or called directly
+  from [Python](https://fedcloudclient.fedcloud.eu/development.html) codes.
 
 Five modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens, **
 fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from OpenStack keystone, **
-fedcloudclient.sites** manages site configuration, **fedcloudclient.openstack** for performing OpenStack operations, and
-finally **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
+fedcloudclient.sites** for managing site configurations, **fedcloudclient.openstack** for performing OpenStack
+operations on sites, and finally **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
 
 A short tutorial of the fedcloudclient is available in this
 [presentation](https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing).
-
 The full documentation, including installation, usage and API description is available
 at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedcloud.eu/).
 
