@@ -13,6 +13,7 @@ The most notable features of FedCloud client are following:
 
 * have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs
   and interaction with OpenStack sites.
+
 * can perform any OpenStack command on any sites with only three parameters: the site, the VO and the command. For
   example, to list virtual machines (VM) images available to members of VO fedcloud.egi.eu on the site CYFRONET-CLOUD,
   run the following command:
@@ -22,6 +23,7 @@ The most notable features of FedCloud client are following:
    $ fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
 
 * can perform an action/command on all OpenStack sites in EGI infrastructure by specifying `--site ALL_SITES`.
+
 * can be used in `scripts <https://fedcloudclient.fedcloud.eu/scripts.html>`_ for automation or called directly
   from `Python codes <https://fedcloudclient.fedcloud.eu/development.html>`_.
 

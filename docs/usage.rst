@@ -239,10 +239,6 @@ VOs and so on.
       name: eosc-synergy.eu
 
 
-* **"fedcloud site show-all"** : Show configurations of all sites.
-
-|
-
 * **"fedcloud site show-project-id --site <SITE> --vo <VO>"**: show the project ID of the VO on the site.
 
 ::
