@@ -14,7 +14,6 @@ import click
 import defusedxml.ElementTree as ElementTree
 import requests
 from tabulate import tabulate
-from urllib3.exceptions import ConnectTimeoutError
 
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
@@ -180,7 +179,7 @@ def get_projects_from_sites(access_token, site):
                     for p in get_projects(os_auth_url, unscoped_token)
                 ]
             )
-        except (RuntimeError, ConnectionError, ConnectTimeoutError):
+        except (RuntimeError, ConnectionError):
             pass
     return project_list
 
