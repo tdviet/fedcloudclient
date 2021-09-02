@@ -27,7 +27,8 @@ from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
     DEFAULT_PROTOCOL,
     all_site_params,
-    oidc_params, site_vo_params,
+    oidc_params,
+    site_vo_params,
 )
 from fedcloudclient.shell import printComment, printSetEnvCommand
 
@@ -339,7 +340,11 @@ def env(
         printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
         printSetEnvCommand("OS_PROTOCOL", protocol)
         printSetEnvCommand("OS_PROJECT_ID", project_id)
-        if oidc_agent_account or oidc_access_token or (oidc_refresh_token and oidc_client_id and oidc_client_secret):
+        if (
+            oidc_agent_account
+            or oidc_access_token
+            or (oidc_refresh_token and oidc_client_id and oidc_client_secret)
+        ):
             access_token = get_access_token(
                 oidc_access_token,
                 oidc_refresh_token,
@@ -353,4 +358,4 @@ def env(
             printComment("Remember to set also OS_ACCESS_TOKEN")
     else:
         print("VO %s not found to have access to site %s" % (vo, site))
-        return 1
+    return 1
