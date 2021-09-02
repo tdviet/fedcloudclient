@@ -309,6 +309,12 @@ jq -r &#39;.[].Result | map(select(.Properties.&quot;Accelerator:Type&quot; == &
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$  list-all-my-own-vms.sh --vo fedcloud.egi.eu
 </pre></div>
 </div>
+<ul class="simple">
+<li><p>Activate shell completion</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
+</pre></div>
+</div>
 </div>
 <div class="section" id="more-information">
 <h2>More information<a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h2>

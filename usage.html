@@ -95,6 +95,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using fedcloudclient as command-line client</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shell-completion">Shell completion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-help-command">fedcloud --help command</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-token-commands">fedcloud token commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-endpoint-commands">fedcloud endpoint commands</a></li>
@@ -266,7 +267,23 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 </tr>
 </tbody>
 </table>
-<p>For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of time.</p>
+<p>For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
+time.</p>
+</div>
+<div class="section" id="shell-completion">
+<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Permalink to this headline">¶</a></h2>
+<p>Shell completion for <em>fedcloud</em> command in <em>bash</em> can be activated by executing the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
+</pre></div>
+</div>
+<p>The command above may affect responsiveness of the shell. For long work, it is recommended to copy the
+<a class="reference external" href="https://github.com/tdviet/fedcloudclient/blob/master/examples/fedcloud_bash_completion.sh">fedcloud_bash_completion.sh script</a> to a local file, and
+source it from ~/.bashrc. Refer <a class="reference external" href="https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion">Click documentation</a> for a long explanation.</p>
+<p>After enabling shell completion, press &lt;TAB&gt; twice for shell completion:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site &lt;TAB&gt;&lt;TAB&gt;
+env              list             save-config      show             show-project-id
+</pre></div>
+</div>
 </div>
 <div class="section" id="fedcloud-help-command">
 <h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this headline">¶</a></h2>

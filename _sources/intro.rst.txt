@@ -11,7 +11,7 @@ commands on OpenStack sites in EGI infrastructure.
 
 The most notable features of FedCloud client are following:
 
-* have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs
+* have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs,
   and interaction with OpenStack sites.
 
 * can perform any OpenStack command on any sites with only three parameters: the site, the VO and the command. For
