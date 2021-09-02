@@ -1,4 +1,4 @@
-# shellcheck disable=SC2148,SC2034,SC2206
+# shellcheck disable=SC2148,SC2034,SC2206,SC2162
 # Script for shell completion for fedcloud
 # Add it to .bashrc for enabling shell completion
 
