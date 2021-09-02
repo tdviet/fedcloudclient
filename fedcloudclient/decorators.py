@@ -59,7 +59,7 @@ def all_site_params(func):
     @optgroup.group(
         "Site",
         cls=RequiredMutuallyExclusiveOptionGroup,
-        help='Specify one Openstack site or all sites'
+        help="Specify one Openstack site or all sites"
     )
     @optgroup.option(
         "--site",
@@ -146,7 +146,7 @@ def oidc_params(func):
     :return:
     """
 
-    @optgroup.group("OIDC token", help='Provide at least one type of tokens')
+    @optgroup.group("OIDC token", help="Provide at least one type of tokens")
     @optgroup.option(
         "--oidc-client-id",
         help="OIDC client id",
@@ -194,7 +194,7 @@ def openstack_params(func):
     :return:
     """
 
-    @optgroup.group("OpenStack authentication", help='Only change default values if necessary')
+    @optgroup.group("OpenStack authentication", help="Only change default values if necessary")
     @optgroup.option(
         "--openstack-auth-protocol",
         help="Authentication protocol",

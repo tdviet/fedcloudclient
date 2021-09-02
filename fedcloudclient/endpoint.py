@@ -17,7 +17,12 @@ from tabulate import tabulate
 from urllib3.exceptions import ConnectTimeoutError
 
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import ALL_SITES_KEYWORDS, all_site_params, project_id_params, site_params
+from fedcloudclient.decorators import (
+    ALL_SITES_KEYWORDS,
+    all_site_params,
+    project_id_params,
+    site_params,
+)
 from fedcloudclient.shell import printSetEnvCommand
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"

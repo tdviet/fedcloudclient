@@ -13,8 +13,16 @@ from distutils.spawn import find_executable
 import click
 
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import (ALL_SITES_KEYWORDS, DEFAULT_AUTH_TYPE, DEFAULT_IDENTITY_PROVIDER,
-                                       DEFAULT_PROTOCOL, all_site_params, openstack_params, site_params, vo_params, )
+from fedcloudclient.decorators import (
+    ALL_SITES_KEYWORDS,
+    DEFAULT_AUTH_TYPE,
+    DEFAULT_IDENTITY_PROVIDER,
+    DEFAULT_PROTOCOL,
+    all_site_params,
+    openstack_params,
+    site_params,
+    vo_params,
+)
 from fedcloudclient.sites import (
     find_endpoint_and_project_id,
     list_sites,

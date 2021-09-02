@@ -23,8 +23,10 @@ import yaml
 from jsonschema import validate
 
 from fedcloudclient.decorators import (
-    ALL_SITES_KEYWORDS, DEFAULT_PROTOCOL,
-    all_site_params, site_vo_params,
+    ALL_SITES_KEYWORDS,
+    DEFAULT_PROTOCOL,
+    all_site_params,
+    site_vo_params,
 )
 from fedcloudclient.shell import printComment, printSetEnvCommand
 
