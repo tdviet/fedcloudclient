@@ -1,4 +1,5 @@
 click
+click_option_group
 tabulate
 requests
 defusedxml

@@ -137,6 +137,13 @@ Useful commands
 
     $  list-all-my-own-vms.sh --vo fedcloud.egi.eu
 
+* Activate shell completion
+
+::
+
+    $ eval "$(_FEDCLOUD_COMPLETE=bash_source fedcloud)"
+
+
 More information
 ****************
 

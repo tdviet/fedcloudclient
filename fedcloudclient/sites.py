@@ -23,9 +23,8 @@ import yaml
 from jsonschema import validate
 
 from fedcloudclient.decorators import (
-    DEFAULT_PROTOCOL,
-    site_params,
-    site_vo_params,
+    ALL_SITES_KEYWORDS, DEFAULT_PROTOCOL,
+    all_site_params, site_vo_params,
 )
 from fedcloudclient.shell import printComment, printSetEnvCommand
 
@@ -244,12 +243,12 @@ def site():
 
 
 @site.command()
-@site_params
-def show(site):
+@all_site_params
+def show(site, all_sites):
     """
     Print configuration of specified site(s)
     """
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS or all_sites:
         read_site_config()
         for site_info in __site_config_data:
             site_info_str = yaml.dump(site_info, sort_keys=True)
@@ -270,6 +269,10 @@ def show_project_id(site, vo):
     """
     Print Keystone endpoint and project ID
     """
+    if site in ALL_SITES_KEYWORDS:
+        print("Cannot get project ID for ALL_SITES")
+        raise click.Abort()
+
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
         printSetEnvCommand("OS_AUTH_URL", endpoint)
@@ -310,7 +313,7 @@ def env(site, vo):
     Does not set token environment variable,
     need to set separately (e.g. via oidc-token command)
     """
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS:
         print("Cannot generate environment variables for ALL_SITES")
         raise click.Abort()
 

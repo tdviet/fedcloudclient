@@ -14,9 +14,10 @@ import click
 import defusedxml.ElementTree as ElementTree
 import requests
 from tabulate import tabulate
+from urllib3.exceptions import ConnectTimeoutError
 
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import project_id_params, site_params
+from fedcloudclient.decorators import ALL_SITES_KEYWORDS, all_site_params, project_id_params, site_params
 from fedcloudclient.shell import printSetEnvCommand
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
@@ -174,7 +175,7 @@ def get_projects_from_sites(access_token, site):
                     for p in get_projects(os_auth_url, unscoped_token)
                 ]
             )
-        except RuntimeError:
+        except (RuntimeError, ConnectionError, ConnectTimeoutError):
             pass
     return project_list
 
@@ -214,7 +215,7 @@ def endpoint():
 
 @endpoint.command()
 @oidc_params
-@site_params
+@all_site_params
 def projects(
     oidc_client_id,
     oidc_client_secret,
@@ -223,6 +224,7 @@ def projects(
     oidc_url,
     oidc_agent_account,
     site,
+    all_sites,
 ):
     """
     List projects from site(s)
@@ -235,7 +237,7 @@ def projects(
         oidc_url,
         oidc_agent_account,
     )
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS or all_sites:
         site = None
 
     project_list = get_projects_from_sites(access_token, site)
@@ -265,7 +267,7 @@ def token(
     """
     Get scoped Keystone token for site and project
     """
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS:
         print("Cannot get tokens for ALL_SITES")
         raise click.Abort()
 
@@ -308,12 +310,12 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-@site_params
-def list(service_type, production, monitored, site):
+@all_site_params
+def list(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
     """
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS or all_sites:
         site = None
 
     endpoints = find_endpoint(service_type, production, monitored, site)
@@ -337,7 +339,7 @@ def env(
     """
     Generate OS environment variables for site and project
     """
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS:
         print("Cannot generate environment variables for ALL_SITES")
         raise click.Abort()
 
