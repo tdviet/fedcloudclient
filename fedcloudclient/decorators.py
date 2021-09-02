@@ -195,7 +195,8 @@ def openstack_params(func):
     """
 
     @optgroup.group(
-        "OpenStack authentication", help="Only change default values if necessary",
+        "OpenStack authentication",
+        help="Only change default values if necessary",
     )
     @optgroup.option(
         "--openstack-auth-protocol",
