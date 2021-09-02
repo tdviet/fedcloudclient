@@ -22,19 +22,23 @@ RUN apt-key adv --keyserver hkp://pgp.surfnet.nl --recv-keys ACDFB08FDC962044D87
     && mkdir -p  ~/.config/oidc-agent/ \
     && rm -rf /var/lib/apt/lists/*
 
+COPY . /tmp/fedcloudclient
+
 # Dependencies
-COPY requirements.txt /tmp/fedcloudclient/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/fedcloudclient/requirements.txt
 # Add IGTF CAs to Python requests
 RUN cat /etc/grid-security/certificates/*.pem >> "$(python -m requests.certs)"
 
 # Install fedcloudclient
-COPY . /tmp/fedcloudclient
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir /tmp/fedcloudclient
 
 # Save site configs
 RUN fedcloud site save-config
-COPY examples/command_history.txt /root/.bash_history
+
+# Make shell more comfortable by adding completion and history
+RUN cp /tmp/fedcloudclient/examples/command_history.txt /root/.bash_history  \
+    && cp /tmp/fedcloudclient/examples/fedcloud_bash_completion.sh /root/.fedcloud_completion \
+    && echo ". ~/.fedcloud_completion" > /root/.bashrc
 
 CMD ["/usr/local/bin/fedcloud"]
