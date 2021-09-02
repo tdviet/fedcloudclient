@@ -22,10 +22,12 @@ import pkg_resources
 import yaml
 from jsonschema import validate
 
+from fedcloudclient.checkin import get_access_token
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
     DEFAULT_PROTOCOL,
     all_site_params,
+    oidc_params,
     site_vo_params,
 )
 from fedcloudclient.shell import printComment, printSetEnvCommand
@@ -309,7 +311,17 @@ def list():
 
 @site.command()
 @site_vo_params
-def env(site, vo):
+@oidc_params
+def env(
+    site,
+    vo,
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_access_token,
+    oidc_url,
+    oidc_agent_account,
+):
     """
     Generate OS environment variables for site.
     Does not set token environment variable,
@@ -328,7 +340,22 @@ def env(site, vo):
         printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
         printSetEnvCommand("OS_PROTOCOL", protocol)
         printSetEnvCommand("OS_PROJECT_ID", project_id)
-        printComment("Remember to also set OS_ACCESS_TOKEN")
+        if (
+            oidc_agent_account
+            or oidc_access_token
+            or (oidc_refresh_token and oidc_client_id and oidc_client_secret)
+        ):
+            access_token = get_access_token(
+                oidc_access_token,
+                oidc_refresh_token,
+                oidc_client_id,
+                oidc_client_secret,
+                oidc_url,
+                oidc_agent_account,
+            )
+            printSetEnvCommand("OS_ACCESS_TOKEN", access_token)
+        else:
+            printComment("Remember to set also OS_ACCESS_TOKEN")
     else:
         print("VO %s not found to have access to site %s" % (vo, site))
-        return 1
+    return 1
