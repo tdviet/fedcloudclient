@@ -10,7 +10,7 @@ import click
 import jwt
 
 from fedcloudclient.checkin import get_access_token, oidc_params
-from fedcloudclient.decorators import auth_file_params
+from fedcloudclient.decorators import ALL_SITES_KEYWORDS, auth_file_params
 from fedcloudclient.sites import find_endpoint_and_project_id, site_vo_params
 
 EC3_REFRESHTOKEN_TEMPLATE = """
@@ -170,7 +170,7 @@ def init(
         )
         raise click.Abort()
 
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS:
         print("EC3 commands cannot be used with ALL_SITES")
         raise click.Abort()
 

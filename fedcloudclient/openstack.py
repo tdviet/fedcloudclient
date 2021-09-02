@@ -14,15 +14,18 @@ import click
 
 from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
+    ALL_SITES_KEYWORDS,
     DEFAULT_AUTH_TYPE,
     DEFAULT_IDENTITY_PROVIDER,
     DEFAULT_PROTOCOL,
+    all_site_params,
     openstack_params,
+    site_params,
+    vo_params,
 )
 from fedcloudclient.sites import (
     find_endpoint_and_project_id,
     list_sites,
-    site_vo_params,
 )
 
 __OPENSTACK_CLIENT = "openstack"
@@ -220,7 +223,8 @@ def print_result(
 @click.command(context_settings={"ignore_unknown_options": True})
 @oidc_params
 @openstack_params
-@site_vo_params
+@all_site_params
+@vo_params
 @click.option(
     "--ignore-missing-vo",
     "-i",
@@ -245,6 +249,7 @@ def openstack(
     openstack_auth_type,
     openstack_auth_provider,
     site,
+    all_sites,
     vo,
     ignore_missing_vo,
     json_output,
@@ -267,7 +272,7 @@ def openstack(
         oidc_agent_account,
     )
 
-    if site == "ALL_SITES":
+    if site in ALL_SITES_KEYWORDS or all_sites:
         sites = list_sites()
     else:
         sites = [site]
@@ -326,7 +331,8 @@ def openstack(
 @click.command()
 @oidc_params
 @openstack_params
-@site_vo_params
+@site_params
+@vo_params
 def openstack_int(
     oidc_client_id,
     oidc_client_secret,

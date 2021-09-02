@@ -63,7 +63,31 @@ Most of fedcloud options, including options for tokens can be set via environmen
 |    EGI_VO                   |   --vo                          |                                  |
 +-----------------------------+---------------------------------+----------------------------------+
 
-For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of time.
+For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
+time.
+
+Shell completion
+****************
+
+Shell completion for *fedcloud* command in *bash* can be activated by executing the following command:
+
+::
+
+    $ eval "$(_FEDCLOUD_COMPLETE=bash_source fedcloud)"
+
+The command above may affect responsiveness of the shell. For long work, it is recommended to copy the
+`fedcloud_bash_completion.sh script
+<https://github.com/tdviet/fedcloudclient/blob/master/examples/fedcloud_bash_completion.sh>`_ to a local file, and
+source it from ~/.bashrc. Refer `Click documentation
+<https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion>`_ for a long explanation.
+
+After enabling shell completion, press <TAB> twice for shell completion:
+
+::
+
+    $ fedcloud site <TAB><TAB>
+    env              list             save-config      show             show-project-id
+
 
 fedcloud --help command
 ***********************
