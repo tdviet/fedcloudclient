@@ -6,6 +6,7 @@ import functools
 
 import click
 from click_option_group import RequiredMutuallyExclusiveOptionGroup, optgroup
+
 DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
@@ -34,7 +35,6 @@ def oidc_refresh_token_params(func):
         help="OIDC refresh token",
         envvar="OIDC_REFRESH_TOKEN",
         metavar="token",
-
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

@@ -221,7 +221,9 @@ def print_result(
         print(json.dumps(site_data, indent=2))
 
 
-@click.command(context_settings={"ignore_unknown_options": True, "max_content_width": 120})
+@click.command(
+    context_settings={"ignore_unknown_options": True, "max_content_width": 120}
+)
 @all_site_params
 @vo_params
 @oidc_params
