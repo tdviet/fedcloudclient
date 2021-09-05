@@ -222,7 +222,7 @@ def print_result(
 
 
 @click.command(
-    context_settings={"ignore_unknown_options": True, "max_content_width": 120}
+    context_settings={"ignore_unknown_options": True}
 )
 @all_site_params
 @vo_params
@@ -320,7 +320,7 @@ def openstack(
             print("]")
 
 
-@click.command(context_settings={"max_content_width": 120})
+@click.command()
 @site_params
 @vo_params
 @oidc_params

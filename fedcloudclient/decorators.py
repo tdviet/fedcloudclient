@@ -186,7 +186,7 @@ def oidc_params(func):
     )
     @optgroup.option(
         "--oidc-url",
-        help="OIDC URL",
+        help="OIDC identity provider URL",
         envvar="OIDC_URL",
         default=DEFAULT_OIDC_URL,
         show_default=True,
@@ -220,18 +220,18 @@ def openstack_params(func):
         metavar="",
     )
     @optgroup.option(
-        "--openstack-auth-type",
-        help="Authentication type",
-        envvar="OPENSTACK_AUTH_TYPE",
-        default=DEFAULT_AUTH_TYPE,
-        show_default=True,
-        metavar="",
-    )
-    @optgroup.option(
         "--openstack-auth-provider",
         help="Identity provider",
         envvar="OPENSTACK_AUTH_PROVIDER",
         default=DEFAULT_IDENTITY_PROVIDER,
+        show_default=True,
+        metavar="",
+    )
+    @optgroup.option(
+        "--openstack-auth-type",
+        help="Authentication type",
+        envvar="OPENSTACK_AUTH_TYPE",
+        default=DEFAULT_AUTH_TYPE,
         show_default=True,
         metavar="",
     )
