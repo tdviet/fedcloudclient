@@ -138,8 +138,8 @@ def refresh(
 
 
 @ec3.command()
-@oidc_params
 @site_vo_params
+@oidc_params
 @auth_file_params
 @click.option(
     "--template-dir",
