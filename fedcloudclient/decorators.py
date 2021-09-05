@@ -20,6 +20,7 @@ def oidc_access_token_params(func):
         "--oidc-access-token",
         help="OIDC access token",
         envvar="OIDC_ACCESS_TOKEN",
+        metavar="token",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -33,6 +34,7 @@ def oidc_refresh_token_params(func):
         "--oidc-refresh-token",
         help="OIDC refresh token",
         envvar="OIDC_REFRESH_TOKEN",
+        metavar="token",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -47,6 +49,7 @@ def site_params(func):
         help="Name of the site",
         required=True,
         envvar="EGI_SITE",
+        metavar="site-name",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -59,17 +62,18 @@ def all_site_params(func):
     @optgroup.group(
         "Site",
         cls=RequiredMutuallyExclusiveOptionGroup,
-        help="Specify one Openstack site or all sites",
+        help="Single Openstack site or all sites",
     )
     @optgroup.option(
         "--site",
         help="Name of the site or ALL_SITES",
         envvar="EGI_SITE",
+        metavar="site-name",
     )
     @optgroup.option(
         "--all-sites",
         "-a",
-        help="All sites (equivalent --site ALL_SITES)",
+        help="Short option for all sites (equivalent --site ALL_SITES)",
         is_flag=True,
     )
     @functools.wraps(func)
@@ -85,6 +89,7 @@ def project_id_params(func):
         help="Project ID",
         required=True,
         envvar="OS_PROJECT_ID",
+        metavar="project-id",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -99,6 +104,7 @@ def auth_file_params(func):
         help="Authorization file",
         default="auth.dat",
         show_default=True,
+        metavar="auth-file",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -113,6 +119,7 @@ def vo_params(func):
         help="Name of the VO",
         required=True,
         envvar="EGI_VO",
+        metavar="vo-name",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -146,38 +153,44 @@ def oidc_params(func):
     :return:
     """
 
-    @optgroup.group("OIDC token", help="Provide at least one type of tokens")
+    @optgroup.group("OIDC token", help="oidc-gent account or tokens for authentication")
     @optgroup.option(
-        "--oidc-client-id",
-        help="OIDC client id",
-        envvar="OIDC_CLIENT_ID",
-    )
-    @optgroup.option(
-        "--oidc-client-secret",
-        help="OIDC client secret",
-        envvar="OIDC_CLIENT_SECRET",
-    )
-    @optgroup.option(
-        "--oidc-refresh-token",
-        help="OIDC refresh token",
-        envvar="OIDC_REFRESH_TOKEN",
+        "--oidc-agent-account",
+        help="Account name in oidc-agent",
+        envvar="OIDC_AGENT_ACCOUNT",
+        metavar="account",
     )
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
         envvar="OIDC_ACCESS_TOKEN",
+        metavar="token",
+    )
+    @optgroup.option(
+        "--oidc-refresh-token",
+        help="OIDC refresh token",
+        envvar="OIDC_REFRESH_TOKEN",
+        metavar="token",
+    )
+    @optgroup.option(
+        "--oidc-client-id",
+        help="OIDC client id",
+        envvar="OIDC_CLIENT_ID",
+        metavar="id",
+    )
+    @optgroup.option(
+        "--oidc-client-secret",
+        help="OIDC client secret",
+        envvar="OIDC_CLIENT_SECRET",
+        metavar="secret",
     )
     @optgroup.option(
         "--oidc-url",
-        help="OIDC URL",
+        help="OIDC identity provider URL",
         envvar="OIDC_URL",
         default=DEFAULT_OIDC_URL,
         show_default=True,
-    )
-    @optgroup.option(
-        "--oidc-agent-account",
-        help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
+        metavar="provider-url",
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -204,13 +217,7 @@ def openstack_params(func):
         envvar="OPENSTACK_AUTH_PROTOCOL",
         default=DEFAULT_PROTOCOL,
         show_default=True,
-    )
-    @optgroup.option(
-        "--openstack-auth-type",
-        help="Authentication type",
-        envvar="OPENSTACK_AUTH_TYPE",
-        default=DEFAULT_AUTH_TYPE,
-        show_default=True,
+        metavar="",
     )
     @optgroup.option(
         "--openstack-auth-provider",
@@ -218,6 +225,39 @@ def openstack_params(func):
         envvar="OPENSTACK_AUTH_PROVIDER",
         default=DEFAULT_IDENTITY_PROVIDER,
         show_default=True,
+        metavar="",
+    )
+    @optgroup.option(
+        "--openstack-auth-type",
+        help="Authentication type",
+        envvar="OPENSTACK_AUTH_TYPE",
+        default=DEFAULT_AUTH_TYPE,
+        show_default=True,
+        metavar="",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def output_format_params(func):
+    @optgroup.group(
+        "Output format",
+        help="Parameters for formatting outputs",
+    )
+    @optgroup.option(
+        "--ignore-missing-vo",
+        "-i",
+        help="Ignore sites that do not support the VO",
+        is_flag=True,
+    )
+    @optgroup.option(
+        "--json-output",
+        "-j",
+        help="Print output as JSON object",
+        is_flag=True,
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

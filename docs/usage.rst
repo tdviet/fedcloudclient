@@ -286,8 +286,8 @@ VOs and so on.
     # export OS_ACCESS_TOKEN=`oidc-token egi`
 
 The main differences between *"fedcloud endpoint env"* and *"fedcloud site env"* commands are that the second command
-needs VO name as input parameter instead of project ID; and it does not need access token (and therefore it does not
-set OS_ACCESS_TOKEN).
+needs VO name as input parameter instead of project ID. The command may set also environment variable OS_ACCESS_TOKEN,
+if access token is provided, otherwise it will print notification.
 
 
 fedcloud openstack commands

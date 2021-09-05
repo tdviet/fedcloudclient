@@ -218,8 +218,8 @@ def endpoint():
 
 
 @endpoint.command()
-@oidc_params
 @all_site_params
+@oidc_params
 def projects(
     oidc_client_id,
     oidc_client_secret,
@@ -255,9 +255,9 @@ def projects(
 
 
 @endpoint.command()
-@oidc_params
 @site_params
 @project_id_params
+@oidc_params
 def token(
     oidc_client_id,
     oidc_client_secret,
@@ -296,6 +296,7 @@ def token(
 
 
 @endpoint.command()
+@all_site_params
 @click.option(
     "--service-type",
     default="org.openstack.nova",
@@ -314,7 +315,6 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-@all_site_params
 def list(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
@@ -327,9 +327,9 @@ def list(service_type, production, monitored, site, all_sites):
 
 
 @endpoint.command()
-@oidc_params
 @site_params
 @project_id_params
+@oidc_params
 def env(
     oidc_client_id,
     oidc_client_secret,

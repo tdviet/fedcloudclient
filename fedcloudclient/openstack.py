@@ -20,6 +20,7 @@ from fedcloudclient.decorators import (
     DEFAULT_PROTOCOL,
     all_site_params,
     openstack_params,
+    output_format_params,
     site_params,
     vo_params,
 )
@@ -221,22 +222,11 @@ def print_result(
 
 
 @click.command(context_settings={"ignore_unknown_options": True})
-@oidc_params
-@openstack_params
 @all_site_params
 @vo_params
-@click.option(
-    "--ignore-missing-vo",
-    "-i",
-    help="Ignore sites that do not support the VO",
-    is_flag=True,
-)
-@click.option(
-    "--json-output",
-    "-j",
-    help="Print output as JSON object",
-    is_flag=True,
-)
+@oidc_params
+@output_format_params
+@openstack_params
 @click.argument("openstack_command", required=True, nargs=-1)
 def openstack(
     oidc_client_id,
@@ -329,10 +319,10 @@ def openstack(
 
 
 @click.command()
-@oidc_params
-@openstack_params
 @site_params
 @vo_params
+@oidc_params
+@openstack_params
 def openstack_int(
     oidc_client_id,
     oidc_client_secret,
