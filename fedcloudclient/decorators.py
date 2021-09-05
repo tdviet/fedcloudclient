@@ -62,7 +62,7 @@ def all_site_params(func):
     @optgroup.group(
         "Site",
         cls=RequiredMutuallyExclusiveOptionGroup,
-        help="Specify one Openstack site or all sites",
+        help="Single Openstack site or all sites",
     )
     @optgroup.option(
         "--site",
@@ -73,7 +73,7 @@ def all_site_params(func):
     @optgroup.option(
         "--all-sites",
         "-a",
-        help="All sites (equivalent --site ALL_SITES)",
+        help="Short option for all sites (equivalent --site ALL_SITES)",
         is_flag=True,
     )
     @functools.wraps(func)
@@ -153,7 +153,7 @@ def oidc_params(func):
     :return:
     """
 
-    @optgroup.group("OIDC token", help="Provide oidc-gent account or tokens")
+    @optgroup.group("OIDC token", help="oidc-gent account or tokens for authentication")
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",

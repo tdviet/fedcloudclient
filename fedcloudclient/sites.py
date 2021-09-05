@@ -324,8 +324,8 @@ def env(
 ):
     """
     Generate OS environment variables for site.
-    Does not set token environment variable,
-    need to set separately (e.g. via oidc-token command)
+    May set also environment variable OS_ACCESS_TOKEN,
+    if access token is provided, otherwise print notification
     """
     if site in ALL_SITES_KEYWORDS:
         print("Cannot generate environment variables for ALL_SITES")
