@@ -466,8 +466,8 @@ export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 </pre></div>
 </div>
 <p>The main differences between <em>&quot;fedcloud endpoint env&quot;</em> and <em>&quot;fedcloud site env&quot;</em> commands are that the second command
-needs VO name as input parameter instead of project ID; and it does not need access token (and therefore it does not
-set OS_ACCESS_TOKEN).</p>
+needs VO name as input parameter instead of project ID. The command may set also environment variable OS_ACCESS_TOKEN,
+if access token is provided, otherwise it will print notification.</p>
 </div>
 <div class="section" id="fedcloud-openstack-commands">
 <h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline">¶</a></h2>

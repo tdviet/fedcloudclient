@@ -24,7 +24,7 @@ The most notable features of FedCloud client are following:
 
 * can perform an action/command on all OpenStack sites in EGI infrastructure by specifying `--site ALL_SITES`.
 
-* can be used in `scripts <https://fedcloudclient.fedcloud.eu/scripts.html>`_ for automation or called directly
+* can be used in `scripts for automation<https://fedcloudclient.fedcloud.eu/scripts.html>`_ or called directly
   from `Python codes <https://fedcloudclient.fedcloud.eu/development.html>`_.
 
 Five modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens, **
