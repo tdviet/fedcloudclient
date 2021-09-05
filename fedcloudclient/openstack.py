@@ -221,9 +221,7 @@ def print_result(
         print(json.dumps(site_data, indent=2))
 
 
-@click.command(
-    context_settings={"ignore_unknown_options": True}
-)
+@click.command(context_settings={"ignore_unknown_options": True})
 @all_site_params
 @vo_params
 @oidc_params
