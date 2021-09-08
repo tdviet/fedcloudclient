@@ -146,7 +146,11 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
         os_auth_url,
         "/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/%s/auth" % protocol,
     )
-    r = requests.post(url, headers={"Authorization": "Bearer %s" % access_token}, timeout=TIMEOUT)
+    r = requests.post(
+        url,
+        headers={"Authorization": "Bearer %s" % access_token},
+        timeout=TIMEOUT,
+    )
     # pylint: disable=no-member
     if r.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an unscoped token")
