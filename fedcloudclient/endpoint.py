@@ -27,6 +27,7 @@ from fedcloudclient.shell import printSetEnvCommand
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 TIMEOUT = 10
 
+
 def get_sites():
     """
     Get list of sites (using GOCDB instead of site configuration)
