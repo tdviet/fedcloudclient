@@ -25,7 +25,7 @@ from fedcloudclient.decorators import (
 from fedcloudclient.shell import printSetEnvCommand
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
-
+TIMEOUT = 10
 
 def get_sites():
     """
@@ -146,7 +146,7 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
         os_auth_url,
         "/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/%s/auth" % protocol,
     )
-    r = requests.post(url, headers={"Authorization": "Bearer %s" % access_token})
+    r = requests.post(url, headers={"Authorization": "Bearer %s" % access_token}, timeout=TIMEOUT)
     # pylint: disable=no-member
     if r.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an unscoped token")
@@ -179,7 +179,7 @@ def get_projects_from_sites(access_token, site):
                     for p in get_projects(os_auth_url, unscoped_token)
                 ]
             )
-        except (RuntimeError, ConnectionError):
+        except (RuntimeError, requests.exceptions.ConnectionError):
             pass
     return project_list
 
