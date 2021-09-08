@@ -108,8 +108,8 @@ Basic usages
 
     $ fedcloud openstack image list --site ALL_SITES --vo eosc-synergy.eu --json-output
 
-Useful commands
-***************
+Mapping and filtering results from OpenStack commands
+*****************************************************
 
 * Select flavors with 2 CPUs:
 
@@ -118,18 +118,51 @@ Useful commands
     $ fedcloud openstack flavor list  --site IISAS-FedCloud --vo eosc-synergy.eu --json-output | \
     jq -r  '.[].Result[] | select(.VCPUs == 2) | .Name'
 
-* Select GPU flavors and show their GPU properties:
+* Select GPU flavors and show their GPU properties on a site:
 
 ::
 
     $ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu --json-output | \
     jq -r '.[].Result | map(select(.Properties."Accelerator:Type" == "GPU")) | .'
 
+* Select GPU flavors and show their GPU properties on all sites:
+
+::
+
+    $ fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+    jq -r 'map(select(."Error code" ==  0)) |
+           map(.Result = (.Result| map(select(.Properties."Accelerator:Type" == "GPU")))) |
+           map(select(.Result | length >  0))'
+
+
+* Construct JSON objects just with site names and flavor names, remove all other properties:
+
+::
+
+    $ fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+    jq -r 'map(select(."Error code" ==  0)) |
+           map({Site:.Site, Flavors:[.Result[].Name]})'
+
+Useful commands
+***************
+
 * Search images with appliance title in AppDB:
 
 ::
 
     $ fedcloud openstack image list --property "dc:title"="Image for EGI Docker [Ubuntu/18.04/VirtualBox]" --site CESNET-MCC  --vo eosc-synergy.eu
+
+* Show all Horizon dashboards:
+
+::
+
+    $ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
+
+* Set OpenStack environment variables:
+
+::
+
+    $ eval $(fedcloud site env --site IISAS-FedCloud --vo vo.access.egi.eu)
 
 * List all my own VMs:
 
@@ -141,7 +174,11 @@ Useful commands
 
 ::
 
+    # Quick and dirty way (resulted in unresponsive shell)
     $ eval "$(_FEDCLOUD_COMPLETE=bash_source fedcloud)"
+    # More systematic way
+    $ wget https://raw.githubusercontent.com/tdviet/fedcloudclient/master/examples/fedcloud_bash_completion.sh
+    $ source fedcloud_bash_completion.sh
 
 
 More information

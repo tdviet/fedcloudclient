@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#using-docker-container">Using Docker container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-oidc-agent">Using oidc-agent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usages">Basic usages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mapping-and-filtering-results-from-openstack-commands">Mapping and filtering results from OpenStack commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#useful-commands">Useful commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-information">More information</a></li>
 </ul>
@@ -281,8 +282,8 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 </div>
-<div class="section" id="useful-commands">
-<h2>Useful commands<a class="headerlink" href="#useful-commands" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="mapping-and-filtering-results-from-openstack-commands">
+<h2>Mapping and filtering results from OpenStack commands<a class="headerlink" href="#mapping-and-filtering-results-from-openstack-commands" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Select flavors with 2 CPUs:</p></li>
 </ul>
@@ -291,16 +292,48 @@ jq -r  &#39;.[].Result[] | select(.VCPUs == 2) | .Name&#39;
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Select GPU flavors and show their GPU properties:</p></li>
+<li><p>Select GPU flavors and show their GPU properties on a site:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site IISAS-FedCloud --vo acc-comp.egi.eu --json-output | \
 jq -r &#39;.[].Result | map(select(.Properties.&quot;Accelerator:Type&quot; == &quot;GPU&quot;)) | .&#39;
 </pre></div>
 </div>
 <ul class="simple">
+<li><p>Select GPU flavors and show their GPU properties on all sites:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+jq -r &#39;map(select(.&quot;Error code&quot; ==  0)) |
+       map(.Result = (.Result| map(select(.Properties.&quot;Accelerator:Type&quot; == &quot;GPU&quot;)))) |
+       map(select(.Result | length &gt;  0))&#39;
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Construct JSON objects just with site names and flavor names, remove all other properties:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack flavor list --long --site ALL_SITES --vo vo.access.egi.eu --json-output | \
+jq -r &#39;map(select(.&quot;Error code&quot; ==  0)) |
+       map({Site:.Site, Flavors:[.Result[].Name]})&#39;
+</pre></div>
+</div>
+</div>
+<div class="section" id="useful-commands">
+<h2>Useful commands<a class="headerlink" href="#useful-commands" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
 <li><p>Search images with appliance title in AppDB:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --property &quot;dc:title&quot;=&quot;Image for EGI Docker [Ubuntu/18.04/VirtualBox]&quot; --site CESNET-MCC  --vo eosc-synergy.eu
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Show all Horizon dashboards:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Set OpenStack environment variables:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval $(fedcloud site env --site IISAS-FedCloud --vo vo.access.egi.eu)
 </pre></div>
 </div>
 <ul class="simple">
@@ -312,7 +345,11 @@ jq -r &#39;.[].Result | map(select(.Properties.&quot;Accelerator:Type&quot; == &
 <ul class="simple">
 <li><p>Activate shell completion</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Quick and dirty way (resulted in unresponsive shell)
+$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
+# More systematic way
+$ wget https://raw.githubusercontent.com/tdviet/fedcloudclient/master/examples/fedcloud_bash_completion.sh
+$ source fedcloud_bash_completion.sh
 </pre></div>
 </div>
 </div>
