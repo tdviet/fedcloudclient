@@ -1,11 +1,10 @@
-click
-click_option_group
+click>=8.0.1
+click_option_group>=0.5.3
 tabulate
 requests
 defusedxml
-pyjwt~=2.0.1
+pyjwt>=2.0.1
 python-openstackclient
-future
 liboidcagent
 
 PyYAML>=5.4.1
