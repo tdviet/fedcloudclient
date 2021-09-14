@@ -1,73 +1,35 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Using fedcloudclient as command-line client &mdash; fedcloudclient  documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Using fedcloudclient in Python" href="development.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html">
-          
-
-          
-            
             <img src="_static/fedcloudclient-logo-non-transparent-small.png" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -75,18 +37,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
@@ -111,81 +62,38 @@
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">fedcloudclient</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
       <li>Using fedcloudclient as command-line client</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
-            
               <a href="https://github.com/tdviet/fedcloudclient/blob/master/docs/usage.rst" class="fa fa-github"> Edit on GitHub</a>
-            
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="using-fedcloudclient-as-command-line-client">
-<h1>Using fedcloudclient as command-line client<a class="headerlink" href="#using-fedcloudclient-as-command-line-client" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="using-fedcloudclient-as-command-line-client">
+<h1>Using fedcloudclient as command-line client<a class="headerlink" href="#using-fedcloudclient-as-command-line-client" title="Permalink to this headline"></a></h1>
 <p><strong>fedcloudclient</strong> has four groups of commands: <strong>&quot;fedcloud token&quot;</strong> for interactions with EGI Check-in and access tokens,
 <strong>&quot;fedcloud endpoint&quot;</strong> for interactions with GOCDB (and site endpoints according to GOCDB), <strong>&quot;fedcloud site&quot;</strong> for
 manipulations with site configurations, and <strong>&quot;fedcloud openstack&quot;</strong> or <strong>&quot;fedcloud openstack-int&quot;</strong> for performing
 OpenStack commands on sites.</p>
-<div class="section" id="authentication">
-<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline">¶</a></h2>
+<section id="authentication">
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline"></a></h2>
 <p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
 directly (via option <em>&quot;--oidc-access-token&quot;</em>), or via oidc-agent (via option <em>&quot;--oidc-agent-account&quot;</em>), use refresh
 tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
@@ -204,9 +112,9 @@ provider via option <em>&quot;--oidc-url&quot;</em>. Remember to set identity pr
 for OpenStack commands.</p>
 <p>The default protocol is <em>&quot;openid&quot;</em>. Users can change default protocol via option <em>&quot;--openstack-auth-protocol&quot;</em>. However,
 sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oidc&quot;</em> for INFN-CLOUD-BARI.</p>
-</div>
-<div class="section" id="environment-variables">
-<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline"></a></h2>
 <p>Most of fedcloud options, including options for tokens can be set via environment variables:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -269,9 +177,9 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 </table>
 <p>For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
 time.</p>
-</div>
-<div class="section" id="shell-completion">
-<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="shell-completion">
+<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Permalink to this headline"></a></h2>
 <p>Shell completion for <em>fedcloud</em> command in <em>bash</em> can be activated by executing the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
 </pre></div>
@@ -284,9 +192,9 @@ source it from ~/.bashrc. Refer <a class="reference external" href="https://clic
 env              list             save-config      show             show-project-id
 </pre></div>
 </div>
-</div>
-<div class="section" id="fedcloud-help-command">
-<h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-help-command">
+<h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud --help&quot;</strong> command will print help message. When using it in combination with other
 commands, e.g. <strong>&quot;fedcloud token --help&quot;</strong>, <strong>&quot;fedcloud token check --hep&quot;</strong>, it will print list of options for the
@@ -306,9 +214,9 @@ Commands:
   token          Token command group for manipulation with tokens
 </pre></div>
 </div>
-</div>
-<div class="section" id="fedcloud-token-commands">
-<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-token-commands">
+<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud token check --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong>: Check the expiration time of access token, so users can know whether
 they need to refresh it. As mentioned before, access token may be given via environment variable <em>OIDC_ACCESS_TOKEN</em>,
@@ -328,9 +236,9 @@ fedcloud.egi.eu
 training.egi.eu
 </pre></div>
 </div>
-</div>
-<div class="section" id="fedcloud-endpoint-commands">
-<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-endpoint-commands">
+<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Permalink to this headline"></a></h2>
 <p><strong>&quot;fedcloud endpoint&quot;</strong> commands are complementary part of the <strong>&quot;fedcloud site&quot;</strong> commands. Instead of using site
 configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
 directly from GOCDB (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe test on sites</p>
@@ -379,9 +287,9 @@ export OS_PROTOCOL=&quot;openid&quot;
 export OS_ACCESS_TOKEN=&quot;...&quot;
 </pre></div>
 </div>
-</div>
-<div class="section" id="fedcloud-ec3-commands">
-<h2>fedcloud ec3 commands<a class="headerlink" href="#fedcloud-ec3-commands" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-ec3-commands">
+<h2>fedcloud ec3 commands<a class="headerlink" href="#fedcloud-ec3-commands" title="Permalink to this headline"></a></h2>
 <p><strong>&quot;fedcloud ec3&quot;</strong> commands are helper commands for deploying EC3 (Elastic Cloud Compute Cluster) in Cloud
 via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.</p>
 <ul class="simple">
@@ -399,9 +307,9 @@ Refresh the access token stored in authorization file (by default <em>auth.dat</
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
 </pre></div>
 </div>
-</div>
-<div class="section" id="fedcloud-site-commands">
-<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-site-commands">
+<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this headline"></a></h2>
 <p><strong>&quot;fedcloud site&quot;</strong> commands will read site configurations and manipulate with them. If the local site configurations exist
 at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
 <p>By default, <strong>fedcloud</strong> does not save anything on local disk, users have to save the site configuration to local disk
@@ -468,9 +376,9 @@ export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
 <p>The main differences between <em>&quot;fedcloud endpoint env&quot;</em> and <em>&quot;fedcloud site env&quot;</em> commands are that the second command
 needs VO name as input parameter instead of project ID. The command may set also environment variable OS_ACCESS_TOKEN,
 if access token is provided, otherwise it will print notification.</p>
-</div>
-<div class="section" id="fedcloud-openstack-commands">
-<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="fedcloud-openstack-commands">
+<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud openstack --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; &lt;OPENSTACK_COMMAND&gt;&quot;</strong> : Execute an
 OpenStack command on the site and VO. Examples of OpenStack commands are <em>&quot;image list&quot;</em>, <em>&quot;server list&quot;</em> and can be used
@@ -512,55 +420,38 @@ be used for successive commands without authentication via CheckIn again.</p></l
 (openstack)
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloudclient in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloudclient in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, Viet Tran.
-
-    </p>
+    <p>&#169; Copyright 2020, Viet Tran.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
