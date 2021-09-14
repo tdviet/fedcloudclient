@@ -19,6 +19,10 @@ from fedcloudclient.decorators import (
     oidc_refresh_token_params,
 )
 
+# Minimal lifetime of the access token is 10s and max 24h
+_MIN_ACCESS_TOKEN_TIME = 10
+_MAX_ACCESS_TOKEN_TIME = 24*3600
+
 
 def oidc_discover(oidc_url):
     """
@@ -141,10 +145,16 @@ def get_access_token(
 
         expiration_timestamp = int(payload["exp"])
         current_timestamp = int(time.time())
-        if current_timestamp > expiration_timestamp - 10:
+        if current_timestamp > expiration_timestamp - _MIN_ACCESS_TOKEN_TIME:
             raise SystemExit(
                 "The given access token has expired."
-                + " Get new access token before continuing on operation"
+                " Get new access token before continuing on operation"
+            )
+        if current_timestamp < expiration_timestamp - _MAX_ACCESS_TOKEN_TIME:
+            raise SystemExit(
+                "You probably use refresh tokens as access tokens."
+                " Get access tokens via `curl -X POST -u ...` command"
+                " in the lat row of the page https://aai.egi.eu/fedcloud."
             )
         return oidc_access_token
     else:
