@@ -21,7 +21,7 @@ from fedcloudclient.decorators import (
 
 # Minimal lifetime of the access token is 10s and max 24h
 _MIN_ACCESS_TOKEN_TIME = 10
-_MAX_ACCESS_TOKEN_TIME = 24*3600
+_MAX_ACCESS_TOKEN_TIME = 24 * 3600
 
 
 def oidc_discover(oidc_url):
