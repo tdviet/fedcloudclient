@@ -154,7 +154,7 @@ def get_access_token(
             raise SystemExit(
                 "You probably use refresh tokens as access tokens."
                 " Get access tokens via `curl -X POST -u ...` command"
-                " in the lat row of the page https://aai.egi.eu/fedcloud."
+                " in the last row of the page https://aai.egi.eu/fedcloud."
             )
         return oidc_access_token
     else:
