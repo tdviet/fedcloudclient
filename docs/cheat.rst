@@ -35,7 +35,7 @@ Local install via pip3
 Using Docker container
 **********************
 
-* Pull latest version of fedcloudclient container
+* Pull the latest version of fedcloudclient container
 
 ::
 
