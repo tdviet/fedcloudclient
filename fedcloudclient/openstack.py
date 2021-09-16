@@ -32,6 +32,8 @@ from fedcloudclient.sites import (
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30
 
+CONFLICTING_ENVS = ["OS_TOKEN", "OS_USER_DOMAIN_NAME"]
+
 
 def fedcloud_openstack_full(
     oidc_access_token,
@@ -93,7 +95,8 @@ def fedcloud_openstack_full(
 
     # Remove conflicting environment
     my_env = os.environ.copy()
-    my_env.pop("OS_TOKEN", None)
+    for env in CONFLICTING_ENVS:
+        my_env.pop(env, None)
 
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
