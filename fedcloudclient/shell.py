@@ -1,3 +1,7 @@
+"""
+Support shell functions
+"""
+
 import os
 import re
 import sys
