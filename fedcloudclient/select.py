@@ -5,6 +5,7 @@ or images on different OpenStack sites
 import json
 
 import click
+import yaml
 from jsonpath_ng.exceptions import JsonPathParserError
 from jsonpath_ng.ext import parse
 
@@ -177,5 +178,7 @@ def flavor(
     elif flavor_output == "list":
         for flavor_object in sorted_flavors:
             print(flavor_object.get("Name"))
+    elif flavor_output == "YAML":
+        print(yaml.dump(sorted_flavors))
     else:
         print(json.dumps(sorted_flavors, indent=4))

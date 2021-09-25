@@ -274,7 +274,7 @@ def flavor_specs_params(func):
     @optgroup.option(
         "--flavor-specs",
         help="Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'."
-             " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
+        " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
         multiple=True,
         metavar="flavor-specs",
     )
@@ -308,8 +308,8 @@ def flavor_output_params(func):
     @optgroup.option(
         "--flavor-output",
         help="Flavor output option, 'first' for printing only best matched flavor, "
-             "'list' for printing all matched flavor names, and 'JSON' for full output",
-        type=click.Choice(['first', 'list', 'JSON'], case_sensitive=False),
+        "'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
+        type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
     @functools.wraps(func)
