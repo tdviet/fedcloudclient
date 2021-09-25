@@ -290,6 +290,19 @@ needs VO name as input parameter instead of project ID. The command may set also
 if access token is provided, otherwise it will print notification.
 
 
+fedcloud select commands
+***************************
+
+* **"fedcloud select flavor --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --flavor-specs <flavor-specs>"**
+: Select flavor according to the specification in *flavor-specs*. The
+specifications may be repeated, e.g. *--flavor "VCPUs==2" --flavor-specs "RAM>=2048"*, or may be joined, e.g.
+*--flavor-specs "VCPUs==2 & Disk>10"*. For frequently used specs, short-option alternatives are available, e.g.
+*--vcpus 2* is equivalent to *--flavor-specs "VCPUS==2"*. The output is sorted, flavors using less resources
+(in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
+flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in text/YAML/JSON
+format.
+
+
 fedcloud openstack commands
 ***************************
 
