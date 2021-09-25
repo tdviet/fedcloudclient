@@ -8,13 +8,18 @@ import click
 from jsonpath_ng.ext import parse
 
 from fedcloudclient.checkin import get_access_token
-from fedcloudclient.decorators import flavor_specs_params, oidc_params, site_params, vo_params
+from fedcloudclient.decorators import (
+    flavor_specs_params,
+    oidc_params,
+    site_params,
+    vo_params,
+)
 from fedcloudclient.openstack import fedcloud_openstack
 
 flavor_match_template = "$[?( {specs} )]"
 
 
-def get_flavors(oidc_access_token, site, vo, ):
+def get_flavors(oidc_access_token, site, vo):
     """
     Getting list of flavors for the given site and VO, using
     `openstack flavor list --long` command
@@ -33,11 +38,11 @@ def get_parser(specs, match_template):
     """
     Build parser according to specification
 
-     :param match_template:
-     :param specs: list of strings of specifications
+    :param match_template:
+    :param specs: list of strings of specifications
 
-     :return: jsonpath parser
-     """
+    :return: jsonpath parser
+    """
     spec_string = " & ".join(specs)
     match_string = match_template.format(specs=spec_string)
     return parse(match_string)
@@ -45,13 +50,13 @@ def get_parser(specs, match_template):
 
 def do_filter(parser, input_list):
     """
-     Filter flavor by applying  parser on the flavor list
+    Filter flavor by applying  parser on the flavor list
 
-     :param input_list: list of input data in JSON format
-     :param parser: jsonpath parser
+    :param input_list: list of input data in JSON format
+    :param parser: jsonpath parser
 
-     :return: list of matched flavors in JSON
-     """
+    :return: list of matched flavors in JSON
+    """
     return [match.value for match in parser.find(input_list)]
 
 
