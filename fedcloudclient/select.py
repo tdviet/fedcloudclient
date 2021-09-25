@@ -179,6 +179,6 @@ def flavor(
         for flavor_object in sorted_flavors:
             print(flavor_object.get("Name"))
     elif flavor_output == "YAML":
-        print(yaml.dump(sorted_flavors))
+        print(yaml.dump(sorted_flavors, sort_keys=False))
     else:
         print(json.dumps(sorted_flavors, indent=4))
