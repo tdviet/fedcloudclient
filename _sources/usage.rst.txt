@@ -302,6 +302,16 @@ fedcloud select commands
   flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in text/YAML/JSON
   format.
 
+::
+
+    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --flavor-specs "RAM>=2096" --flavor-specs "Disk > 10" --flavor-output list
+    m1.medium
+    m1.large
+    m1.xlarge
+    m1.huge
+    g1.c08r30-K20m
+    g1.c16r60-2xK20m
+
 
 fedcloud openstack commands
 ***************************

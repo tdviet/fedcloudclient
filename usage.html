@@ -390,6 +390,15 @@ e.g. <em>--flavor &quot;VCPUs==2&quot; --flavor-specs &quot;RAM&gt;=2048&quot;</
 flavor with <em>--flavor-output first</em> (suitable for scripting) or the full list of all matched flavors in text/YAML/JSON
 format.</p></li>
 </ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --flavor-specs &quot;RAM&gt;=2096&quot; --flavor-specs &quot;Disk &gt; 10&quot; --flavor-output list
+m1.medium
+m1.large
+m1.xlarge
+m1.huge
+g1.c08r30-K20m
+g1.c16r60-2xK20m
+</pre></div>
+</div>
 </section>
 <section id="fedcloud-openstack-commands">
 <h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline"></a></h2>
