@@ -293,8 +293,8 @@ if access token is provided, otherwise it will print notification.
 fedcloud select commands
 ***************************
 
-* **"fedcloud select flavor --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --flavor-specs
-<flavor-specs>"** : Select flavor according to the specification in *flavor-specs*. The specifications may be repeated,
+* **"fedcloud select flavor --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --flavor-specs <flavor-specs>"** : Select
+flavor according to the specification in *flavor-specs*. The specifications may be repeated,
 e.g. *--flavor "VCPUs==2" --flavor-specs "RAM>=2048"*, or may be joined, e.g.
 *--flavor-specs "VCPUs==2 & Disk>10"*. For frequently used specs, short-option alternatives are available, e.g.
 *--vcpus 2* is equivalent to *--flavor-specs "VCPUS==2"*. The output is sorted, flavors using less resources

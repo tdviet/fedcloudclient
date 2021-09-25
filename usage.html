@@ -381,9 +381,9 @@ if access token is provided, otherwise it will print notification.</p>
 <section id="fedcloud-select-commands">
 <h2>fedcloud select commands<a class="headerlink" href="#fedcloud-select-commands" title="Permalink to this headline"></a></h2>
 <ul class="simple">
-<li><p><a href="#id1"><span class="problematic" id="id2">**</span></a>&quot;fedcloud select flavor --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --flavor-specs</p></li>
+<li><p><strong>&quot;fedcloud select flavor --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --flavor-specs &lt;flavor-specs&gt;&quot;</strong> : Select</p></li>
 </ul>
-<p>&lt;flavor-specs&gt;&quot;** : Select flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
+<p>flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
 e.g. <em>--flavor &quot;VCPUs==2&quot; --flavor-specs &quot;RAM&gt;=2048&quot;</em>, or may be joined, e.g.
 <em>--flavor-specs &quot;VCPUs==2 &amp; Disk&gt;10&quot;</em>. For frequently used specs, short-option alternatives are available, e.g.
 <em>--vcpus 2</em> is equivalent to <em>--flavor-specs &quot;VCPUS==2&quot;</em>. The output is sorted, flavors using less resources
