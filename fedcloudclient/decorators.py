@@ -264,3 +264,36 @@ def output_format_params(func):
         return func(*args, **kwargs)
 
     return wrapper
+
+
+def flavor_specs_params(func):
+    @optgroup.group(
+        "Flavor specs options",
+        help="Parameters for flavor specification",
+    )
+    @optgroup.option(
+        "--flavor-specs",
+        help="Flavor specifications, e.g. VCUPs==2, RAM>=2048. May be repeated for more precise specs",
+        multiple=True,
+        metavar="flavor-specs",
+    )
+    @optgroup.option(
+        "--vcpus",
+        help="Number of VCPUs (equivalent --flavor-specs VCPUs==vcpus)",
+        metavar="vcpus",
+    )
+    @optgroup.option(
+        "--RAM",
+        help="Amount of RAM in MB (equivalent --flavor-specs RAM==memory)",
+        metavar="memory",
+    )
+    @optgroup.option(
+        "--gpus",
+        help="Number of GPUs (equivalent --flavor-specs Properties.Accelerator:Number==gpus)",
+        metavar="gpus",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
