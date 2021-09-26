@@ -5,7 +5,11 @@ Decorators for command-line parameters
 import functools
 
 import click
-from click_option_group import RequiredMutuallyExclusiveOptionGroup, optgroup
+from click_option_group import (
+    RequiredAnyOptionGroup,
+    RequiredMutuallyExclusiveOptionGroup,
+    optgroup,
+)
 
 DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
 DEFAULT_PROTOCOL = "openid"
@@ -269,12 +273,13 @@ def output_format_params(func):
 def flavor_specs_params(func):
     @optgroup.group(
         "Flavor specs options",
+        cls=RequiredAnyOptionGroup,
         help="Parameters for flavor specification",
     )
     @optgroup.option(
         "--flavor-specs",
         help="Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'."
-        " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
+             " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
         multiple=True,
         metavar="flavor-specs",
     )
@@ -308,7 +313,82 @@ def flavor_output_params(func):
     @optgroup.option(
         "--flavor-output",
         help="Flavor output option, 'first' for printing only best matched flavor, "
-        "'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
+             "'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
+        type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
+        default="JSON",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def image_specs_params(func):
+    @optgroup.group(
+        "Image specs options",
+        help="Parameters for image specification",
+    )
+    @optgroup.option(
+        "--image-specs",
+        required=True,
+        help="Image specifications, e.g. 'Name=~\"20.04\"' or 'Name=~\"CentOS 8\"'.",
+        multiple=True,
+        metavar="image-specs",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def image_output_params(func):
+    @optgroup.group(
+        "Image output options",
+        help="Parameters for printing image",
+    )
+    @optgroup.option(
+        "--image-output",
+        help="Image output option, 'first' for printing only best matched image, "
+             "'list' for printing all matched image names, and 'YAML' or 'JSON' for full output",
+        type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
+        default="JSON",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def network_specs_params(func):
+    @optgroup.group(
+        "Network specs options",
+        help="Parameters for network specification",
+    )
+    @optgroup.option(
+        "--network-specs",
+        required=True,
+        help="Network specifications: 'default', 'public', 'private'",
+        metavar="network-specs",
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def network_output_params(func):
+    @optgroup.group(
+        "Network output options",
+        help="Parameters for printing network",
+    )
+    @optgroup.option(
+        "--network-output",
+        help="Network output option, 'first' for printing only best matched network, "
+             "'list' for printing all accessible network names, and 'YAML' or 'JSON' for full output",
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
