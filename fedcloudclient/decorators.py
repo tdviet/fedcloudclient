@@ -278,8 +278,8 @@ def flavor_specs_params(func):
     )
     @optgroup.option(
         "--flavor-specs",
-        help="Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'." +
-             " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
+        help="Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'."
+        " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
         multiple=True,
         metavar="flavor-specs",
     )
@@ -312,8 +312,8 @@ def flavor_output_params(func):
     )
     @optgroup.option(
         "--flavor-output",
-        help="Flavor output option, 'first' for printing only best matched flavor, " +
-             "'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
+        help="Flavor output option, 'first' for printing only best matched flavor,"
+        " 'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
@@ -332,7 +332,7 @@ def image_specs_params(func):
     @optgroup.option(
         "--image-specs",
         required=True,
-        help="Image specifications, e.g. 'Name=~\"20.04\"' or 'Name=~\"CentOS 8\"'.",
+        help="Image specifications, e.g. 'Name=~\"20.04\"' or 'Name=~\"CentOS 8\"'",
         multiple=True,
         metavar="image-specs",
     )
@@ -350,8 +350,8 @@ def image_output_params(func):
     )
     @optgroup.option(
         "--image-output",
-        help="Image output option, 'first' for printing only best matched image, " +
-             "'list' for printing all matched image names, and 'YAML' or 'JSON' for full output",
+        help="Image output option, 'first' for printing only best matched image,"
+        " 'list' for printing all matched image names, and 'YAML' or 'JSON' for full output",
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
@@ -387,8 +387,8 @@ def network_output_params(func):
     )
     @optgroup.option(
         "--network-output",
-        help="Network output option, 'first' for printing only best matched network, " +
-             "'list' for printing all accessible network names, and 'YAML' or 'JSON' for full output",
+        help="Network output option, 'first' for printing only best matched network,"
+        " 'list' for printing all accessible network names, and 'YAML' or 'JSON' for full output",
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
