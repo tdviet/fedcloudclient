@@ -15,7 +15,9 @@ from fedcloudclient.decorators import (
     flavor_specs_params,
     image_output_params,
     image_specs_params,
-    network_output_params, network_specs_params, oidc_params,
+    network_output_params,
+    network_specs_params,
+    oidc_params,
     site_params,
     vo_params,
 )
