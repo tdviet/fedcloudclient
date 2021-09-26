@@ -371,7 +371,7 @@ def network_specs_params(func):
         "--network-specs",
         required=True,
         help="Network specifications: 'default', 'public', 'private'",
-        metavar="network-specs",
+        type=click.Choice(["default", "public", "private"], case_sensitive=False),
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

@@ -338,6 +338,10 @@ def network(
     _, project_id, _ = find_endpoint_and_project_id(site, vo)
     match_network = filter_network(networks, network_specs, project_id)
 
+    if len(match_network) == 0:
+        print("Error: No network matched specifications")
+        exit(3)
+
     if network_output == "first":
         print(match_network[0].get("Name"))
     elif network_output == "list":
