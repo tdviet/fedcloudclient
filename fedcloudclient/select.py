@@ -6,7 +6,7 @@ import json
 
 import click
 import yaml
-from jsonpath_ng.exceptions import JsonPathParserError
+from jsonpath_ng.exceptions import JSONPathError
 from jsonpath_ng.ext import parse
 
 from fedcloudclient.checkin import get_access_token
@@ -206,7 +206,7 @@ def flavor(
     filter_string = construct_filter(flavor_specs, filter_template)
     try:
         parser = get_parser(filter_string)
-    except JsonPathParserError as exception:
+    except JSONPathError as exception:
         print("Error during constructing filter")
         print("Filter string: ", filter_string)
         print(str(exception))
@@ -271,7 +271,7 @@ def image(
     filter_string = construct_filter(image_specs, filter_template)
     try:
         parser = get_parser(filter_string)
-    except JsonPathParserError as exception:
+    except JSONPathError as exception:
         print("Error during constructing filter")
         print("Filter string: ", filter_string)
         print(str(exception))
