@@ -131,7 +131,7 @@ Searching and selecting resources
     $ fedcloud openstack image list --property "dc:title"="Image for EGI Docker [Ubuntu/18.04/VirtualBox]" --site CESNET-MCC  --vo eosc-synergy.eu
 
 
-* Select flavors with 2 CPUs and RAM >= 2048 a site/VO:
+* Select flavors with 2 CPUs and RAM >= 2048 on a site/VO:
 
 ::
 
