@@ -52,6 +52,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#using-docker-container">Using Docker container</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#using-oidc-agent">Using oidc-agent</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#basic-usages">Basic usages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#searching-and-selecting-resources">Searching and selecting resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#mapping-and-filtering-results-from-openstack-commands">Mapping and filtering results from OpenStack commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#useful-commands">Useful commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#more-information">More information</a></li>
@@ -190,6 +191,44 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 </section>
+<section id="searching-and-selecting-resources">
+<h2>Searching and selecting resources<a class="headerlink" href="#searching-and-selecting-resources" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p>Show all available projects:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint projects --site ALL_SITES
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Show all Horizon dashboards:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Search images with appliance title in AppDB:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --property &quot;dc:title&quot;=&quot;Image for EGI Docker [Ubuntu/18.04/VirtualBox]&quot; --site CESNET-MCC  --vo eosc-synergy.eu
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Select flavors with 2 CPUs and RAM &gt;= 2048 a site/VO:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --vcpus 2 --flavor-specs &quot;RAM&gt;=2048&quot; --flavor-output list
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Select EGI Ubuntu 20.04 images on a site/VO:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Simpler but longer way
+$ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs &quot;Name =~ Ubuntu&quot; --image-specs &quot;Name =~ &#39;20.04&#39;&quot; --image-specs &quot;Name =~ EGI&quot; --image-output list
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Shorter but more complex regex
+$ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs &quot;Name =~ &#39;EGI.*Ubuntu.*20.04&quot;  --image-output list
+</pre></div>
+</div>
+</section>
 <section id="mapping-and-filtering-results-from-openstack-commands">
 <h2>Mapping and filtering results from OpenStack commands<a class="headerlink" href="#mapping-and-filtering-results-from-openstack-commands" title="Permalink to this headline"></a></h2>
 <ul class="simple">
@@ -233,24 +272,6 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>Show all available projects:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint projects --site ALL_SITES
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Show all Horizon dashboards:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
-</pre></div>
-</div>
-<ul class="simple">
-<li><p>Search images with appliance title in AppDB:</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --property &quot;dc:title&quot;=&quot;Image for EGI Docker [Ubuntu/18.04/VirtualBox]&quot; --site CESNET-MCC  --vo eosc-synergy.eu
-</pre></div>
-</div>
-<ul class="simple">
 <li><p>Set OpenStack environment variables:</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval $(fedcloud site env --site IISAS-FedCloud --vo vo.access.egi.eu)
@@ -265,7 +286,7 @@ $ bash install_certs.sh
 <ul class="simple">
 <li><p>Activate shell completion</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Quick and dirty way (resulted in unresponsive shell)
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Quick and dirty way (may be resulted in unresponsive shell)
 $ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
 </pre></div>
 </div>
