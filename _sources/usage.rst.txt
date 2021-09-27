@@ -1,5 +1,5 @@
-Using fedcloudclient as command-line client
-===========================================
+Usage
+=====
 
 **fedcloudclient** has four groups of commands: **"fedcloud token"** for interactions with EGI Check-in and access tokens,
 **"fedcloud endpoint"** for interactions with GOCDB (and site endpoints according to GOCDB), **"fedcloud site"** for
