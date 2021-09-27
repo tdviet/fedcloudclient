@@ -154,6 +154,7 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     IN2P3-IRES          org.openstack.nova  https://sbgcloud.in2p3.fr:5000/v3
     ...
 
+
 * **"fedcloud endpoint projects --site <SITE> --oidc-access-token <ACCESS_TOKEN>"** : List of projects that the owner
   of the access token can have access on the given site
 
@@ -175,6 +176,7 @@ If the site is *ALL_SITES*, the command will show projects on all sites in EGI F
 
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
     export OS_TOKEN="gAAAAA..."
+
 
 * **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print
   environment variables for working with the project ID on the site.
@@ -203,6 +205,7 @@ via Infrastructure Manager. The commands will create necessary template and auth
 ::
 
     $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
+
 
 * **"fedcloud ec3 refresh --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat"** :
   Refresh the access token stored in authorization file (by default *auth.dat*).
@@ -234,6 +237,7 @@ remove sites they do not have access, and so on.
     $ fedcloud site save-config
     Saving site configs to directory /home/viet/.config/fedcloud/site-config/
 
+
 After saving site configurations, users can edit and customize them, e.g. remove inaccessible sites, add new
 VOs and so on.
 
@@ -246,6 +250,7 @@ VOs and so on.
     BIFI
     CESGA
     ...
+
 
 * **"fedcloud site show --site <SITE>"** : Show configuration of the corresponding site.
 
@@ -285,6 +290,7 @@ VOs and so on.
     # Remember to set OS_ACCESS_TOKEN, e.g. :
     # export OS_ACCESS_TOKEN=`oidc-token egi`
 
+
 The main differences between *"fedcloud endpoint env"* and *"fedcloud site env"* commands are that the second command
 needs VO name as input parameter instead of project ID. The command may set also environment variable OS_ACCESS_TOKEN,
 if access token is provided, otherwise it will print notification.
@@ -295,11 +301,11 @@ fedcloud select commands
 
 * **"fedcloud select flavor --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --flavor-specs <flavor-specs>"** :
   Select flavor according to the specification in *flavor-specs*. The specifications may be repeated,
-  e.g. *--flavor "VCPUs==2" --flavor-specs "RAM>=2048"*, or may be joined, e.g.
+  e.g. *--flavor-specs "VCPUs==2" --flavor-specs "RAM>=2048"*, or may be joined, e.g.
   *--flavor-specs "VCPUs==2 & Disk>10"*. For frequently used specs, short-option alternatives are available, e.g.
   *--vcpus 2* is equivalent to *--flavor-specs "VCPUS==2"*. The output is sorted, flavors using less resources
   (in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
-  flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in text/YAML/JSON
+  flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
   format.
 
 ::
@@ -311,6 +317,33 @@ fedcloud select commands
     m1.huge
     g1.c08r30-K20m
     g1.c16r60-2xK20m
+
+
+* **"fedcloud select image --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --image-specs <image-specs>"** :
+  Select image according to the specification in *image-specs*. The specifications may be repeated,
+  e.g. *--image-specs "Name=~Ubuntu" --image-specs "Name=~'20.04'"*. The output is sorted, newest images
+  are placed on the first places. Users can choose to print only the best-matched
+  image with *--image-output first* (suitable for scripting) or the full list of all matched images in list/YAML/JSON
+  format.
+
+::
+
+    $ fedcloud select image --site INFN-CATANIA-STACK --vo training.egi.eu --image-specs "Name =~ Ubuntu" --image-output list
+    TRAINING.EGI.EU Image for EGI Docker [Ubuntu/18.04/VirtualBox]
+    TRAINING.EGI.EU Image for EGI Ubuntu 20.04 [Ubuntu/20.04/VirtualBox]
+
+
+* **"fedcloud select network --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --network-specs <flavor-specs>"** :
+  Select network according to the specification in *network-specs*. User can choose to select only public or private
+  network, or both (default). The output is sorted in the order: public, shared,
+  private. Users can choose to print only the best-matched network with *--network-output first*
+  (suitable for scripting) or the full list of all matched networks in list/YAML/JSON format.
+
+::
+
+    $ fedcloud select network --site IISAS-FedCloud --vo training.egi.eu --network-specs default --network-output list
+    public-network
+    private-network
 
 
 fedcloud openstack commands
@@ -331,6 +364,7 @@ fedcloud openstack commands
     +--------------------------------------+-------------------------------------------------+--------+
     | 862d4ede-6a11-4227-8388-c94141a5dace | Image for EGI CentOS 7 [CentOS/7/VirtualBox]    | active |
     ...
+
 
 If the site is *ALL_SITES*, the OpenStack command will be executed on all sites in EGI Federated Cloud.
 
