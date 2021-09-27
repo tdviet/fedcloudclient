@@ -383,11 +383,11 @@ if access token is provided, otherwise it will print notification.</p>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud select flavor --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --flavor-specs &lt;flavor-specs&gt;&quot;</strong> :
 Select flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
-e.g. <em>--flavor &quot;VCPUs==2&quot; --flavor-specs &quot;RAM&gt;=2048&quot;</em>, or may be joined, e.g.
+e.g. <em>--flavor-specs &quot;VCPUs==2&quot; --flavor-specs &quot;RAM&gt;=2048&quot;</em>, or may be joined, e.g.
 <em>--flavor-specs &quot;VCPUs==2 &amp; Disk&gt;10&quot;</em>. For frequently used specs, short-option alternatives are available, e.g.
 <em>--vcpus 2</em> is equivalent to <em>--flavor-specs &quot;VCPUS==2&quot;</em>. The output is sorted, flavors using less resources
 (in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
-flavor with <em>--flavor-output first</em> (suitable for scripting) or the full list of all matched flavors in text/YAML/JSON
+flavor with <em>--flavor-output first</em> (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
 format.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --flavor-specs &quot;RAM&gt;=2096&quot; --flavor-specs &quot;Disk &gt; 10&quot; --flavor-output list
@@ -397,6 +397,31 @@ m1.xlarge
 m1.huge
 g1.c08r30-K20m
 g1.c16r60-2xK20m
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud select image --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --image-specs &lt;image-specs&gt;&quot;</strong> :
+Select image according to the specification in <em>image-specs</em>. The specifications may be repeated,
+e.g. <em>--image-specs &quot;Name=~Ubuntu&quot; --image-specs &quot;Name=~'20.04'&quot;</em>. The output is sorted, newest images
+are placed on the first places. Users can choose to print only the best-matched
+image with <em>--image-output first</em> (suitable for scripting) or the full list of all matched images in list/YAML/JSON
+format.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud select image --site INFN-CATANIA-STACK --vo training.egi.eu --image-specs &quot;Name =~ Ubuntu&quot; --image-output list
+TRAINING.EGI.EU Image for EGI Docker [Ubuntu/18.04/VirtualBox]
+TRAINING.EGI.EU Image for EGI Ubuntu 20.04 [Ubuntu/20.04/VirtualBox]
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud select network --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --network-specs &lt;flavor-specs&gt;&quot;</strong> :
+Select network according to the specification in <em>network-specs</em>. User can choose to select only public or private
+network, or both (default). The output is sorted in the order: public, shared,
+private. Users can choose to print only the best-matched network with <em>--network-output first</em>
+(suitable for scripting) or the full list of all matched networks in list/YAML/JSON format.</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud select network --site IISAS-FedCloud --vo training.egi.eu --network-specs default --network-output list
+public-network
+private-network
 </pre></div>
 </div>
 </section>
