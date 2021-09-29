@@ -369,7 +369,6 @@ def network_specs_params(func):
     )
     @optgroup.option(
         "--network-specs",
-        required=True,
         help="Network specifications: 'default', 'public', 'private'",
         type=click.Choice(["default", "public", "private"], case_sensitive=False),
         default="default",
