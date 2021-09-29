@@ -311,8 +311,9 @@ Refresh the access token stored in authorization file (by default <em>auth.dat</
 </section>
 <section id="fedcloud-site-commands">
 <h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this headline"></a></h2>
-<p><strong>&quot;fedcloud site&quot;</strong> commands will read site configurations and manipulate with them. If the local site configurations exist
-at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
+<p><strong>&quot;fedcloud site&quot;</strong> commands will read site configurations and manipulate with them. If the local site configurations
+exist at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read
+from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
 <p>By default, <strong>fedcloud</strong> does not save anything on local disk, users have to save the site configuration to local disk
 explicitly via <strong>&quot;fedcloud site save-config&quot;</strong> command. The advantage of having local
 site configurations, beside faster loading, is to give users ability to make customizations, e.g. add additional VOs,
@@ -385,7 +386,7 @@ if access token is provided, otherwise it will print notification.</p>
 Select flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
 e.g. <em>--flavor-specs &quot;VCPUs==2&quot; --flavor-specs &quot;RAM&gt;=2048&quot;</em>, or may be joined, e.g.
 <em>--flavor-specs &quot;VCPUs==2 &amp; Disk&gt;10&quot;</em>. For frequently used specs, short-option alternatives are available, e.g.
-<em>--vcpus 2</em> is equivalent to <em>--flavor-specs &quot;VCPUS==2&quot;</em>. The output is sorted, flavors using less resources
+<em>--vcpus 2</em> is equivalent to <em>--flavor-specs &quot;VCPUs==2&quot;</em>. The output is sorted, flavors using less resources
 (in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
 flavor with <em>--flavor-output first</em> (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
 format.</p></li>
