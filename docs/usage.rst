@@ -219,9 +219,9 @@ via Infrastructure Manager. The commands will create necessary template and auth
 fedcloud site commands
 **********************
 
-**"fedcloud site"** commands will read site configurations and manipulate with them. If the local site configurations exist
-at *~/.config/fedcloud/site-config/*, **fedcloud** will read them from there, otherwise the commands will read from `GitHub repository
-<https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites>`_.
+**"fedcloud site"** commands will read site configurations and manipulate with them. If the local site configurations
+exist at *~/.config/fedcloud/site-config/*, **fedcloud** will read them from there, otherwise the commands will read
+from `GitHub repository <https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites>`_.
 
 By default, **fedcloud** does not save anything on local disk, users have to save the site configuration to local disk
 explicitly via **"fedcloud site save-config"** command. The advantage of having local
@@ -303,7 +303,7 @@ fedcloud select commands
   Select flavor according to the specification in *flavor-specs*. The specifications may be repeated,
   e.g. *--flavor-specs "VCPUs==2" --flavor-specs "RAM>=2048"*, or may be joined, e.g.
   *--flavor-specs "VCPUs==2 & Disk>10"*. For frequently used specs, short-option alternatives are available, e.g.
-  *--vcpus 2* is equivalent to *--flavor-specs "VCPUS==2"*. The output is sorted, flavors using less resources
+  *--vcpus 2* is equivalent to *--flavor-specs "VCPUs==2"*. The output is sorted, flavors using less resources
   (in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
   flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
   format.
