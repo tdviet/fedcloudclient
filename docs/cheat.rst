@@ -60,7 +60,7 @@ Using oidc-agent
 
 ::
 
-    $ oidc-gen --pub --issuer https://aai.egi.eu/oidc --scope eduperson_entitlement egi
+    $ oidc-gen --pub --issuer https://aai.egi.eu/oidc --scope "eduperson_entitlement email" egi
 
 * Load oidc-agent account and set environment for fedcloudclient:
 
@@ -108,6 +108,49 @@ Basic usages
 
     $ fedcloud openstack image list --site ALL_SITES --vo eosc-synergy.eu --json-output
 
+
+Searching and selecting resources
+*********************************
+
+* Show all available projects:
+
+::
+
+    $ fedcloud endpoint projects --site ALL_SITES
+
+* Show all Horizon dashboards:
+
+::
+
+    $ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
+
+* Search images with appliance title in AppDB:
+
+::
+
+    $ fedcloud openstack image list --property "dc:title"="Image for EGI Docker [Ubuntu/18.04/VirtualBox]" --site CESNET-MCC  --vo eosc-synergy.eu
+
+
+* Select flavors with 2 CPUs and RAM >= 2048 on a site/VO:
+
+::
+
+    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --vcpus 2 --flavor-specs "RAM>=2048" --flavor-output list
+
+
+* Select EGI Ubuntu 20.04 images on a site/VO:
+
+::
+
+    # Simpler but longer way
+    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ Ubuntu" --image-specs "Name =~ '20.04'" --image-specs "Name =~ EGI" --image-output list
+
+::
+
+    # Shorter but more complex regex
+    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ 'EGI.*Ubuntu.*20.04"  --image-output list
+
+
 Mapping and filtering results from OpenStack commands
 *****************************************************
 
@@ -143,6 +186,7 @@ Mapping and filtering results from OpenStack commands
       jq -r 'map(select(."Error code" ==  0)) |
              map({Site:.Site, Flavors:[.Result[].Name]})'
 
+
 Useful commands
 ***************
 
@@ -152,23 +196,6 @@ Useful commands
 
     $ fedcloud token check
 
-* Show all available projects:
-
-::
-
-    $ fedcloud endpoint projects --site ALL_SITES
-
-* Show all Horizon dashboards:
-
-::
-
-    $ fedcloud endpoint list --service-type org.openstack.horizon --site ALL_SITES
-
-* Search images with appliance title in AppDB:
-
-::
-
-    $ fedcloud openstack image list --property "dc:title"="Image for EGI Docker [Ubuntu/18.04/VirtualBox]" --site CESNET-MCC  --vo eosc-synergy.eu
 
 * Set OpenStack environment variables:
 
@@ -176,17 +203,19 @@ Useful commands
 
     $ eval $(fedcloud site env --site IISAS-FedCloud --vo vo.access.egi.eu)
 
+
 * List all my own VMs:
 
 ::
 
     $  list-all-my-own-vms.sh --vo fedcloud.egi.eu
 
+
 * Activate shell completion
 
 ::
 
-    # Quick and dirty way (resulted in unresponsive shell)
+    # Quick and dirty way (may be resulted in unresponsive shell)
     $ eval "$(_FEDCLOUD_COMPLETE=bash_source fedcloud)"
 
 ::
