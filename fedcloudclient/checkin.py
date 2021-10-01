@@ -176,7 +176,7 @@ def token_list_vos(oidc_access_token, oidc_url):
     oidc_ep = oidc_discover(oidc_url)
     request = requests.get(
         oidc_ep["userinfo_endpoint"],
-        headers={"Authorization": "Bearer %s" % oidc_access_token},
+        headers={"Authorization": f"Bearer {oidc_access_token}"},
     )
 
     request.raise_for_status()
@@ -236,7 +236,7 @@ def check(oidc_refresh_token, oidc_access_token):
         expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print("Access token is valid until %s UTC" % expiration_time)
+        print(f"Access token is valid until {expiration_time} UTC")
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             print(
