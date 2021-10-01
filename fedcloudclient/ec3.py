@@ -13,6 +13,8 @@ from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import ALL_SITES_KEYWORDS, auth_file_params
 from fedcloudclient.sites import find_endpoint_and_project_id, site_vo_params
 
+__MIN_EXPIRATION_TIME = 300
+
 EC3_REFRESHTOKEN_TEMPLATE = """
 description refreshtoken (
     kind = 'component' and
@@ -102,8 +104,8 @@ def refresh(
     """
     # Get the right endpoint from GOCDB
     auth_file_contents = []
-    with open(auth_file, "r") as f:
-        for raw_line in f.readlines():
+    with open(auth_file, "r") as file:
+        for raw_line in file.readlines():
             line = raw_line.strip()
             if "OpenStack" in line:
                 auth_tokens = []
@@ -118,7 +120,7 @@ def refresh(
                         )
                         now = int(time.time())
                         expires = int(payload["exp"])
-                        if expires - now < 300:
+                        if expires - now < __MIN_EXPIRATION_TIME:
                             access_token = get_access_token(
                                 oidc_access_token,
                                 oidc_refresh_token,
@@ -127,14 +129,15 @@ def refresh(
                                 oidc_url,
                                 oidc_agent_account,
                             )
-                        auth_tokens.append("password = %s" % access_token)
+                        auth_tokens.append(f"password = {access_token}")
                     else:
                         auth_tokens.append(token.strip())
                 auth_file_contents.append("; ".join(auth_tokens))
             elif line:
                 auth_file_contents.append(line)
-    with open(auth_file, "w+") as f:
-        f.write("\n".join(auth_file_contents))
+
+    with open(auth_file, "w+") as file:
+        file.write("\n".join(auth_file_contents))
 
 
 @ec3.command()
@@ -185,31 +188,35 @@ def init(
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     site_auth = [
-        "id = %s" % site,
+        f"id = {site}",
         "type = OpenStack",
         "username = egi.eu",
-        "tenant = %s" % protocol,
+        f"tenant = {protocol}",
         "auth_version = 3.x_oidc_access_token",
-        "host = %s" % endpoint,
-        "domain = %s" % project_id,
-        "password = '%s'" % access_token,
+        f"host = {endpoint}",
+        f"domain = {project_id}",
+        f"password = {access_token}",
     ]
     auth_file_contents = [";".join(site_auth)]
+
     if os.path.exists(auth_file):
-        with open(auth_file, "r") as f:
-            for line in f.readlines():
+        with open(auth_file, "r") as file:
+            for line in file.readlines():
                 if "OpenStack" in line:
                     continue
                 auth_file_contents.append(line)
-    with open(auth_file, "w+") as f:
-        f.write("\n".join(auth_file_contents))
+
+    with open(auth_file, "w+") as file:
+        file.write("\n".join(auth_file_contents))
+
     if not os.path.exists(template_dir):
         os.mkdir(template_dir)
+
     # FIXME: this should not be used at all!
-    with open(os.path.join(template_dir, "refresh.radl"), "w+") as f:
-        v = dict(
+    with open(os.path.join(template_dir, "refresh.radl"), "w+") as file:
+        token = dict(
             client_id=oidc_client_id,
             client_secret=oidc_client_secret,
             refresh_token=oidc_refresh_token,
         )
-        f.write(EC3_REFRESHTOKEN_TEMPLATE % v)
+        file.write(EC3_REFRESHTOKEN_TEMPLATE % token)

@@ -31,6 +31,7 @@ from fedcloudclient.sites import (
 
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30
+__MISSING_VO_ERROR_CODE = 11
 
 CONFLICTING_ENVS = ["OS_TOKEN", "OS_USER_DOMAIN_NAME"]
 
@@ -68,7 +69,7 @@ def fedcloud_openstack_full(
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:
-        return 11, ("VO %s not found on site %s\n" % (vo, site))
+        return __MISSING_VO_ERROR_CODE, f"VO {vo} not found on site {site}\n"
 
     if protocol is None:
         protocol = openstack_auth_protocol
@@ -197,15 +198,15 @@ def print_result(
 
     command = " ".join(command)
     if not json_output:
-        if not ignore_missing_vo or (error_code != 11):
+        if not ignore_missing_vo or (error_code != __MISSING_VO_ERROR_CODE):
             print(
-                "Site: %s, VO: %s, command: %s" % (site, vo, command), file=sys.stderr
+                f"Site: {site}, VO: {vo}, command: {command}", file=sys.stderr
             )
         if exc_msg:
-            print("%s generated an exception: %s" % (site, exc_msg))
-            print("Error message: %s" % result)
+            print(f"{site} generated an exception: {exc_msg}")
+            print(f"Error message: {result}")
         elif error_code != 0:
-            if not ignore_missing_vo or (error_code != 11):
+            if not ignore_missing_vo or (error_code != __MISSING_VO_ERROR_CODE):
                 print("Error code: ", error_code)
                 print("Error message: ", result)
         else:
@@ -253,8 +254,7 @@ def openstack(
     """
 
     if not check_openstack_client_installation():
-        print('Error: OpenStack command-line client "openstack" not found')
-        exit(1)
+        raise SystemExit('Error: OpenStack command-line client "openstack" not found')
 
     access_token = get_access_token(
         oidc_access_token,
@@ -344,8 +344,7 @@ def openstack_int(
     """
 
     if not check_openstack_client_installation():
-        print('Error: OpenStack command-line client "openstack" not found')
-        exit(1)
+        raise SystemExit('Error: OpenStack command-line client "openstack" not found')
 
     access_token = get_access_token(
         oidc_access_token,
@@ -358,7 +357,7 @@ def openstack_int(
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:
-        raise SystemExit("Error: VO %s not found on site %s" % (vo, site))
+        raise SystemExit(f"Error: VO {vo} not found on site {site}")
 
     if protocol is None:
         protocol = openstack_auth_protocol

@@ -31,9 +31,9 @@ def oidc_discover(oidc_url):
     :param oidc_url: CheckIn URL
     :return: JSON object of OIDC configuration
     """
-    r = requests.get(oidc_url + "/.well-known/openid-configuration")
-    r.raise_for_status()
-    return r.json()
+    request = requests.get(oidc_url + "/.well-known/openid-configuration")
+    request.raise_for_status()
+    return request.json()
 
 
 def token_refresh(oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url):
@@ -57,13 +57,13 @@ def token_refresh(oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_u
         "scope": "openid email profile offline_access",
     }
 
-    r = requests.post(
+    request = requests.post(
         oidc_ep["token_endpoint"],
         auth=(oidc_client_id, oidc_client_secret),
         data=refresh_data,
     )
-    r.raise_for_status()
-    return r.json()
+    request.raise_for_status()
+    return request.json()
 
 
 def refresh_access_token(
@@ -121,8 +121,8 @@ def get_access_token(
                 application_hint="fedcloudclient",
             )
             return access_token
-        except agent.OidcAgentError as e:
-            print("ERROR oidc-agent: {}".format(e))
+        except agent.OidcAgentError as exception:
+            print(f"ERROR oidc-agent: {exception}")
 
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
@@ -174,16 +174,16 @@ def token_list_vos(oidc_access_token, oidc_url):
     :return: list of VO names
     """
     oidc_ep = oidc_discover(oidc_url)
-    r = requests.get(
+    request = requests.get(
         oidc_ep["userinfo_endpoint"],
         headers={"Authorization": "Bearer %s" % oidc_access_token},
     )
 
-    r.raise_for_status()
+    request.raise_for_status()
     vos = set()
-    m = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
-    for claim in r.json().get("eduperson_entitlement", []):
-        vo = m.match(claim)
+    pattern = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
+    for claim in request.json().get("eduperson_entitlement", []):
+        vo = pattern.match(claim)
         if vo:
             vos.add(vo.groups()[0])
     return sorted(vos)
@@ -211,18 +211,17 @@ def check(oidc_refresh_token, oidc_access_token):
                 oidc_refresh_token, options={"verify_signature": False}
             )
         except jwt.exceptions.InvalidTokenError:
-            raise SystemExit("Error: Invalid refresh token.")
+            raise SystemExit("Error: Invalid refresh token")
 
         expiration_timestamp = int(payload["exp"])
         expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print("Refresh token is valid until %s UTC" % expiration_time)
+        print(f"Refresh token is valid until {expiration_time} UTC")
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             print(
-                "Refresh token expires in %d days"
-                % ((expiration_timestamp - current_timestamp) // (24 * 3600))
+                f"Refresh token expires in {(expiration_timestamp - current_timestamp) // (24 * 3600)} days"
             )
         else:
             print("Refresh token has expired")
@@ -231,7 +230,7 @@ def check(oidc_refresh_token, oidc_access_token):
         try:
             payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
-            raise SystemExit("Error: Invalid access token.")
+            raise SystemExit("Error: Invalid access token")
 
         expiration_timestamp = int(payload["exp"])
         expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
@@ -241,14 +240,12 @@ def check(oidc_refresh_token, oidc_access_token):
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             print(
-                "Access token expires in %d seconds"
-                % (expiration_timestamp - current_timestamp)
+                f"Access token expires in {expiration_timestamp - current_timestamp} seconds"
             )
         else:
             print("Access token has expired")
     else:
-        print("OIDC access token or refresh token required")
-        exit(1)
+        raise SystemExit("OIDC access token or refresh token required")
 
 
 @token.command()
