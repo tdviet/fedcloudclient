@@ -73,7 +73,15 @@ def get_resource(oidc_access_token, site, vo, command):
     :return: list of flavors in JSON formats
     """
 
-    return fedcloud_openstack(oidc_access_token, site, vo, command)
+    error_code, resource = fedcloud_openstack(oidc_access_token, site, vo, command)
+    if error_code:
+        command_string = " ".join(command)
+        raise SystemExit(
+            f"Error during executing command: fedcloud openstack {command_string} --site {site} --vo {vo}\n"
+            f"Error code: {error_code}\n"
+            f"Error message: {resource}\n"
+        )
+    return resource
 
 
 def construct_filter(specs, match_template):
@@ -92,13 +100,23 @@ def construct_filter(specs, match_template):
 
 def get_parser(filter_string):
     """
-    Build parser according to specification
+    Build parser according to specification.
+    Raise SystemExit with error message if invalid filter string
 
     :param filter_string:
 
     :return: jsonpath parser
     """
-    return parse(filter_string)
+
+    try:
+        parser = parse(filter_string)
+    except JSONPathError as exception:
+        raise SystemExit(
+            "Error during constructing filter\n"
+            f"Filter string: {filter_string}\n"
+            f"{exception}"
+        )
+    return parser
 
 
 def do_filter(parser, input_list):
@@ -154,6 +172,27 @@ def filter_network(networks, network_specs, project_id):
     return sorted(match_networks, key=compare_network, reverse=True)
 
 
+def print_output(resource_list, output_format):
+    """
+    Print resource list according to output format
+
+    :param resource_list: resource list
+    :param output_format: output format
+
+    :return: None
+    """
+
+    if output_format == "first":
+        print(resource_list[0].get("Name"))
+    elif output_format == "list":
+        for resource_item in resource_list:
+            print(resource_item.get("Name"))
+    elif output_format == "YAML":
+        print(yaml.dump(resource_list, sort_keys=False))
+    else:
+        print(json.dumps(resource_list, indent=4))
+
+
 @click.group()
 def select():
     """
@@ -197,44 +236,22 @@ def flavor(
 
     flavor_specs = list(flavor_specs)
     if vcpus:
-        flavor_specs.append("VCPUs=={cpus}".format(cpus=vcpus))
+        flavor_specs.append(f"VCPUs=={vcpus}")
     if ram:
-        flavor_specs.append("=={RAM}".format(RAM=ram))
+        flavor_specs.append(f"=={ram}")
     if gpus:
-        flavor_specs.append("Properties.'Accelerator:Number'=={gpus}".format(gpus=gpus))
+        flavor_specs.append(f"Properties.'Accelerator:Number'=={gpus}")
 
     filter_string = construct_filter(flavor_specs, filter_template)
-    try:
-        parser = get_parser(filter_string)
-    except JSONPathError as exception:
-        print("Error during constructing filter")
-        print("Filter string: ", filter_string)
-        print(str(exception))
-        exit(1)
-
-    error_code, flavors = get_resource(access_token, site, vo, get_flavor_command)
-    if error_code:
-        print("Error during getting flavor list")
-        print("Error code: ", error_code)
-        print("Error message: ", flavors)
-        exit(2)
+    parser = get_parser(filter_string)
+    flavors = get_resource(access_token, site, vo, get_flavor_command)
 
     match_flavors = do_filter(parser, flavors)
     if len(match_flavors) == 0:
-        print("Error: No flavor matched specifications")
-        exit(3)
+        raise SystemExit("Error: No flavor matched specifications")
 
     sorted_flavors = sort_flavors(match_flavors)
-
-    if flavor_output == "first":
-        print(sorted_flavors[0].get("Name"))
-    elif flavor_output == "list":
-        for flavor_object in sorted_flavors:
-            print(flavor_object.get("Name"))
-    elif flavor_output == "YAML":
-        print(yaml.dump(sorted_flavors, sort_keys=False))
-    else:
-        print(json.dumps(sorted_flavors, indent=4))
+    print_output(sorted_flavors, flavor_output)
 
 
 @select.command()
@@ -269,35 +286,14 @@ def image(
 
     image_specs = list(image_specs)
     filter_string = construct_filter(image_specs, filter_template)
-    try:
-        parser = get_parser(filter_string)
-    except JSONPathError as exception:
-        print("Error during constructing filter")
-        print("Filter string: ", filter_string)
-        print(str(exception))
-        exit(1)
-
-    error_code, images = get_resource(access_token, site, vo, get_image_command)
-    if error_code:
-        print("Error during getting image list")
-        print("Error code: ", error_code)
-        print("Error message: ", images)
-        exit(2)
+    parser = get_parser(filter_string)
+    images = get_resource(access_token, site, vo, get_image_command)
 
     match_images = do_filter(parser, images)
     if len(match_images) == 0:
-        print("Error: No image matched specifications")
-        exit(3)
+        raise SystemExit("Error: No image matched specifications")
 
-    if image_output == "first":
-        print(match_images[0].get("Name"))
-    elif image_output == "list":
-        for image_item in match_images:
-            print(image_item.get("Name"))
-    elif image_output == "YAML":
-        print(yaml.dump(match_images, sort_keys=False))
-    else:
-        print(json.dumps(match_images, indent=4))
+    print_output(match_images, image_output)
 
 
 @select.command()
@@ -330,26 +326,12 @@ def network(
         oidc_agent_account,
     )
 
-    error_code, networks = get_resource(access_token, site, vo, get_network_command)
-    if error_code:
-        print("Error during getting network list")
-        print("Error code: ", error_code)
-        print("Error message: ", networks)
-        exit(2)
+    networks = get_resource(access_token, site, vo, get_network_command)
 
     _, project_id, _ = find_endpoint_and_project_id(site, vo)
     match_network = filter_network(networks, network_specs, project_id)
 
     if len(match_network) == 0:
-        print("Error: No network matched specifications")
-        exit(3)
+        raise SystemExit("Error: No network matched specifications")
 
-    if network_output == "first":
-        print(match_network[0].get("Name"))
-    elif network_output == "list":
-        for network_object in match_network:
-            print(network_object.get("Name"))
-    elif network_output == "YAML":
-        print(yaml.dump(match_network, sort_keys=False))
-    else:
-        print(json.dumps(match_network, indent=4))
+    print_output(match_network, network_output)

@@ -16,15 +16,15 @@ class Shell(Enum):
     PowerShell = 3
 
 
-def getShellType():
+def get_shell_type():
     """
     Check if running on Windows and what shell type were we launched from
     """
     if sys.platform.startswith("win"):
-        parentProc = os.getppid()
-        parentName = Process(parentProc).name()
+        parent_proc = os.getppid()
+        parent_name = Process(parent_proc).name()
 
-        if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parentName)):
+        if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parent_name)):
             return Shell.PowerShell
 
         return Shell.WindowsCommandPrompt
@@ -32,29 +32,29 @@ def getShellType():
     return Shell.Linux
 
 
-def printSetEnvCommand(name, value):
+def print_set_env_command(name, value):
     """
     Print command to set environment variable,
     format it correctly for the current platform
     """
-    shellType = getShellType()
-    if shellType == Shell.Linux:
+    shell_type = get_shell_type()
+    if shell_type == Shell.Linux:
         print(f'export {name!s}="{value!s}";')
-    elif shellType == Shell.PowerShell:
+    elif shell_type == Shell.PowerShell:
         print(f'$Env:{name!s}="{value!s}";')
     else:
         print(f"set {name!s}={value!s}")
 
 
-def printComment(comment):
+def print_comment(comment):
     """
     Print comment command,
     format it correctly for the current platform
     """
-    shellType = getShellType()
-    if shellType == Shell.Linux:
+    shell_type = get_shell_type()
+    if shell_type == Shell.Linux:
         print(f"# {comment!s}")
-    elif shellType == Shell.PowerShell:
+    elif shell_type == Shell.PowerShell:
         print(f"# {comment!s}")
     else:
         print(f"rem {comment!s}")

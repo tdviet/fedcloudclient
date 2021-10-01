@@ -2,7 +2,8 @@
 
 [![DOI](https://zenodo.org/badge/336671726.svg)](https://zenodo.org/badge/latestdoi/336671726)
 
-TL;DR: Visit the [cheat sheet](https://fedcloudclient.fedcloud.eu/cheat.html#basic-usages) for real examples of fedcloud commands.
+TL;DR: Visit the [cheat sheet](https://fedcloudclient.fedcloud.eu/cheat.html#basic-usages) for real examples of
+fedcloud commands.
 
 The [FedCloud client](https://fedcloudclient.fedcloud.eu/) is a high-level Python package for a command-line client
 designed for interaction with the OpenStack services in the EGI infrastructure. The client can access various EGI

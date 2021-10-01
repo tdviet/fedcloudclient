@@ -11,8 +11,8 @@ import os
 from urllib import parse
 
 import click
-import defusedxml.ElementTree as ElementTree
 import requests
+from defusedxml import ElementTree
 from tabulate import tabulate
 
 from fedcloudclient.checkin import get_access_token, oidc_params
@@ -22,7 +22,7 @@ from fedcloudclient.decorators import (
     project_id_params,
     site_params,
 )
-from fedcloudclient.shell import printSetEnvCommand
+from fedcloudclient.shell import print_set_env_command
 
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 TIMEOUT = 10
@@ -34,18 +34,18 @@ def get_sites():
 
     :return: list of site IDs
     """
-    q = {"method": "get_site_list", "certification_status": "Certified"}
-    url = "?".join([GOCDB_PUBLICURL, parse.urlencode(q)])
-    r = requests.get(url)
+    query = {"method": "get_site_list", "certification_status": "Certified"}
+    url = "?".join([GOCDB_PUBLICURL, parse.urlencode(query)])
+    request = requests.get(url)
     sites = []
-    if r.status_code == 200:
-        root = ElementTree.fromstring(r.text)
-        for s in root:
-            sites.append(s.attrib.get("NAME"))
+    if request.status_code == 200:
+        root = ElementTree.fromstring(request.text)
+        for site_object in root:
+            sites.append(site_object.attrib.get("NAME"))
     else:
         print("Something went wrong...")
-        print(r.status_code)
-        print(r.text)
+        print(request.status_code)
+        print(request.text)
     return sites
 
 
@@ -60,36 +60,36 @@ def find_endpoint(service_type, production=True, monitored=True, site=None):
 
     :return: list of endpoints
     """
-    q = {"method": "get_service_endpoint", "service_type": service_type}
+    query = {"method": "get_service_endpoint", "service_type": service_type}
     if monitored:
-        q["monitored"] = "Y"
+        query["monitored"] = "Y"
     if site:
-        q["sitename"] = site
+        query["sitename"] = site
         sites = [site]
     else:
         sites = get_sites()
-    url = "?".join([GOCDB_PUBLICURL, parse.urlencode(q)])
-    r = requests.get(url)
+    url = "?".join([GOCDB_PUBLICURL, parse.urlencode(query)])
+    request = requests.get(url)
     endpoints = []
-    if r.status_code == 200:
-        root = ElementTree.fromstring(r.text)
-        for sp in root:
+    if request.status_code == 200:
+        root = ElementTree.fromstring(request.text)
+        for site_object in root:
             if production:
-                prod = sp.find("IN_PRODUCTION").text.upper()
+                prod = site_object.find("IN_PRODUCTION").text.upper()
                 if prod != "Y":
                     continue
-            os_url = sp.find("URL").text
-            ep_site = sp.find("SITENAME").text
+            os_url = site_object.find("URL").text
+            ep_site = site_object.find("SITENAME").text
             if ep_site not in sites:
                 continue
             # os_url = urlparse.urlparse(sp.find('URL').text)
             # sites[sp.find('SITENAME').text] = urlparse.urlunparse(
             #    (os_url[0], os_url[1], os_url[2], '', '', ''))
-            endpoints.append([sp.find("SITENAME").text, service_type, os_url])
+            endpoints.append([site_object.find("SITENAME").text, service_type, os_url])
     else:
         print("Something went wrong...")
-        print(r.status_code)
-        print(r.text)
+        print(request.status_code)
+        print(request.text)
     return endpoints
 
 
@@ -110,10 +110,12 @@ def get_unscoped_token(os_auth_url, access_token):
     Get an unscoped token, will try all protocols if needed
     """
     protocols = ["openid", "oidc"]
-    for p in protocols:
+    for protocol in protocols:
         try:
-            unscoped_token = retrieve_unscoped_token(os_auth_url, access_token, p)
-            return unscoped_token, p
+            unscoped_token = retrieve_unscoped_token(
+                os_auth_url, access_token, protocol
+            )
+            return unscoped_token, protocol
         except RuntimeError:
             pass
     raise RuntimeError("Unable to get a scoped token")
@@ -131,12 +133,12 @@ def get_scoped_token(os_auth_url, access_token, project_id):
             "scope": {"project": {"id": project_id}},
         }
     }
-    r = requests.post(url, json=body)
+    request = requests.post(url, json=body)
     # pylint: disable=no-member
-    if r.status_code != requests.codes.created:
+    if request.status_code != requests.codes.created:
         raise RuntimeError("Unable to get a scoped token")
     else:
-        return r.headers["X-Subject-Token"], protocol
+        return request.headers["X-Subject-Token"], protocol
 
 
 def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
@@ -145,18 +147,18 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
     """
     url = get_keystone_url(
         os_auth_url,
-        "/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/%s/auth" % protocol,
+        f"/v3/OS-FEDERATION/identity_providers/egi.eu/protocols/{protocol}/auth",
     )
-    r = requests.post(
+    request = requests.post(
         url,
-        headers={"Authorization": "Bearer %s" % access_token},
+        headers={"Authorization": f"Bearer {access_token}"},
         timeout=TIMEOUT,
     )
     # pylint: disable=no-member
-    if r.status_code != requests.codes.created:
+    if request.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an unscoped token")
     else:
-        return r.headers["X-Subject-Token"]
+        return request.headers["X-Subject-Token"]
 
 
 def get_projects(os_auth_url, unscoped_token):
@@ -164,9 +166,9 @@ def get_projects(os_auth_url, unscoped_token):
     Get list of projects from unscoped token
     """
     url = get_keystone_url(os_auth_url, "/v3/auth/projects")
-    r = requests.get(url, headers={"X-Auth-Token": unscoped_token})
-    r.raise_for_status()
-    return r.json()["projects"]
+    request = requests.get(url, headers={"X-Auth-Token": unscoped_token})
+    request.raise_for_status()
+    return request.json()["projects"]
 
 
 def get_projects_from_sites(access_token, site):
@@ -174,13 +176,13 @@ def get_projects_from_sites(access_token, site):
     Get all projects from site(s) using access token
     """
     project_list = []
-    for ep in find_endpoint("org.openstack.nova", site=site):
-        os_auth_url = ep[2]
+    for site_ep in find_endpoint("org.openstack.nova", site=site):
+        os_auth_url = site_ep[2]
         try:
             unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
             project_list.extend(
                 [
-                    [p["id"], p["name"], p["enabled"], ep[0]]
+                    [p["id"], p["name"], p["enabled"], site_ep[0]]
                     for p in get_projects(os_auth_url, unscoped_token)
                 ]
             )
@@ -194,8 +196,8 @@ def get_projects_from_sites_dict(access_token, site):
     Get all projects as a dictionary from site(s) using access token
     """
     project_list = []
-    for ep in find_endpoint("org.openstack.nova", site=site):
-        os_auth_url = ep[2]
+    for site_ep in find_endpoint("org.openstack.nova", site=site):
+        os_auth_url = site_ep[2]
         try:
             unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
             project_list.extend(
@@ -204,7 +206,7 @@ def get_projects_from_sites_dict(access_token, site):
                         "project_id": p["id"],
                         "name": p["name"],
                         "enabled": p["enabled"],
-                        "site": ep[0],
+                        "site": site_ep[0],
                     }
                     for p in get_projects(os_auth_url, unscoped_token)
                 ]
@@ -253,7 +255,7 @@ def projects(
     if len(project_list) > 0:
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
-        print("Error: You probably do not have access to any project at site %s" % site)
+        print(f"Error: You probably do not have access to any project at site {site}")
         print(
             'Check your access token and VO memberships using "fedcloud token list-vos"'
         )
@@ -291,13 +293,13 @@ def token(
     )
     # Getting sites from GOCDB
     # assume first one is ok
-    ep = find_endpoint("org.openstack.nova", site=site).pop()
-    os_auth_url = ep[2]
+    site_ep = find_endpoint("org.openstack.nova", site=site).pop()
+    os_auth_url = site_ep[2]
     try:
         scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
-        printSetEnvCommand("OS_TOKEN", scoped_token)
+        print_set_env_command("OS_TOKEN", scoped_token)
     except RuntimeError:
-        print("Error: Unable to get Keystone token from site %s " % site)
+        print(f"Error: Unable to get Keystone token from site {site}")
 
 
 @endpoint.command()
@@ -363,17 +365,17 @@ def env(
     )
     # Get the right endpoint from GOCDB
     # assume first one is ok
-    ep = find_endpoint("org.openstack.nova", site=site).pop()
-    os_auth_url = ep[2]
+    site_ep = find_endpoint("org.openstack.nova", site=site).pop()
+    os_auth_url = site_ep[2]
 
     try:
         scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
-        print("# environment for %s" % site)
-        printSetEnvCommand("OS_PROJECT_ID", project_id)
-        printSetEnvCommand("OS_AUTH_URL", os_auth_url)
-        printSetEnvCommand("OS_AUTH_TYPE", "v3oidcaccesstoken")
-        printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
-        printSetEnvCommand("OS_PROTOCOL", protocol)
-        printSetEnvCommand("OS_ACCESS_TOKEN", access_token)
+        print(f"# environment for {site}")
+        print_set_env_command("OS_PROJECT_ID", project_id)
+        print_set_env_command("OS_AUTH_URL", os_auth_url)
+        print_set_env_command("OS_AUTH_TYPE", "v3oidcaccesstoken")
+        print_set_env_command("OS_IDENTITY_PROVIDER", "egi.eu")
+        print_set_env_command("OS_PROTOCOL", protocol)
+        print_set_env_command("OS_ACCESS_TOKEN", access_token)
     except RuntimeError:
-        print("Error: Unable to get Keystone token from site %s " % site)
+        raise SystemExit(f"Error: Unable to get Keystone token from site {site}")

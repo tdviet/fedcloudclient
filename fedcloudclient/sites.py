@@ -30,7 +30,7 @@ from fedcloudclient.decorators import (
     oidc_params,
     site_vo_params,
 )
-from fedcloudclient.shell import printComment, printSetEnvCommand
+from fedcloudclient.shell import print_comment, print_set_env_command
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
@@ -89,7 +89,7 @@ def safe_read_yaml_from_url(url, max_length):
     ):  # Only read from HTTPS location
         req = Request(url)
     else:
-        raise SystemExit("Error: remote filename not starting with https:// : %s" % url)
+        raise SystemExit(f"Error: remote filename not starting with https:// : {url}")
 
     # URLs already checked, so ignore bandit test
     data = None
@@ -97,12 +97,12 @@ def safe_read_yaml_from_url(url, max_length):
         with urlopen(req) as yaml_file:  # nosec
             if int(yaml_file.headers["Content-Length"]) > max_length:
                 raise SystemExit(
-                    "Error: remote file %s is larger than limit %d " % (url, max_length)
+                    f"Error: remote file {url} is larger than limit {max_length} "
                 )
             data = yaml.safe_load(yaml_file)
-    except Exception as e:
-        print("Error during reading data from %s" % url)
-        raise SystemExit("Exception: %s" % e)
+    except Exception as exception:
+        print(f"Error during reading data from {url}")
+        raise SystemExit(f"Exception: {exception}")
     return data
 
 
@@ -128,9 +128,9 @@ def read_default_site_config():
         # Validating site config after reading
         try:
             validate(instance=site_info, schema=schema)
-        except Exception as e:
-            print("Site config in file %s is in wrong format" % filename)
-            raise SystemExit("Exception: %s" % e)
+        except Exception as exception:
+            print(f"Site config in file {filename} is in wrong format")
+            raise SystemExit(f"Exception: {exception}")
 
         __site_config_data.append(site_info)
 
@@ -146,15 +146,15 @@ def read_local_site_config(config_dir):
     __site_config_data.clear()
     schema = read_site_schema()
     config_dir = Path(config_dir)
-    for f in sorted(config_dir.glob("*.yaml")):
+    for file in sorted(config_dir.glob("*.yaml")):
         try:
-            yaml_file = f.open()
+            yaml_file = file.open()
             site_info = yaml.safe_load(yaml_file)
             validate(instance=site_info, schema=schema)
             __site_config_data.append(site_info)
-        except Exception as e:
-            print("Error during reading site config from %s" % f)
-            raise SystemExit("Exception: %s" % e)
+        except Exception as exception:
+            print(f"Error during reading site config from {file}")
+            raise SystemExit(f"Exception: {exception}")
 
 
 def save_site_config(config_dir):
@@ -169,8 +169,8 @@ def save_site_config(config_dir):
     config_dir.mkdir(parents=True, exist_ok=True)
     for site_info in __site_config_data:
         config_file = config_dir / (site_info["gocdb"] + ".yaml")
-        with config_file.open("w", encoding="utf-8") as f:
-            yaml.dump(site_info, f)
+        with config_file.open("w", encoding="utf-8") as file:
+            yaml.dump(site_info, file)
 
 
 def delete_site_config(config_dir):
@@ -257,14 +257,13 @@ def show(site, all_sites):
         for site_info in __site_config_data:
             site_info_str = yaml.dump(site_info, sort_keys=True)
             print(site_info_str)
-        return 0
 
-    site_info = find_site_data(site)
-    if site_info:
-        print(yaml.dump(site_info, sort_keys=True))
     else:
-        print("Site %s not found" % site)
-        return 1
+        site_info = find_site_data(site)
+        if site_info:
+            print(yaml.dump(site_info, sort_keys=True))
+        else:
+            raise SystemExit(f"Site {site} not found")
 
 
 @site.command()
@@ -279,11 +278,10 @@ def show_project_id(site, vo):
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint:
-        printSetEnvCommand("OS_AUTH_URL", endpoint)
-        printSetEnvCommand("OS_PROJECT_ID", project_id)
+        print_set_env_command("OS_AUTH_URL", endpoint)
+        print_set_env_command("OS_PROJECT_ID", project_id)
     else:
-        print("VO %s not found on site %s" % (vo, site))
-        return 1
+        raise SystemExit(f"VO {vo} not found on site {site}")
 
 
 @site.command()
@@ -294,7 +292,7 @@ def save_config():
     """
     read_default_site_config()
     config_dir = Path.home() / __LOCAL_CONFIG_DIR
-    print("Saving site configs to directory %s" % config_dir)
+    print(f"Saving site configs to directory {config_dir}")
     delete_site_config(config_dir)
     save_site_config(config_dir)
 
@@ -335,11 +333,11 @@ def env(
     if endpoint:
         if protocol is None:
             protocol = DEFAULT_PROTOCOL
-        printSetEnvCommand("OS_AUTH_URL", endpoint)
-        printSetEnvCommand("OS_AUTH_TYPE", "v3oidcaccesstoken")
-        printSetEnvCommand("OS_IDENTITY_PROVIDER", "egi.eu")
-        printSetEnvCommand("OS_PROTOCOL", protocol)
-        printSetEnvCommand("OS_PROJECT_ID", project_id)
+        print_set_env_command("OS_AUTH_URL", endpoint)
+        print_set_env_command("OS_AUTH_TYPE", "v3oidcaccesstoken")
+        print_set_env_command("OS_IDENTITY_PROVIDER", "egi.eu")
+        print_set_env_command("OS_PROTOCOL", protocol)
+        print_set_env_command("OS_PROJECT_ID", project_id)
         if (
             oidc_agent_account
             or oidc_access_token
@@ -353,9 +351,9 @@ def env(
                 oidc_url,
                 oidc_agent_account,
             )
-            printSetEnvCommand("OS_ACCESS_TOKEN", access_token)
+            print_set_env_command("OS_ACCESS_TOKEN", access_token)
         else:
-            printComment("Remember to set also OS_ACCESS_TOKEN")
+            print_comment("Remember to set also OS_ACCESS_TOKEN")
     else:
-        print("VO %s not found to have access to site %s" % (vo, site))
+        print(f"VO {vo} not found to have access to site {site}")
     return 1
