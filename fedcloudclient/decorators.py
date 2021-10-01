@@ -2,7 +2,7 @@
 Decorators for command-line parameters
 """
 
-import functools
+from functools import wraps
 
 import click
 from click_option_group import (
@@ -26,7 +26,7 @@ def oidc_access_token_params(func):
         envvar="OIDC_ACCESS_TOKEN",
         metavar="token",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -40,7 +40,7 @@ def oidc_refresh_token_params(func):
         envvar="OIDC_REFRESH_TOKEN",
         metavar="token",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -55,7 +55,7 @@ def site_params(func):
         envvar="EGI_SITE",
         metavar="site-name",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -80,7 +80,7 @@ def all_site_params(func):
         help="Short option for all sites (equivalent --site ALL_SITES)",
         is_flag=True,
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -95,7 +95,7 @@ def project_id_params(func):
         envvar="OS_PROJECT_ID",
         metavar="project-id",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -110,7 +110,7 @@ def auth_file_params(func):
         show_default=True,
         metavar="auth-file",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -125,7 +125,7 @@ def vo_params(func):
         envvar="EGI_VO",
         metavar="vo-name",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -142,7 +142,7 @@ def site_vo_params(func):
 
     @site_params
     @vo_params
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -196,7 +196,7 @@ def oidc_params(func):
         show_default=True,
         metavar="provider-url",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -239,7 +239,7 @@ def openstack_params(func):
         show_default=True,
         metavar="",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -263,7 +263,7 @@ def output_format_params(func):
         help="Print output as JSON object",
         is_flag=True,
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -298,7 +298,7 @@ def flavor_specs_params(func):
         help="Number of GPUs (equivalent --flavor-specs Properties.Accelerator:Number==gpus)",
         metavar="gpus",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -317,7 +317,7 @@ def flavor_output_params(func):
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -336,7 +336,7 @@ def image_specs_params(func):
         multiple=True,
         metavar="image-specs",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -355,7 +355,7 @@ def image_output_params(func):
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -373,7 +373,7 @@ def network_specs_params(func):
         type=click.Choice(["default", "public", "private"], case_sensitive=False),
         default="default",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -392,7 +392,7 @@ def network_output_params(func):
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
