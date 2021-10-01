@@ -101,8 +101,8 @@ def fedcloud_openstack_full(
 
     # Calling openstack client as subprocess, caching stdout/stderr
     # Ignore bandit warning
-    completed = subprocess.run(
-        (__OPENSTACK_CLIENT,) + openstack_command + options,  # nosec
+    completed = subprocess.run(  # nosec
+        (__OPENSTACK_CLIENT,) + openstack_command + options,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         env=my_env,
