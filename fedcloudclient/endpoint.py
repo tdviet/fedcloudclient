@@ -112,7 +112,9 @@ def get_unscoped_token(os_auth_url, access_token):
     protocols = ["openid", "oidc"]
     for protocol in protocols:
         try:
-            unscoped_token = retrieve_unscoped_token(os_auth_url, access_token, protocol)
+            unscoped_token = retrieve_unscoped_token(
+                os_auth_url, access_token, protocol
+            )
             return unscoped_token, protocol
         except RuntimeError:
             pass
