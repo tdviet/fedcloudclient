@@ -15,10 +15,10 @@ import requests
 from defusedxml import ElementTree
 from tabulate import tabulate
 
-from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
     all_site_params,
+    oidc_params,
     project_id_params,
     site_params,
 )
@@ -228,26 +228,13 @@ def endpoint():
 @all_site_params
 @oidc_params
 def projects(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     all_sites,
 ):
     """
     List projects from site(s)
     """
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     if site in ALL_SITES_KEYWORDS or all_sites:
         site = None
 
@@ -266,12 +253,7 @@ def projects(
 @project_id_params
 @oidc_params
 def token(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     project_id,
 ):
@@ -282,15 +264,6 @@ def token(
         print("Cannot get tokens for ALL_SITES")
         raise click.Abort()
 
-    # Get an access token
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     # Getting sites from GOCDB
     # assume first one is ok
     site_ep = find_endpoint("org.openstack.nova", site=site).pop()
@@ -338,12 +311,7 @@ def list(service_type, production, monitored, site, all_sites):
 @project_id_params
 @oidc_params
 def env(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     project_id,
 ):
@@ -354,15 +322,6 @@ def env(
         print("Cannot generate environment variables for ALL_SITES")
         raise click.Abort()
 
-    # Get an access token
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     # Get the right endpoint from GOCDB
     # assume first one is ok
     site_ep = find_endpoint("org.openstack.nova", site=site).pop()

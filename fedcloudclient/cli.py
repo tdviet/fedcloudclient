@@ -4,17 +4,20 @@ Main CLI module
 
 import click
 
-from fedcloudclient.select import select
 from fedcloudclient.checkin import token
 from fedcloudclient.ec3 import ec3
 from fedcloudclient.endpoint import endpoint
 from fedcloudclient.openstack import openstack, openstack_int
+from fedcloudclient.select import select
 from fedcloudclient.sites import site
 
 
 @click.group()
 @click.version_option()
 def cli():
+    """
+    CLI main function. Empty
+    """
     pass
 
 

@@ -14,6 +14,7 @@ import liboidcagent as agent
 import requests
 
 from fedcloudclient.decorators import (
+    DEFAULT_OIDC_URL,
     oidc_access_token_params,
     oidc_params,
     oidc_refresh_token_params,
@@ -22,6 +23,8 @@ from fedcloudclient.decorators import (
 # Minimal lifetime of the access token is 10s and max 24h
 _MIN_ACCESS_TOKEN_TIME = 10
 _MAX_ACCESS_TOKEN_TIME = 24 * 3600
+
+vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
 
 def oidc_discover(oidc_url):
@@ -181,7 +184,7 @@ def token_list_vos(oidc_access_token, oidc_url):
 
     request.raise_for_status()
     vos = set()
-    pattern = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
+    pattern = re.compile(vo_pattern)
     for claim in request.json().get("eduperson_entitlement", []):
         vo = pattern.match(claim)
         if vo:
@@ -250,25 +253,10 @@ def check(oidc_refresh_token, oidc_access_token):
 
 @token.command()
 @oidc_params
-def list_vos(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-):
+def list_vos(access_token):
     """
     List VO membership(s) of access token
     """
-    oidc_access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
-    vos = token_list_vos(oidc_access_token, oidc_url)
+    vos = token_list_vos(access_token, DEFAULT_OIDC_URL)
     print("\n".join(vos))

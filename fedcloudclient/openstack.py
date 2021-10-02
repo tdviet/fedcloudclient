@@ -12,15 +12,15 @@ from distutils.spawn import find_executable
 
 import click
 
-from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
     DEFAULT_AUTH_TYPE,
     DEFAULT_IDENTITY_PROVIDER,
     DEFAULT_PROTOCOL,
     all_site_params,
+    oidc_params,
+    openstack_output_format_params,
     openstack_params,
-    output_format_params,
     site_params,
     vo_params,
 )
@@ -229,25 +229,20 @@ def print_result(
 @all_site_params
 @vo_params
 @oidc_params
-@output_format_params
+@openstack_output_format_params
 @openstack_params
 @click.argument("openstack_command", required=True, nargs=-1)
 def openstack(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    openstack_auth_provider,
+    access_token,
     site,
     all_sites,
     vo,
+    openstack_command,
+    openstack_auth_protocol,
+    openstack_auth_type,
+    openstack_auth_provider,
     ignore_missing_vo,
     json_output,
-    openstack_command,
 ):
     """
     Execute OpenStack commands on site and VO
@@ -255,15 +250,6 @@ def openstack(
 
     if not check_openstack_client_installation():
         raise SystemExit('Error: OpenStack command-line client "openstack" not found')
-
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
     if site in ALL_SITES_KEYWORDS or all_sites:
         sites = list_sites()
@@ -327,17 +313,12 @@ def openstack(
 @oidc_params
 @openstack_params
 def openstack_int(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
+    site,
+    vo,
     openstack_auth_protocol,
     openstack_auth_type,
     openstack_auth_provider,
-    site,
-    vo,
 ):
     """
     Interactive OpenStack client on site and VO
@@ -345,15 +326,6 @@ def openstack_int(
 
     if not check_openstack_client_installation():
         raise SystemExit('Error: OpenStack command-line client "openstack" not found')
-
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
     if endpoint is None:
