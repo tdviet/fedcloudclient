@@ -125,7 +125,10 @@ def get_access_token(
             )
             return access_token
         except agent.OidcAgentError as exception:
-            print(f"ERROR oidc-agent: {exception}", file=sys.stderr,)
+            print(
+                f"ERROR oidc-agent: {exception}",
+                file=sys.stderr,
+            )
 
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
@@ -146,14 +149,14 @@ def get_access_token(
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
-        expiration_timestamp = int(payload["exp"])
+        exp_timestamp = int(payload["exp"])
         current_timestamp = int(time.time())
-        if current_timestamp > expiration_timestamp - _MIN_ACCESS_TOKEN_TIME:
+        if current_timestamp > exp_timestamp - _MIN_ACCESS_TOKEN_TIME:
             raise SystemExit(
                 "The given access token has expired."
                 " Get new access token before continuing on operation"
             )
-        if current_timestamp < expiration_timestamp - _MAX_ACCESS_TOKEN_TIME:
+        if current_timestamp < exp_timestamp - _MAX_ACCESS_TOKEN_TIME:
             raise SystemExit(
                 "You probably use refresh tokens as access tokens."
                 " Get access tokens via `curl -X POST -u ...` command"
@@ -216,16 +219,16 @@ def check(oidc_refresh_token, oidc_access_token):
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid refresh token")
 
-        expiration_timestamp = int(payload["exp"])
-        expiration_time_str = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        exp_timestamp = int(payload["exp"])
+        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print(f"Refresh token is valid until {expiration_time_str} UTC")
+        print(f"Refresh token is valid until {exp_time_str} UTC")
 
         current_timestamp = int(time.time())
-        if current_timestamp < expiration_timestamp:
-            expiration_time_in_days = (expiration_timestamp - current_timestamp) // (24 * 3600)
-            print(f"Refresh token expires in {expiration_time_in_days} days")
+        if current_timestamp < exp_timestamp:
+            exp_time_in_days = (exp_timestamp - current_timestamp) // (24 * 3600)
+            print(f"Refresh token expires in {exp_time_in_days} days")
         else:
             print("Refresh token has expired")
 
@@ -235,16 +238,16 @@ def check(oidc_refresh_token, oidc_access_token):
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token")
 
-        expiration_timestamp = int(payload["exp"])
-        expiration_time_str = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        exp_timestamp = int(payload["exp"])
+        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print(f"Access token is valid until {expiration_time_str} UTC")
+        print(f"Access token is valid until {exp_time_str} UTC")
 
         current_timestamp = int(time.time())
-        if current_timestamp < expiration_timestamp:
-            expiration_time_in_sec = expiration_timestamp - current_timestamp
-            print(f"Access token expires in {expiration_time_in_sec} seconds")
+        if current_timestamp < exp_timestamp:
+            exp_time_in_sec = exp_timestamp - current_timestamp
+            print(f"Access token expires in {exp_time_in_sec} seconds")
         else:
             print("Access token has expired")
     else:
