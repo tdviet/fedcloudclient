@@ -242,7 +242,6 @@ def site():
     """
     Obtain site configurations
     """
-    pass
 
 
 @site.command()
@@ -275,7 +274,7 @@ def show_project_id(site, vo):
         print("Cannot get project ID for ALL_SITES")
         raise click.Abort()
 
-    endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
+    endpoint, project_id, _ = find_endpoint_and_project_id(site, vo)
     if endpoint:
         print_set_env_command("OS_AUTH_URL", endpoint)
         print_set_env_command("OS_PROJECT_ID", project_id)

@@ -20,11 +20,11 @@ from fedcloudclient.decorators import (
     oidc_refresh_token_params,
 )
 
-# Minimal lifetime of the access token is 10s and max 24h
-_MIN_ACCESS_TOKEN_TIME = 10
+# Minimal lifetime of the access token is 30s and max 24h
+_MIN_ACCESS_TOKEN_TIME = 30
 _MAX_ACCESS_TOKEN_TIME = 24 * 3600
 
-vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
+VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
 
 def oidc_discover(oidc_url):
@@ -120,7 +120,7 @@ def get_access_token(
         try:
             access_token = agent.get_access_token(
                 oidc_agent_account,
-                min_valid_period=30,
+                min_valid_period=_MIN_ACCESS_TOKEN_TIME,
                 application_hint="fedcloudclient",
             )
             return access_token
@@ -138,7 +138,7 @@ def get_access_token(
         )["access_token"]
 
     # Then finally access token
-    elif oidc_access_token:
+    if oidc_access_token:
 
         # Check expiration time of access token
         try:
@@ -160,12 +160,13 @@ def get_access_token(
                 " in the last row of the page https://aai.egi.eu/fedcloud."
             )
         return oidc_access_token
-    else:
-        raise SystemExit(
-            "Error: An access token is needed for the operation. You can specify "
-            "access token directly via --oidc-access-token option or use oidc-agent "
-            "via --oidc-agent-account"
-        )
+
+    # Nothing available
+    raise SystemExit(
+        "Error: An access token is needed for the operation. You can specify "
+        "access token directly via --oidc-access-token option or use oidc-agent "
+        "via --oidc-agent-account"
+    )
 
 
 def token_list_vos(oidc_access_token, oidc_url):
@@ -184,7 +185,7 @@ def token_list_vos(oidc_access_token, oidc_url):
 
     request.raise_for_status()
     vos = set()
-    pattern = re.compile(vo_pattern)
+    pattern = re.compile(VO_PATTERN)
     for claim in request.json().get("eduperson_entitlement", []):
         vo = pattern.match(claim)
         if vo:
@@ -197,7 +198,6 @@ def token():
     """
     Get details of access/refresh tokens
     """
-    pass
 
 
 @token.command()
@@ -223,9 +223,8 @@ def check(oidc_refresh_token, oidc_access_token):
         print(f"Refresh token is valid until {expiration_time} UTC")
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
-            print(
-                f"Refresh token expires in {(expiration_timestamp - current_timestamp) // (24 * 3600)} days"
-            )
+            expiration_time_in_days = (expiration_timestamp - current_timestamp) // (24 * 3600)
+            print(f"Refresh token expires in {expiration_time_in_days} days")
         else:
             print("Refresh token has expired")
 

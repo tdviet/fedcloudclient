@@ -21,10 +21,10 @@ from fedcloudclient.decorators import (
 from fedcloudclient.openstack import fedcloud_openstack
 from fedcloudclient.sites import find_endpoint_and_project_id
 
-filter_template = "$[?( {specs} )]"
-get_flavor_command = ("flavor", "list", "--long")
-get_network_command = ("network", "list", "--long")
-get_image_command = ("image", "list", "--long", "--sort", "created_at:desc")
+FILTER_TEMPLATE = "$[?( {specs} )]"
+GET_FLAVOR_COMMAND = ("flavor", "list", "--long")
+GET_NETWORK_COMMAND = ("network", "list", "--long")
+GET_IMAGE_COMMAND = ("image", "list", "--long", "--sort", "created_at:desc")
 
 
 def compare_flavors(flavor_item):
@@ -74,7 +74,8 @@ def get_resource(oidc_access_token, site, vo, command):
     if error_code:
         command_string = " ".join(command)
         raise SystemExit(
-            f"Error during executing command: fedcloud openstack {command_string} --site {site} --vo {vo}\n"
+            "Error during executing command: "
+            f"fedcloud openstack {command_string} --site {site} --vo {vo}\n"
             f"Error code: {error_code}\n"
             f"Error message: {resource}\n"
         )
@@ -206,7 +207,6 @@ def select():
     """
     Select resources according to specification
     """
-    pass
 
 
 @select.command()
@@ -237,9 +237,9 @@ def flavor(
     if gpus:
         flavor_specs.append(f"Properties.'Accelerator:Number'=={gpus}")
 
-    filter_string = construct_filter(flavor_specs, filter_template)
+    filter_string = construct_filter(flavor_specs, FILTER_TEMPLATE)
     parser = get_parser(filter_string)
-    flavors = get_resource(access_token, site, vo, get_flavor_command)
+    flavors = get_resource(access_token, site, vo, GET_FLAVOR_COMMAND)
 
     match_flavors = do_filter(parser, flavors)
 
@@ -265,9 +265,9 @@ def image(
     """
 
     image_specs = list(image_specs)
-    filter_string = construct_filter(image_specs, filter_template)
+    filter_string = construct_filter(image_specs, FILTER_TEMPLATE)
     parser = get_parser(filter_string)
-    images = get_resource(access_token, site, vo, get_image_command)
+    images = get_resource(access_token, site, vo, GET_IMAGE_COMMAND)
 
     match_images = do_filter(parser, images)
 
@@ -291,7 +291,7 @@ def network(
     Select suitable network according to network specifications on the given site/VO
     """
 
-    networks = get_resource(access_token, site, vo, get_network_command)
+    networks = get_resource(access_token, site, vo, GET_NETWORK_COMMAND)
 
     _, project_id, _ = find_endpoint_and_project_id(site, vo)
     match_network = filter_network(networks, network_specs, project_id)

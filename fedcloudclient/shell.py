@@ -11,9 +11,12 @@ from psutil import Process
 
 
 class Shell(Enum):
-    Linux = 1
-    WindowsCommandPrompt = 2
-    PowerShell = 3
+    """
+    Shell types on different OSes
+    """
+    LINUX = 1
+    WINDOWS_COMMAND_PROMPT = 2
+    POWER_SHELL = 3
 
 
 def get_shell_type():
@@ -25,11 +28,11 @@ def get_shell_type():
         parent_name = Process(parent_proc).name()
 
         if bool(re.match("pwsh*|pwsh.exe|powershell.exe", parent_name)):
-            return Shell.PowerShell
+            return Shell.POWER_SHELL
 
-        return Shell.WindowsCommandPrompt
+        return Shell.WINDOWS_COMMAND_PROMPT
 
-    return Shell.Linux
+    return Shell.LINUX
 
 
 def print_set_env_command(name, value):
@@ -38,9 +41,9 @@ def print_set_env_command(name, value):
     format it correctly for the current platform
     """
     shell_type = get_shell_type()
-    if shell_type == Shell.Linux:
+    if shell_type == Shell.LINUX:
         print(f'export {name!s}="{value!s}";')
-    elif shell_type == Shell.PowerShell:
+    elif shell_type == Shell.POWER_SHELL:
         print(f'$Env:{name!s}="{value!s}";')
     else:
         print(f"set {name!s}={value!s}")
@@ -52,9 +55,9 @@ def print_comment(comment):
     format it correctly for the current platform
     """
     shell_type = get_shell_type()
-    if shell_type == Shell.Linux:
+    if shell_type == Shell.LINUX:
         print(f"# {comment!s}")
-    elif shell_type == Shell.PowerShell:
+    elif shell_type == Shell.POWER_SHELL:
         print(f"# {comment!s}")
     else:
         print(f"rem {comment!s}")

@@ -222,6 +222,7 @@ def oidc_params(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         from fedcloudclient.checkin import get_access_token
+
         access_token = get_access_token(
             kwargs.pop("oidc_access_token"),
             kwargs.pop("oidc_refresh_token"),

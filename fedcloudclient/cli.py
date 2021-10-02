@@ -16,9 +16,8 @@ from fedcloudclient.sites import site
 @click.version_option()
 def cli():
     """
-    CLI main function. Empty
+    CLI main function. Intentionally empty
     """
-    pass
 
 
 cli.add_command(token)

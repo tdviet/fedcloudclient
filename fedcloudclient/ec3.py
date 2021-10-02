@@ -87,7 +87,6 @@ def ec3():
     """
     EC3 cluster provisioning
     """
-    pass
 
 
 @ec3.command()
