@@ -2,7 +2,7 @@
 Decorators for command-line parameters
 """
 
-import functools
+from functools import wraps
 
 import click
 from click_option_group import (
@@ -20,13 +20,17 @@ ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 
 
 def oidc_access_token_params(func):
+    """
+    Decorator for --oidc-access-token
+    """
+
     @click.option(
         "--oidc-access-token",
         help="OIDC access token",
         envvar="OIDC_ACCESS_TOKEN",
         metavar="token",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -34,13 +38,17 @@ def oidc_access_token_params(func):
 
 
 def oidc_refresh_token_params(func):
+    """
+    Decorator for --oidc-refresh-token
+    """
+
     @click.option(
         "--oidc-refresh-token",
         help="OIDC refresh token",
         envvar="OIDC_REFRESH_TOKEN",
         metavar="token",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -48,6 +56,10 @@ def oidc_refresh_token_params(func):
 
 
 def site_params(func):
+    """
+    Decorator for --site
+    """
+
     @click.option(
         "--site",
         help="Name of the site",
@@ -55,7 +67,7 @@ def site_params(func):
         envvar="EGI_SITE",
         metavar="site-name",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -63,6 +75,10 @@ def site_params(func):
 
 
 def all_site_params(func):
+    """
+    Decorator for all-sites options
+    """
+
     @optgroup.group(
         "Site",
         cls=RequiredMutuallyExclusiveOptionGroup,
@@ -80,7 +96,7 @@ def all_site_params(func):
         help="Short option for all sites (equivalent --site ALL_SITES)",
         is_flag=True,
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -88,6 +104,10 @@ def all_site_params(func):
 
 
 def project_id_params(func):
+    """
+    Decorator for --project-id
+    """
+
     @click.option(
         "--project-id",
         help="Project ID",
@@ -95,7 +115,7 @@ def project_id_params(func):
         envvar="OS_PROJECT_ID",
         metavar="project-id",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -103,6 +123,10 @@ def project_id_params(func):
 
 
 def auth_file_params(func):
+    """
+    Decorator for --auth-file (used in ec3 module)
+    """
+
     @click.option(
         "--auth-file",
         help="Authorization file",
@@ -110,7 +134,7 @@ def auth_file_params(func):
         show_default=True,
         metavar="auth-file",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -118,6 +142,10 @@ def auth_file_params(func):
 
 
 def vo_params(func):
+    """
+    Decorator for --vo
+    """
+
     @click.option(
         "--vo",
         help="Name of the VO",
@@ -125,7 +153,7 @@ def vo_params(func):
         envvar="EGI_VO",
         metavar="vo-name",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -135,14 +163,11 @@ def vo_params(func):
 def site_vo_params(func):
     """
     Decorator for site and VO parameters
-
-    :param func:
-    :return:
     """
 
     @site_params
     @vo_params
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -151,10 +176,8 @@ def site_vo_params(func):
 
 def oidc_params(func):
     """
-    Decorator for OIDC parameters
-
-    :param func:
-    :return:
+    Decorator for OIDC parameters.
+    Get access token from oidc-* parameters and replace them in the wrapper function
     """
 
     @optgroup.group("OIDC token", help="oidc-gent account or tokens for authentication")
@@ -196,8 +219,19 @@ def oidc_params(func):
         show_default=True,
         metavar="provider-url",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
+        from fedcloudclient.checkin import get_access_token
+
+        access_token = get_access_token(
+            kwargs.pop("oidc_access_token"),
+            kwargs.pop("oidc_refresh_token"),
+            kwargs.pop("oidc_client_id"),
+            kwargs.pop("oidc_client_secret"),
+            kwargs.pop("oidc_url"),
+            kwargs.pop("oidc_agent_account"),
+        )
+        kwargs["access_token"] = access_token
         return func(*args, **kwargs)
 
     return wrapper
@@ -206,9 +240,6 @@ def oidc_params(func):
 def openstack_params(func):
     """
     Decorator for OpenStack authentication parameters
-
-    :param func:
-    :return:
     """
 
     @optgroup.group(
@@ -239,14 +270,18 @@ def openstack_params(func):
         show_default=True,
         metavar="",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
     return wrapper
 
 
-def output_format_params(func):
+def openstack_output_format_params(func):
+    """
+    Decorator for output format options for OpenStack
+    """
+
     @optgroup.group(
         "Output format",
         help="Parameters for formatting outputs",
@@ -263,7 +298,7 @@ def output_format_params(func):
         help="Print output as JSON object",
         is_flag=True,
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -271,6 +306,10 @@ def output_format_params(func):
 
 
 def flavor_specs_params(func):
+    """
+    Decorator for flavor specs
+    """
+
     @optgroup.group(
         "Flavor specs options",
         cls=RequiredAnyOptionGroup,
@@ -298,26 +337,7 @@ def flavor_specs_params(func):
         help="Number of GPUs (equivalent --flavor-specs Properties.Accelerator:Number==gpus)",
         metavar="gpus",
     )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def flavor_output_params(func):
-    @optgroup.group(
-        "Flavor output options",
-        help="Parameters for printing flavor",
-    )
-    @optgroup.option(
-        "--flavor-output",
-        help="Flavor output option, 'first' for printing only best matched flavor,"
-        " 'list' for printing all matched flavor names, and 'YAML' or 'JSON' for full output",
-        type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
-        default="JSON",
-    )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -325,6 +345,10 @@ def flavor_output_params(func):
 
 
 def image_specs_params(func):
+    """
+    Decorator for flavor specs
+    """
+
     @optgroup.group(
         "Image specs options",
         help="Parameters for image specification",
@@ -336,26 +360,7 @@ def image_specs_params(func):
         multiple=True,
         metavar="image-specs",
     )
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def image_output_params(func):
-    @optgroup.group(
-        "Image output options",
-        help="Parameters for printing image",
-    )
-    @optgroup.option(
-        "--image-output",
-        help="Image output option, 'first' for printing only best matched image,"
-        " 'list' for printing all matched image names, and 'YAML' or 'JSON' for full output",
-        type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
-        default="JSON",
-    )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
@@ -363,6 +368,10 @@ def image_output_params(func):
 
 
 def network_specs_params(func):
+    """
+    Decorator for network specs
+    """
+
     @optgroup.group(
         "Network specs options",
         help="Parameters for network specification",
@@ -373,26 +382,30 @@ def network_specs_params(func):
         type=click.Choice(["default", "public", "private"], case_sensitive=False),
         default="default",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 
     return wrapper
 
 
-def network_output_params(func):
+def select_output_format_params(func):
+    """
+    Decorator for option for printing outputs from searching
+    """
+
     @optgroup.group(
-        "Network output options",
-        help="Parameters for printing network",
+        "Output format option",
+        help="Option for printing matched results",
     )
     @optgroup.option(
-        "--network-output",
-        help="Network output option, 'first' for printing only best matched network,"
-        " 'list' for printing all accessible network names, and 'YAML' or 'JSON' for full output",
+        "--output-format",
+        help="Option for printing matched results, 'first' for printing only best matched item,"
+        " 'list' for printing all matched resources, and 'YAML' or 'JSON' for full output",
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
 

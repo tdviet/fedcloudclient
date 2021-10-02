@@ -14,14 +14,17 @@ import liboidcagent as agent
 import requests
 
 from fedcloudclient.decorators import (
+    DEFAULT_OIDC_URL,
     oidc_access_token_params,
     oidc_params,
     oidc_refresh_token_params,
 )
 
-# Minimal lifetime of the access token is 10s and max 24h
-_MIN_ACCESS_TOKEN_TIME = 10
+# Minimal lifetime of the access token is 30s and max 24h
+_MIN_ACCESS_TOKEN_TIME = 30
 _MAX_ACCESS_TOKEN_TIME = 24 * 3600
+
+VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
 
 def oidc_discover(oidc_url):
@@ -117,12 +120,15 @@ def get_access_token(
         try:
             access_token = agent.get_access_token(
                 oidc_agent_account,
-                min_valid_period=30,
+                min_valid_period=_MIN_ACCESS_TOKEN_TIME,
                 application_hint="fedcloudclient",
             )
             return access_token
         except agent.OidcAgentError as exception:
-            print(f"ERROR oidc-agent: {exception}")
+            print(
+                f"ERROR oidc-agent: {exception}",
+                file=sys.stderr,
+            )
 
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
@@ -135,7 +141,7 @@ def get_access_token(
         )["access_token"]
 
     # Then finally access token
-    elif oidc_access_token:
+    if oidc_access_token:
 
         # Check expiration time of access token
         try:
@@ -143,26 +149,27 @@ def get_access_token(
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token.")
 
-        expiration_timestamp = int(payload["exp"])
+        exp_timestamp = int(payload["exp"])
         current_timestamp = int(time.time())
-        if current_timestamp > expiration_timestamp - _MIN_ACCESS_TOKEN_TIME:
+        if current_timestamp > exp_timestamp - _MIN_ACCESS_TOKEN_TIME:
             raise SystemExit(
                 "The given access token has expired."
                 " Get new access token before continuing on operation"
             )
-        if current_timestamp < expiration_timestamp - _MAX_ACCESS_TOKEN_TIME:
+        if current_timestamp < exp_timestamp - _MAX_ACCESS_TOKEN_TIME:
             raise SystemExit(
                 "You probably use refresh tokens as access tokens."
                 " Get access tokens via `curl -X POST -u ...` command"
                 " in the last row of the page https://aai.egi.eu/fedcloud."
             )
         return oidc_access_token
-    else:
-        raise SystemExit(
-            "Error: An access token is needed for the operation. You can specify "
-            "access token directly via --oidc-access-token option or use oidc-agent "
-            "via --oidc-agent-account"
-        )
+
+    # Nothing available
+    raise SystemExit(
+        "Error: An access token is needed for the operation. You can specify "
+        "access token directly via --oidc-access-token option or use oidc-agent "
+        "via --oidc-agent-account"
+    )
 
 
 def token_list_vos(oidc_access_token, oidc_url):
@@ -176,12 +183,12 @@ def token_list_vos(oidc_access_token, oidc_url):
     oidc_ep = oidc_discover(oidc_url)
     request = requests.get(
         oidc_ep["userinfo_endpoint"],
-        headers={"Authorization": "Bearer %s" % oidc_access_token},
+        headers={"Authorization": f"Bearer {oidc_access_token}"},
     )
 
     request.raise_for_status()
     vos = set()
-    pattern = re.compile("urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu")
+    pattern = re.compile(VO_PATTERN)
     for claim in request.json().get("eduperson_entitlement", []):
         vo = pattern.match(claim)
         if vo:
@@ -194,7 +201,6 @@ def token():
     """
     Get details of access/refresh tokens
     """
-    pass
 
 
 @token.command()
@@ -213,16 +219,16 @@ def check(oidc_refresh_token, oidc_access_token):
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid refresh token")
 
-        expiration_timestamp = int(payload["exp"])
-        expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        exp_timestamp = int(payload["exp"])
+        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print(f"Refresh token is valid until {expiration_time} UTC")
+        print(f"Refresh token is valid until {exp_time_str} UTC")
+
         current_timestamp = int(time.time())
-        if current_timestamp < expiration_timestamp:
-            print(
-                f"Refresh token expires in {(expiration_timestamp - current_timestamp) // (24 * 3600)} days"
-            )
+        if current_timestamp < exp_timestamp:
+            exp_time_in_days = (exp_timestamp - current_timestamp) // (24 * 3600)
+            print(f"Refresh token expires in {exp_time_in_days} days")
         else:
             print("Refresh token has expired")
 
@@ -232,16 +238,16 @@ def check(oidc_refresh_token, oidc_access_token):
         except jwt.exceptions.InvalidTokenError:
             raise SystemExit("Error: Invalid access token")
 
-        expiration_timestamp = int(payload["exp"])
-        expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        exp_timestamp = int(payload["exp"])
+        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print("Access token is valid until %s UTC" % expiration_time)
+        print(f"Access token is valid until {exp_time_str} UTC")
+
         current_timestamp = int(time.time())
-        if current_timestamp < expiration_timestamp:
-            print(
-                f"Access token expires in {expiration_timestamp - current_timestamp} seconds"
-            )
+        if current_timestamp < exp_timestamp:
+            exp_time_in_sec = exp_timestamp - current_timestamp
+            print(f"Access token expires in {exp_time_in_sec} seconds")
         else:
             print("Access token has expired")
     else:
@@ -250,25 +256,10 @@ def check(oidc_refresh_token, oidc_access_token):
 
 @token.command()
 @oidc_params
-def list_vos(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
-):
+def list_vos(access_token):
     """
     List VO membership(s) of access token
     """
-    oidc_access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
-    vos = token_list_vos(oidc_access_token, oidc_url)
+    vos = token_list_vos(access_token, DEFAULT_OIDC_URL)
     print("\n".join(vos))

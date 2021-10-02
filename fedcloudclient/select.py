@@ -9,25 +9,22 @@ import yaml
 from jsonpath_ng.exceptions import JSONPathError
 from jsonpath_ng.ext import parse
 
-from fedcloudclient.checkin import get_access_token
 from fedcloudclient.decorators import (
-    flavor_output_params,
     flavor_specs_params,
-    image_output_params,
     image_specs_params,
-    network_output_params,
     network_specs_params,
     oidc_params,
+    select_output_format_params,
     site_params,
     vo_params,
 )
 from fedcloudclient.openstack import fedcloud_openstack
 from fedcloudclient.sites import find_endpoint_and_project_id
 
-filter_template = "$[?( {specs} )]"
-get_flavor_command = ("flavor", "list", "--long")
-get_network_command = ("network", "list", "--long")
-get_image_command = ("image", "list", "--long", "--sort", "created_at:desc")
+FILTER_TEMPLATE = "$[?( {specs} )]"
+GET_FLAVOR_COMMAND = ("flavor", "list", "--long")
+GET_NETWORK_COMMAND = ("network", "list", "--long")
+GET_IMAGE_COMMAND = ("image", "list", "--long", "--sort", "created_at:desc")
 
 
 def compare_flavors(flavor_item):
@@ -77,7 +74,8 @@ def get_resource(oidc_access_token, site, vo, command):
     if error_code:
         command_string = " ".join(command)
         raise SystemExit(
-            f"Error during executing command: fedcloud openstack {command_string} --site {site} --vo {vo}\n"
+            "Error during executing command: "
+            f"fedcloud openstack {command_string} --site {site} --vo {vo}\n"
             f"Error code: {error_code}\n"
             f"Error message: {resource}\n"
         )
@@ -128,7 +126,15 @@ def do_filter(parser, input_list):
 
     :return: list of matched flavors in JSON
     """
-    return [match.value for match in parser.find(input_list)]
+    try:
+        matched = [match.value for match in parser.find(input_list)]
+    except TypeError as exception:
+        raise SystemExit(
+            "TypeError during filtering result\n"
+            "Probably string value for numeric property in filter\n"
+            f"{exception}"
+        )
+    return matched
 
 
 def compare_network(network_item):
@@ -182,6 +188,9 @@ def print_output(resource_list, output_format):
     :return: None
     """
 
+    if len(resource_list) == 0:
+        raise SystemExit("Error: No resource matched specification")
+
     if output_format == "first":
         print(resource_list[0].get("Name"))
     elif output_format == "list":
@@ -198,41 +207,27 @@ def select():
     """
     Select resources according to specification
     """
-    pass
 
 
 @select.command()
 @site_params
 @vo_params
 @flavor_specs_params
-@flavor_output_params
+@select_output_format_params
 @oidc_params
 def flavor(
     site,
     vo,
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     flavor_specs,
     vcpus,
     ram,
     gpus,
-    flavor_output,
+    output_format,
 ):
     """
     Select suitable flavors according to flavor specifications on the given site/VO
     """
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
     flavor_specs = list(flavor_specs)
     if vcpus:
@@ -242,96 +237,63 @@ def flavor(
     if gpus:
         flavor_specs.append(f"Properties.'Accelerator:Number'=={gpus}")
 
-    filter_string = construct_filter(flavor_specs, filter_template)
+    filter_string = construct_filter(flavor_specs, FILTER_TEMPLATE)
     parser = get_parser(filter_string)
-    flavors = get_resource(access_token, site, vo, get_flavor_command)
+    flavors = get_resource(access_token, site, vo, GET_FLAVOR_COMMAND)
 
     match_flavors = do_filter(parser, flavors)
-    if len(match_flavors) == 0:
-        raise SystemExit("Error: No flavor matched specifications")
 
     sorted_flavors = sort_flavors(match_flavors)
-    print_output(sorted_flavors, flavor_output)
+    print_output(sorted_flavors, output_format)
 
 
 @select.command()
 @site_params
 @vo_params
 @image_specs_params
-@image_output_params
+@select_output_format_params
 @oidc_params
 def image(
     site,
     vo,
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     image_specs,
-    image_output,
+    output_format,
 ):
     """
     Select suitable images according to image specifications on the given site/VO
     """
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
     image_specs = list(image_specs)
-    filter_string = construct_filter(image_specs, filter_template)
+    filter_string = construct_filter(image_specs, FILTER_TEMPLATE)
     parser = get_parser(filter_string)
-    images = get_resource(access_token, site, vo, get_image_command)
+    images = get_resource(access_token, site, vo, GET_IMAGE_COMMAND)
 
     match_images = do_filter(parser, images)
-    if len(match_images) == 0:
-        raise SystemExit("Error: No image matched specifications")
 
-    print_output(match_images, image_output)
+    print_output(match_images, output_format)
 
 
 @select.command()
 @site_params
 @vo_params
 @network_specs_params
-@network_output_params
+@select_output_format_params
 @oidc_params
 def network(
     site,
     vo,
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     network_specs,
-    network_output,
+    output_format,
 ):
     """
     Select suitable network according to network specifications on the given site/VO
     """
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
 
-    networks = get_resource(access_token, site, vo, get_network_command)
+    networks = get_resource(access_token, site, vo, GET_NETWORK_COMMAND)
 
     _, project_id, _ = find_endpoint_and_project_id(site, vo)
     match_network = filter_network(networks, network_specs, project_id)
 
-    if len(match_network) == 0:
-        raise SystemExit("Error: No network matched specifications")
-
-    print_output(match_network, network_output)
+    print_output(match_network, output_format)

@@ -15,10 +15,10 @@ import requests
 from defusedxml import ElementTree
 from tabulate import tabulate
 
-from fedcloudclient.checkin import get_access_token, oidc_params
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
     all_site_params,
+    oidc_params,
     project_id_params,
     site_params,
 )
@@ -137,8 +137,8 @@ def get_scoped_token(os_auth_url, access_token, project_id):
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
         raise RuntimeError("Unable to get a scoped token")
-    else:
-        return request.headers["X-Subject-Token"], protocol
+
+    return request.headers["X-Subject-Token"], protocol
 
 
 def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
@@ -157,8 +157,8 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
         raise RuntimeError("Unable to get an unscoped token")
-    else:
-        return request.headers["X-Subject-Token"]
+
+    return request.headers["X-Subject-Token"]
 
 
 def get_projects(os_auth_url, unscoped_token):
@@ -221,33 +221,19 @@ def endpoint():
     """
     Obtain endpoint details and scoped tokens
     """
-    pass
 
 
 @endpoint.command()
 @all_site_params
 @oidc_params
 def projects(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     all_sites,
 ):
     """
     List projects from site(s)
     """
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     if site in ALL_SITES_KEYWORDS or all_sites:
         site = None
 
@@ -266,12 +252,7 @@ def projects(
 @project_id_params
 @oidc_params
 def token(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     project_id,
 ):
@@ -282,15 +263,6 @@ def token(
         print("Cannot get tokens for ALL_SITES")
         raise click.Abort()
 
-    # Get an access token
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     # Getting sites from GOCDB
     # assume first one is ok
     site_ep = find_endpoint("org.openstack.nova", site=site).pop()
@@ -338,12 +310,7 @@ def list(service_type, production, monitored, site, all_sites):
 @project_id_params
 @oidc_params
 def env(
-    oidc_client_id,
-    oidc_client_secret,
-    oidc_refresh_token,
-    oidc_access_token,
-    oidc_url,
-    oidc_agent_account,
+    access_token,
     site,
     project_id,
 ):
@@ -354,22 +321,13 @@ def env(
         print("Cannot generate environment variables for ALL_SITES")
         raise click.Abort()
 
-    # Get an access token
-    access_token = get_access_token(
-        oidc_access_token,
-        oidc_refresh_token,
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_url,
-        oidc_agent_account,
-    )
     # Get the right endpoint from GOCDB
     # assume first one is ok
     site_ep = find_endpoint("org.openstack.nova", site=site).pop()
     os_auth_url = site_ep[2]
 
     try:
-        scoped_token, protocol = get_scoped_token(os_auth_url, access_token, project_id)
+        _, protocol = get_scoped_token(os_auth_url, access_token, project_id)
         print(f"# environment for {site}")
         print_set_env_command("OS_PROJECT_ID", project_id)
         print_set_env_command("OS_AUTH_URL", os_auth_url)
