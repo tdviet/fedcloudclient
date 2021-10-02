@@ -14,6 +14,7 @@ class Shell(Enum):
     """
     Shell types on different OSes
     """
+
     LINUX = 1
     WINDOWS_COMMAND_PROMPT = 2
     POWER_SHELL = 3

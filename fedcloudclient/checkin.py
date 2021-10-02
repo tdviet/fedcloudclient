@@ -125,7 +125,7 @@ def get_access_token(
             )
             return access_token
         except agent.OidcAgentError as exception:
-            print(f"ERROR oidc-agent: {exception}")
+            print(f"ERROR oidc-agent: {exception}", file=sys.stderr,)
 
     # Then try refresh token
     if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
@@ -217,10 +217,11 @@ def check(oidc_refresh_token, oidc_access_token):
             raise SystemExit("Error: Invalid refresh token")
 
         expiration_timestamp = int(payload["exp"])
-        expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        expiration_time_str = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print(f"Refresh token is valid until {expiration_time} UTC")
+        print(f"Refresh token is valid until {expiration_time_str} UTC")
+
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
             expiration_time_in_days = (expiration_timestamp - current_timestamp) // (24 * 3600)
@@ -235,15 +236,15 @@ def check(oidc_refresh_token, oidc_access_token):
             raise SystemExit("Error: Invalid access token")
 
         expiration_timestamp = int(payload["exp"])
-        expiration_time = datetime.utcfromtimestamp(expiration_timestamp).strftime(
+        expiration_time_str = datetime.utcfromtimestamp(expiration_timestamp).strftime(
             "%Y-%m-%d %H:%M:%S"
         )
-        print(f"Access token is valid until {expiration_time} UTC")
+        print(f"Access token is valid until {expiration_time_str} UTC")
+
         current_timestamp = int(time.time())
         if current_timestamp < expiration_timestamp:
-            print(
-                f"Access token expires in {expiration_timestamp - current_timestamp} seconds"
-            )
+            expiration_time_in_sec = expiration_timestamp - current_timestamp
+            print(f"Access token expires in {expiration_time_in_sec} seconds")
         else:
             print("Access token has expired")
     else:
