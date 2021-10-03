@@ -93,7 +93,6 @@ def refresh_access_token(
     :param oidc_url:
     :param quiet: If true, print no error message
 
-
     :return: access token
     """
     if oidc_refresh_token:
@@ -256,6 +255,7 @@ def token_list_vos(oidc_access_token, oidc_url):
 
     :param oidc_access_token:
     :param oidc_url:
+
     :return: list of VO names
     """
     oidc_ep = oidc_discover(oidc_url)
