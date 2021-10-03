@@ -11,67 +11,37 @@ from click_option_group import (
     optgroup,
 )
 
-DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc"
+DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc/"
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
 DEFAULT_IDENTITY_PROVIDER = "egi.eu"
 
 ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 
+# Decorator for --oidc-access-token
+oidc_access_token_params = click.option(
+    "--oidc-access-token",
+    help="OIDC access token",
+    envvar="OIDC_ACCESS_TOKEN",
+    metavar="token",
+)
 
-def oidc_access_token_params(func):
-    """
-    Decorator for --oidc-access-token
-    """
+# Decorator for --oidc-refresh-token
+oidc_refresh_token_params = click.option(
+    "--oidc-refresh-token",
+    help="OIDC refresh token",
+    envvar="OIDC_REFRESH_TOKEN",
+    metavar="token",
+)
 
-    @click.option(
-        "--oidc-access-token",
-        help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
-        metavar="token",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def oidc_refresh_token_params(func):
-    """
-    Decorator for --oidc-refresh-token
-    """
-
-    @click.option(
-        "--oidc-refresh-token",
-        help="OIDC refresh token",
-        envvar="OIDC_REFRESH_TOKEN",
-        metavar="token",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def site_params(func):
-    """
-    Decorator for --site
-    """
-
-    @click.option(
-        "--site",
-        help="Name of the site",
-        required=True,
-        envvar="EGI_SITE",
-        metavar="site-name",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
+# Decorator for --site
+site_params = click.option(
+    "--site",
+    help="Name of the site",
+    required=True,
+    envvar="EGI_SITE",
+    metavar="site-name",
+)
 
 
 def all_site_params(func):
@@ -103,61 +73,32 @@ def all_site_params(func):
     return wrapper
 
 
-def project_id_params(func):
-    """
-    Decorator for --project-id
-    """
+# Decorator for --project-id
+project_id_params = click.option(
+    "--project-id",
+    help="Project ID",
+    required=True,
+    envvar="OS_PROJECT_ID",
+    metavar="project-id",
+)
 
-    @click.option(
-        "--project-id",
-        help="Project ID",
-        required=True,
-        envvar="OS_PROJECT_ID",
-        metavar="project-id",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
+# Decorator for --auth-file (used in ec3 module)
+auth_file_params = click.option(
+    "--auth-file",
+    help="Authorization file",
+    default="auth.dat",
+    show_default=True,
+    metavar="auth-file",
+)
 
-    return wrapper
-
-
-def auth_file_params(func):
-    """
-    Decorator for --auth-file (used in ec3 module)
-    """
-
-    @click.option(
-        "--auth-file",
-        help="Authorization file",
-        default="auth.dat",
-        show_default=True,
-        metavar="auth-file",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def vo_params(func):
-    """
-    Decorator for --vo
-    """
-
-    @click.option(
-        "--vo",
-        help="Name of the VO",
-        required=True,
-        envvar="EGI_VO",
-        metavar="vo-name",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-
-    return wrapper
+# Decorator for --vo
+vo_params = click.option(
+    "--vo",
+    help="Name of the VO",
+    required=True,
+    envvar="EGI_VO",
+    metavar="vo-name",
+)
 
 
 def site_vo_params(func):
@@ -180,7 +121,7 @@ def oidc_params(func):
     Get access token from oidc-* parameters and replace them in the wrapper function
     """
 
-    @optgroup.group("OIDC token", help="oidc-gent account or tokens for authentication")
+    @optgroup.group("OIDC token", help="Choose one of options for providing token")
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
@@ -195,13 +136,13 @@ def oidc_params(func):
     )
     @optgroup.option(
         "--oidc-refresh-token",
-        help="OIDC refresh token",
+        help="OIDC refresh token. Require also client ID and secret",
         envvar="OIDC_REFRESH_TOKEN",
         metavar="token",
     )
     @optgroup.option(
         "--oidc-client-id",
-        help="OIDC client id",
+        help="OIDC client ID",
         envvar="OIDC_CLIENT_ID",
         metavar="id",
     )
@@ -317,8 +258,10 @@ def flavor_specs_params(func):
     )
     @optgroup.option(
         "--flavor-specs",
-        help="Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'."
-        " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'",
+        help=(
+            "Flavor specifications, e.g. 'VCPUs==2' or 'Disk>100'."
+            " May be specified more times, or joined, e.g. 'VCPUs==2 & RAM>2048'"
+        ),
         multiple=True,
         metavar="flavor-specs",
     )
@@ -395,13 +338,15 @@ def select_output_format_params(func):
     """
 
     @optgroup.group(
-        "Output format option",
-        help="Option for printing matched results",
+        "Output format",
+        help="Parameters for formatting outputs",
     )
     @optgroup.option(
         "--output-format",
-        help="Option for printing matched results, 'first' for printing only best matched item,"
-        " 'list' for printing all matched resources, and 'YAML' or 'JSON' for full output",
+        help=(
+            "Option for printing matched results, 'first' for printing only best matched item,"
+            " 'list' for printing all matched resources, and 'YAML' or 'JSON' for full output"
+        ),
         type=click.Choice(["first", "list", "YAML", "JSON"], case_sensitive=False),
         default="JSON",
     )

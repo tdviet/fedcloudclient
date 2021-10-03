@@ -27,6 +27,14 @@ _MAX_ACCESS_TOKEN_TIME = 24 * 3600
 VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
 
+def print_error(message, quiet):
+    """
+    Print error message to stderr if not quiet
+    """
+    if not quiet:
+        print(message, file=sys.stderr)
+
+
 def oidc_discover(oidc_url):
     """
     Discover OIDC endpoints
@@ -57,7 +65,7 @@ def token_refresh(oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_u
         "client_secret": oidc_client_secret,
         "grant_type": "refresh_token",
         "refresh_token": oidc_refresh_token,
-        "scope": "openid email profile offline_access",
+        "scope": "openid email profile eduperson_entitlement",
     }
 
     request = requests.post(
@@ -70,7 +78,11 @@ def token_refresh(oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_u
 
 
 def refresh_access_token(
-    oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
+    oidc_client_id,
+    oidc_client_secret,
+    oidc_refresh_token,
+    oidc_url,
+    quiet=False,
 ):
     """
     Retrieve access token in plain text (string)
@@ -79,14 +91,115 @@ def refresh_access_token(
     :param oidc_client_secret:
     :param oidc_refresh_token:
     :param oidc_url:
+    :param quiet: If true, print no error message
+
+
     :return: access token
     """
-    return token_refresh(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_url,
-    )["access_token"]
+    if oidc_refresh_token:
+        if not (oidc_client_id and oidc_client_secret and oidc_url):
+            print_error(
+                "Error: Client ID and secret required together with refresh token",
+                quiet,
+            )
+            return None
+
+        print_error(
+            "Warning: Exposing refresh tokens is insecure and will be deprecated!",
+            False,
+        )
+        try:
+            access_token = token_refresh(
+                oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
+            )
+            return access_token["access_token"]
+        except requests.exceptions.RequestException as exception:
+            print_error(
+                "Error during getting access token from refresh token\n"
+                f"Error message: {exception}",
+                quiet,
+            )
+    return None
+
+
+def get_token_from_agent(oidc_agent_account, quiet=False):
+    """
+    Get access token from oidc-agent
+
+    :param quiet: If true, print no error message
+    :param oidc_agent_account: account name in oidc-agent
+
+    :return: access token, or None on error
+    """
+
+    if oidc_agent_account:
+        try:
+            access_token = agent.get_access_token(
+                oidc_agent_account,
+                min_valid_period=_MIN_ACCESS_TOKEN_TIME,
+                application_hint="fedcloudclient",
+            )
+            return access_token
+        except agent.OidcAgentError as exception:
+            print_error(
+                "Error during getting access token from oidc-agent\n"
+                f"Error message: {exception}",
+                quiet,
+            )
+    return None
+
+
+def check_access_token(
+    oidc_access_token,
+    quiet=False,
+    verbose=False,
+    refresh_token=False
+):
+    """
+    Check validity of access token
+
+    :param oidc_access_token:
+    :param refresh_token: the provided token is refresh token
+    :param verbose: If true, print additional info
+    :param quiet: If true, print no error message
+
+    :return:
+    """
+    if oidc_access_token:
+        # Check expiration time of access token
+        try:
+            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
+        except jwt.exceptions.InvalidTokenError:
+            print_error("Error: Invalid access token.", quiet)
+            return None
+
+        exp_timestamp = int(payload["exp"])
+        current_timestamp = int(time.time())
+        exp_time_in_sec = exp_timestamp - current_timestamp
+
+        if exp_time_in_sec < _MIN_ACCESS_TOKEN_TIME:
+            print_error("Error: Expired access token.", quiet)
+            return None
+
+        if exp_time_in_sec > _MAX_ACCESS_TOKEN_TIME and not refresh_token:
+            print_error(
+                "Warning: You probably use refresh tokens as access tokens.",
+                quiet,
+            )
+            return None
+
+        if verbose:
+            exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            print(f"Token is valid until {exp_time_str} UTC")
+            if exp_time_in_sec < 24 * 3600:
+                print(f"Access token expires in {exp_time_in_sec} seconds")
+            else:
+                exp_time_in_days = exp_time_in_sec // (24 * 3600)
+                print(f"Refresh token expires in {exp_time_in_days} days")
+
+    return oidc_access_token
 
 
 def get_access_token(
@@ -116,53 +229,23 @@ def get_access_token(
     """
 
     # First, try to get access token from oidc-agent
-    if oidc_agent_account:
-        try:
-            access_token = agent.get_access_token(
-                oidc_agent_account,
-                min_valid_period=_MIN_ACCESS_TOKEN_TIME,
-                application_hint="fedcloudclient",
-            )
-            return access_token
-        except agent.OidcAgentError as exception:
-            print(
-                f"ERROR oidc-agent: {exception}",
-                file=sys.stderr,
-            )
+    access_token = get_token_from_agent(oidc_agent_account)
+    if access_token:
+        return access_token
 
     # Then try refresh token
-    if oidc_refresh_token and oidc_client_id and oidc_client_secret and oidc_url:
-        print(
-            "Warning: Exposing refresh tokens is insecure and will be deprecated!",
-            file=sys.stderr,
-        )
-        return token_refresh(
-            oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
-        )["access_token"]
+    access_token = refresh_access_token(
+        oidc_client_id,
+        oidc_client_secret,
+        oidc_refresh_token,
+        oidc_url)
+    if access_token:
+        return access_token
 
     # Then finally access token
-    if oidc_access_token:
-
-        # Check expiration time of access token
-        try:
-            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
-        except jwt.exceptions.InvalidTokenError:
-            raise SystemExit("Error: Invalid access token.")
-
-        exp_timestamp = int(payload["exp"])
-        current_timestamp = int(time.time())
-        if current_timestamp > exp_timestamp - _MIN_ACCESS_TOKEN_TIME:
-            raise SystemExit(
-                "The given access token has expired."
-                " Get new access token before continuing on operation"
-            )
-        if current_timestamp < exp_timestamp - _MAX_ACCESS_TOKEN_TIME:
-            raise SystemExit(
-                "You probably use refresh tokens as access tokens."
-                " Get access tokens via `curl -X POST -u ...` command"
-                " in the last row of the page https://aai.egi.eu/fedcloud."
-            )
-        return oidc_access_token
+    access_token = check_access_token(oidc_access_token)
+    if access_token:
+        return access_token
 
     # Nothing available
     raise SystemExit(
@@ -212,44 +295,9 @@ def check(oidc_refresh_token, oidc_access_token):
     """
 
     if oidc_refresh_token:
-        try:
-            payload = jwt.decode(
-                oidc_refresh_token, options={"verify_signature": False}
-            )
-        except jwt.exceptions.InvalidTokenError:
-            raise SystemExit("Error: Invalid refresh token")
-
-        exp_timestamp = int(payload["exp"])
-        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-        print(f"Refresh token is valid until {exp_time_str} UTC")
-
-        current_timestamp = int(time.time())
-        if current_timestamp < exp_timestamp:
-            exp_time_in_days = (exp_timestamp - current_timestamp) // (24 * 3600)
-            print(f"Refresh token expires in {exp_time_in_days} days")
-        else:
-            print("Refresh token has expired")
-
+        check_access_token(oidc_refresh_token, verbose=True, refresh_token=True)
     elif oidc_access_token:
-        try:
-            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
-        except jwt.exceptions.InvalidTokenError:
-            raise SystemExit("Error: Invalid access token")
-
-        exp_timestamp = int(payload["exp"])
-        exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-        print(f"Access token is valid until {exp_time_str} UTC")
-
-        current_timestamp = int(time.time())
-        if current_timestamp < exp_timestamp:
-            exp_time_in_sec = exp_timestamp - current_timestamp
-            print(f"Access token expires in {exp_time_in_sec} seconds")
-        else:
-            print("Access token has expired")
+        check_access_token(oidc_access_token, verbose=True)
     else:
         raise SystemExit("OIDC access token or refresh token required")
 
