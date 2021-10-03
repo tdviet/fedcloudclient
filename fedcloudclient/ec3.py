@@ -190,7 +190,7 @@ def init(
 
     # FIXME: this should not be used at all!
     with open(os.path.join(template_dir, "refresh.radl"), "w+") as file:
-        token = dict(
+        token = dict(  # nosec
             client_id="ADD_CLIENT_ID_HERE",
             client_secret="ADD_CLIENT_SECRET_HERE",
             refresh_token="ADD_REFRESH_TOKEN_HERE",
