@@ -89,6 +89,25 @@
 <p>Implementation of &quot;fedcloud token&quot; commands for interactions with EGI Check-in and
 access tokens</p>
 <dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.checkin.check_access_token">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">check_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">refresh_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#check_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.check_access_token" title="Permalink to this definition"></a></dt>
+<dd><p>Check validity of access token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>oidc_access_token</strong> -- </p></li>
+<li><p><strong>refresh_token</strong> -- the provided token is refresh token</p></li>
+<li><p><strong>verbose</strong> -- If true, print additional info</p></li>
+<li><p><strong>quiet</strong> -- If true, print no error message</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_access_token">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_access_token" title="Permalink to this definition"></a></dt>
 <dd><p>Get access token
@@ -114,6 +133,23 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_agent">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_agent" title="Permalink to this definition"></a></dt>
+<dd><p>Get access token from oidc-agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>quiet</strong> -- If true, print no error message</p></li>
+<li><p><strong>oidc_agent_account</strong> -- account name in oidc-agent</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>access token, or None on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.checkin.oidc_discover">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.oidc_discover" title="Permalink to this definition"></a></dt>
 <dd><p>Discover OIDC endpoints</p>
@@ -128,8 +164,14 @@ Raise error if no valid token exists</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.checkin.print_error">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">print_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#print_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.print_error" title="Permalink to this definition"></a></dt>
+<dd><p>Print error message to stderr if not quiet</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.checkin.refresh_access_token">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">refresh_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#refresh_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.refresh_access_token" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">refresh_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_client_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_client_secret</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_refresh_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#refresh_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.refresh_access_token" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve access token in plain text (string)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -138,6 +180,7 @@ Raise error if no valid token exists</p>
 <li><p><strong>oidc_client_secret</strong> -- </p></li>
 <li><p><strong>oidc_refresh_token</strong> -- </p></li>
 <li><p><strong>oidc_url</strong> -- </p></li>
+<li><p><strong>quiet</strong> -- If true, print no error message</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
