@@ -150,10 +150,7 @@ def get_token_from_agent(oidc_agent_account, quiet=False):
 
 
 def check_access_token(
-    oidc_access_token,
-    quiet=False,
-    verbose=False,
-    refresh_token=False
+    oidc_access_token, quiet=False, verbose=False, refresh_token=False
 ):
     """
     Check validity of access token
@@ -235,10 +232,8 @@ def get_access_token(
 
     # Then try refresh token
     access_token = refresh_access_token(
-        oidc_client_id,
-        oidc_client_secret,
-        oidc_refresh_token,
-        oidc_url)
+        oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_url
+    )
     if access_token:
         return access_token
 
