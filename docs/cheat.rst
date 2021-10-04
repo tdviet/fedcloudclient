@@ -135,7 +135,7 @@ Searching and selecting resources
 
 ::
 
-    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --vcpus 2 --flavor-specs "RAM>=2048" --flavor-output list
+    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --vcpus 2 --flavor-specs "RAM>=2048" --output-format list
 
 
 * Select EGI Ubuntu 20.04 images on a site/VO:
@@ -143,12 +143,12 @@ Searching and selecting resources
 ::
 
     # Simpler but longer way
-    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ Ubuntu" --image-specs "Name =~ '20.04'" --image-specs "Name =~ EGI" --image-output list
+    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ Ubuntu" --image-specs "Name =~ '20.04'" --image-specs "Name =~ EGI" --output-format list
 
 ::
 
     # Shorter but more complex regex
-    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ 'EGI.*Ubuntu.*20.04"  --image-output list
+    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ 'EGI.*Ubuntu.*20.04"  --output-format list
 
 
 Mapping and filtering results from OpenStack commands
