@@ -150,9 +150,7 @@ def get_token_from_agent(oidc_agent_account, quiet=False):
     return None
 
 
-def check_token(
-    oidc_token, quiet=False, verbose=False, refresh_token=False
-):
+def check_token(oidc_token, quiet=False, verbose=False, refresh_token=False):
     """
     Check validity of access token
 
