@@ -305,12 +305,12 @@ fedcloud select commands
   *--flavor-specs "VCPUs==2 & Disk>10"*. For frequently used specs, short-option alternatives are available, e.g.
   *--vcpus 2* is equivalent to *--flavor-specs "VCPUs==2"*. The output is sorted, flavors using less resources
   (in the order: GPUs, CPUs, RAM, Disk) are placed on the first places. Users can choose to print only the best-matched
-  flavor with *--flavor-output first* (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
+  flavor with *--output-format first* (suitable for scripting) or the full list of all matched flavors in list/YAML/JSON
   format.
 
 ::
 
-    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --flavor-specs "RAM>=2096" --flavor-specs "Disk > 10" --flavor-output list
+    $ fedcloud select flavor --site IISAS-FedCloud --vo vo.access.egi.eu --flavor-specs "RAM>=2096" --flavor-specs "Disk > 10" --output-format list
     m1.medium
     m1.large
     m1.xlarge
@@ -323,12 +323,12 @@ fedcloud select commands
   Select image according to the specification in *image-specs*. The specifications may be repeated,
   e.g. *--image-specs "Name=~Ubuntu" --image-specs "Name=~'20.04'"*. The output is sorted, newest images
   are placed on the first places. Users can choose to print only the best-matched
-  image with *--image-output first* (suitable for scripting) or the full list of all matched images in list/YAML/JSON
+  image with *--output-format first* (suitable for scripting) or the full list of all matched images in list/YAML/JSON
   format.
 
 ::
 
-    $ fedcloud select image --site INFN-CATANIA-STACK --vo training.egi.eu --image-specs "Name =~ Ubuntu" --image-output list
+    $ fedcloud select image --site INFN-CATANIA-STACK --vo training.egi.eu --image-specs "Name =~ Ubuntu" --output-format list
     TRAINING.EGI.EU Image for EGI Docker [Ubuntu/18.04/VirtualBox]
     TRAINING.EGI.EU Image for EGI Ubuntu 20.04 [Ubuntu/20.04/VirtualBox]
 
@@ -336,12 +336,12 @@ fedcloud select commands
 * **"fedcloud select network --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --network-specs <flavor-specs>"** :
   Select network according to the specification in *network-specs*. User can choose to select only public or private
   network, or both (default). The output is sorted in the order: public, shared,
-  private. Users can choose to print only the best-matched network with *--network-output first*
+  private. Users can choose to print only the best-matched network with *--output-format first*
   (suitable for scripting) or the full list of all matched networks in list/YAML/JSON format.
 
 ::
 
-    $ fedcloud select network --site IISAS-FedCloud --vo training.egi.eu --network-specs default --network-output list
+    $ fedcloud select network --site IISAS-FedCloud --vo training.egi.eu --network-specs default --output-format list
     public-network
     private-network
 
