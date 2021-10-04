@@ -40,6 +40,7 @@ def oidc_discover(oidc_url):
     Discover OIDC endpoints
 
     :param oidc_url: CheckIn URL
+
     :return: JSON object of OIDC configuration
     """
     request = requests.get(oidc_url + "/.well-known/openid-configuration")
@@ -55,6 +56,7 @@ def token_refresh(oidc_client_id, oidc_client_secret, oidc_refresh_token, oidc_u
     :param oidc_client_secret:
     :param oidc_refresh_token:
     :param oidc_url:
+
     :return: JSON object with access token
     """
 
@@ -93,7 +95,7 @@ def refresh_access_token(
     :param oidc_url:
     :param quiet: If true, print no error message
 
-    :return: access token
+    :return: access token or None on error
     """
     if oidc_refresh_token:
         if not (oidc_client_id and oidc_client_secret and oidc_url):
@@ -105,7 +107,7 @@ def refresh_access_token(
 
         print_error(
             "Warning: Exposing refresh tokens is insecure and will be deprecated!",
-            False,
+            quiet,
         )
         try:
             access_token = token_refresh(
@@ -148,23 +150,23 @@ def get_token_from_agent(oidc_agent_account, quiet=False):
     return None
 
 
-def check_access_token(
-    oidc_access_token, quiet=False, verbose=False, refresh_token=False
+def check_token(
+    oidc_token, quiet=False, verbose=False, refresh_token=False
 ):
     """
     Check validity of access token
 
-    :param oidc_access_token:
+    :param oidc_token: the token to check
     :param refresh_token: the provided token is refresh token
     :param verbose: If true, print additional info
     :param quiet: If true, print no error message
 
     :return:
     """
-    if oidc_access_token:
+    if oidc_token:
         # Check expiration time of access token
         try:
-            payload = jwt.decode(oidc_access_token, options={"verify_signature": False})
+            payload = jwt.decode(oidc_token, options={"verify_signature": False})
         except jwt.exceptions.InvalidTokenError:
             print_error("Error: Invalid access token.", quiet)
             return None
@@ -190,12 +192,12 @@ def check_access_token(
             )
             print(f"Token is valid until {exp_time_str} UTC")
             if exp_time_in_sec < 24 * 3600:
-                print(f"Access token expires in {exp_time_in_sec} seconds")
+                print(f"Token expires in {exp_time_in_sec} seconds")
             else:
                 exp_time_in_days = exp_time_in_sec // (24 * 3600)
-                print(f"Refresh token expires in {exp_time_in_days} days")
+                print(f"Token expires in {exp_time_in_days} days")
 
-    return oidc_access_token
+    return oidc_token
 
 
 def get_access_token(
@@ -237,7 +239,7 @@ def get_access_token(
         return access_token
 
     # Then finally access token
-    access_token = check_access_token(oidc_access_token)
+    access_token = check_token(oidc_access_token)
     if access_token:
         return access_token
 
@@ -290,9 +292,9 @@ def check(oidc_refresh_token, oidc_access_token):
     """
 
     if oidc_refresh_token:
-        check_access_token(oidc_refresh_token, verbose=True, refresh_token=True)
+        check_token(oidc_refresh_token, verbose=True, refresh_token=True)
     elif oidc_access_token:
-        check_access_token(oidc_access_token, verbose=True)
+        check_token(oidc_access_token, verbose=True)
     else:
         raise SystemExit("OIDC access token or refresh token required")
 
