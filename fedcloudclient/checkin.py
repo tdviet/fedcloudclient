@@ -123,7 +123,7 @@ def refresh_access_token(
     return None
 
 
-def get_token_from_agent(oidc_agent_account, quiet=False):
+def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
     """
     Get access token from oidc-agent
 
@@ -225,7 +225,7 @@ def get_access_token(
     """
 
     # First, try to get access token from oidc-agent
-    access_token = get_token_from_agent(oidc_agent_account)
+    access_token = get_token_from_oidc_agent(oidc_agent_account)
     if access_token:
         return access_token
 
