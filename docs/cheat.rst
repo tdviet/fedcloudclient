@@ -148,7 +148,7 @@ Searching and selecting resources
 ::
 
     # Shorter but more complex regex
-    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ 'EGI.*Ubuntu.*20.04"  --output-format list
+    $ fedcloud select image --site IFCA-LCG2 --vo training.egi.eu --image-specs "Name =~ 'EGI.*Ubuntu.*20.04'"  --output-format list
 
 
 Mapping and filtering results from OpenStack commands
