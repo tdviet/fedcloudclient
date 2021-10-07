@@ -235,7 +235,7 @@ def flavor(
     if ram:
         flavor_specs.append(f"=={ram}")
     if gpus:
-        flavor_specs.append(f"Properties.'Accelerator:Number'=={gpus}")
+        flavor_specs.append(f"Properties.'Accelerator:Number'=~'{gpus}'")
 
     filter_string = construct_filter(flavor_specs, FILTER_TEMPLATE)
     parser = get_parser(filter_string)
