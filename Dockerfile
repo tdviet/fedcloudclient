@@ -26,6 +26,7 @@ COPY . /tmp/fedcloudclient
 
 # Dependencies
 RUN pip install --no-cache-dir -r /tmp/fedcloudclient/requirements.txt
+
 # Add IGTF CAs to Python requests
 RUN cat /etc/grid-security/certificates/*.pem >> "$(python -m requests.certs)"
 
@@ -33,11 +34,11 @@ RUN cat /etc/grid-security/certificates/*.pem >> "$(python -m requests.certs)"
 # hadolint ignore=DL3013
 RUN pip install --no-cache-dir /tmp/fedcloudclient
 
-# Save site configs
-RUN fedcloud site save-config
-
-# Make shell more comfortable by adding completion and history
-RUN cp /tmp/fedcloudclient/examples/command_history.txt /root/.bash_history  \
+# Post configuration: save site configs and
+# make shell more comfortable by adding completion and history
+# hadolint ignore=DL3059
+RUN fedcloud site save-config \
+    && cp /tmp/fedcloudclient/examples/command_history.txt /root/.bash_history \
     && cp /tmp/fedcloudclient/examples/fedcloud_bash_completion.sh /root/.fedcloud_completion \
     && echo ". ~/.fedcloud_completion" > /root/.bashrc
 
