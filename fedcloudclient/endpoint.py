@@ -8,6 +8,7 @@ test on sites
 """
 
 import os
+import sys
 from urllib import parse
 
 import click
@@ -161,7 +162,7 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
     return request.headers["X-Subject-Token"]
 
 
-def get_projects(os_auth_url, unscoped_token):
+def get_projects_from_single_site(os_auth_url, unscoped_token):
     """
     Get list of projects from unscoped token
     """
@@ -171,49 +172,74 @@ def get_projects(os_auth_url, unscoped_token):
     return request.json()["projects"]
 
 
+def format_project_as_list(site_name, project):
+    """
+    Format project data as a list
+    """
+    return [
+        [project["id"], project["name"], project["enabled"], site_name]
+    ]
+
+
+def format_project_as_dict(site_name, project):
+    """
+    Format project data as a dictionary
+    """
+    return [
+        {
+            "project_id": project["id"],
+            "name": project["name"],
+            "enabled": project["enabled"],
+            "site": site_name,
+        }
+    ]
+
 def get_projects_from_sites(access_token, site):
+    """
+    Get all projects from site(s) using access token, in the default output format (list)
+    """
+    return get_projects_from_sites_as_list(access_token, site)
+
+
+def get_projects_from_sites_as_list(access_token, site):
+    """
+    Get all projects from site(s) using access token, as a list
+    """
+    return get_projects_from_sites_with_format(access_token, site, format_project_as_list)
+
+
+def get_projects_from_sites_as_dict(access_token, site):
+    """
+    Get all projects from site(s) using access token, as a dictionary
+    """
+    return get_projects_from_sites_with_format(access_token, site, format_project_as_dict)
+
+
+def get_projects_from_sites_with_format(access_token, site, output_format_function):
     """
     Get all projects from site(s) using access token
     """
     project_list = []
+    project_error_list = []
     for site_ep in find_endpoint("org.openstack.nova", site=site):
-        os_auth_url = site_ep[2]
+        site_name = site_ep[0]
+        site_os_auth_url = site_ep[2]
         try:
-            unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
-            project_list.extend(
-                [
-                    [p["id"], p["name"], p["enabled"], site_ep[0]]
-                    for p in get_projects(os_auth_url, unscoped_token)
-                ]
-            )
-        except (RuntimeError, requests.exceptions.ConnectionError):
+            unscoped_token, _ = get_unscoped_token(site_os_auth_url, access_token)
+            for p in get_projects_from_single_site(site_os_auth_url, unscoped_token):
+                project_list.extend(output_format_function(site_name, p))
+        except requests.exceptions.SSLError as e:
+            # This should be treated with a command line flag that request access even with self-signed certificates
+            project_error_list.append(site_name)
             pass
-    return project_list
-
-
-def get_projects_from_sites_dict(access_token, site):
-    """
-    Get all projects as a dictionary from site(s) using access token
-    """
-    project_list = []
-    for site_ep in find_endpoint("org.openstack.nova", site=site):
-        os_auth_url = site_ep[2]
-        try:
-            unscoped_token, _ = get_unscoped_token(os_auth_url, access_token)
-            project_list.extend(
-                [
-                    {
-                        "project_id": p["id"],
-                        "name": p["name"],
-                        "enabled": p["enabled"],
-                        "site": site_ep[0],
-                    }
-                    for p in get_projects(os_auth_url, unscoped_token)
-                ]
-            )
-        except RuntimeError:
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
+            # The site is unavailable e.g. HTTP 500
+            project_error_list.append(site_name)
             pass
-    return project_list
+        except RuntimeError as e:
+            # e.g. The user may have no permissions
+            pass
+    return project_list, project_error_list
 
 
 @click.group()
@@ -237,14 +263,16 @@ def projects(
     if site in ALL_SITES_KEYWORDS or all_sites:
         site = None
 
-    project_list = get_projects_from_sites(access_token, site)
+    project_list, project_error_list = get_projects_from_sites(access_token, site)
     if len(project_list) > 0:
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
         print(f"Error: You probably do not have access to any project at site {site}")
-        print(
-            'Check your access token and VO memberships using "fedcloud token list-vos"'
-        )
+        print('Check your access token and VO memberships using "fedcloud token list-vos"')
+    if len(project_error_list) > 0:
+        print('[WARN] Sites not available: ', project_error_list, file=sys.stderr)
+
+
 
 
 @endpoint.command()
