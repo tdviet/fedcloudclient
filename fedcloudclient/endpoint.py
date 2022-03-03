@@ -25,8 +25,18 @@ from fedcloudclient.decorators import (
 )
 from fedcloudclient.shell import print_set_env_command
 
+OPENSTACK_NOVA = "org.openstack.nova"
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
 TIMEOUT = 10
+TLS_ERROR_MSG = "TLS error. IGTF certificates may not have been installed"
+CONNECTION_ERROR_MSG = "Connection error"
+SCOPED_TOKEN_ERROR_MSG = "Unable to get a scoped token"
+UNSCOPED_TOKEN_ERROR_MSG = "Unable to get an unscoped token"
+
+
+class TokenException(Exception):
+    """Exception for Token related errors"""
+    # Basic exception. This should be extended
 
 
 def get_sites():
@@ -119,7 +129,7 @@ def get_unscoped_token(os_auth_url, access_token):
             return unscoped_token, protocol
         except RuntimeError:
             pass
-    raise RuntimeError("Unable to get a scoped token")
+    raise TokenException(SCOPED_TOKEN_ERROR_MSG)
 
 
 def get_scoped_token(os_auth_url, access_token, project_id):
@@ -137,7 +147,7 @@ def get_scoped_token(os_auth_url, access_token, project_id):
     request = requests.post(url, json=body)
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
-        raise RuntimeError("Unable to get a scoped token")
+        raise TokenException(SCOPED_TOKEN_ERROR_MSG)
 
     return request.headers["X-Subject-Token"], protocol
 
@@ -157,7 +167,7 @@ def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
     )
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
-        raise RuntimeError("Unable to get an unscoped token")
+        raise TokenException(UNSCOPED_TOKEN_ERROR_MSG)
 
     return request.headers["X-Subject-Token"]
 
@@ -194,6 +204,7 @@ def format_project_as_dict(site_name, project):
         }
     ]
 
+
 def get_projects_from_sites(access_token, site):
     """
     Get all projects from site(s) using access token, in the default output format (list)
@@ -221,23 +232,23 @@ def get_projects_from_sites_with_format(access_token, site, output_format_functi
     """
     project_list = []
     project_error_list = []
-    for site_ep in find_endpoint("org.openstack.nova", site=site):
+    for site_ep in find_endpoint(OPENSTACK_NOVA, site=site):
         site_name = site_ep[0]
         site_os_auth_url = site_ep[2]
         try:
             unscoped_token, _ = get_unscoped_token(site_os_auth_url, access_token)
-            for p in get_projects_from_single_site(site_os_auth_url, unscoped_token):
-                project_list.extend(output_format_function(site_name, p))
-        except requests.exceptions.SSLError as e:
-            # This should be treated with a command line flag that request access even with self-signed certificates
-            project_error_list.append(site_name)
-            pass
-        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout) as e:
-            # The site is unavailable e.g. HTTP 500
-            project_error_list.append(site_name)
-            pass
-        except RuntimeError as e:
+            for project in get_projects_from_single_site(site_os_auth_url, unscoped_token):
+                project_list.extend(output_format_function(site_name, project))
+        except TokenException:
             # e.g. The user may have no permissions
+            pass
+        except requests.exceptions.SSLError:
+            project_error_list.append([site_name, TLS_ERROR_MSG])
+        except (requests.exceptions.ConnectionError, requests.exceptions.ReadTimeout):
+            # The site is unavailable e.g. HTTP 500
+            project_error_list.append([site_name, CONNECTION_ERROR_MSG])
+        except RuntimeError:
+            # Logging needed
             pass
     return project_list, project_error_list
 
@@ -273,8 +284,6 @@ def projects(
         print('[WARN] Sites not available: ', project_error_list, file=sys.stderr)
 
 
-
-
 @endpoint.command()
 @site_params
 @project_id_params
@@ -293,7 +302,7 @@ def token(
 
     # Getting sites from GOCDB
     # assume first one is ok
-    site_ep = find_endpoint("org.openstack.nova", site=site).pop()
+    site_ep = find_endpoint(OPENSTACK_NOVA, site=site).pop()
     os_auth_url = site_ep[2]
     try:
         scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
@@ -306,7 +315,7 @@ def token(
 @all_site_params
 @click.option(
     "--service-type",
-    default="org.openstack.nova",
+    default=OPENSTACK_NOVA,
     help="Service type in GOCDB",
     show_default=True,
 )
@@ -322,7 +331,7 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-def list(service_type, production, monitored, site, all_sites):
+def endpoint_list(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
     """
@@ -351,7 +360,7 @@ def env(
 
     # Get the right endpoint from GOCDB
     # assume first one is ok
-    site_ep = find_endpoint("org.openstack.nova", site=site).pop()
+    site_ep = find_endpoint(OPENSTACK_NOVA, site=site).pop()
     os_auth_url = site_ep[2]
 
     try:
@@ -363,5 +372,5 @@ def env(
         print_set_env_command("OS_IDENTITY_PROVIDER", "egi.eu")
         print_set_env_command("OS_PROTOCOL", protocol)
         print_set_env_command("OS_ACCESS_TOKEN", access_token)
-    except RuntimeError:
-        raise SystemExit(f"Error: Unable to get Keystone token from site {site}")
+    except RuntimeError as runtime_error:
+        raise SystemExit(f"Error: Unable to get Keystone token from site {site}") from runtime_error
