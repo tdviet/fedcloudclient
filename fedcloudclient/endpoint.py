@@ -36,6 +36,7 @@ UNSCOPED_TOKEN_ERROR_MSG = "Unable to get an unscoped token"
 
 class TokenException(Exception):
     """Exception for Token related errors"""
+
     # Basic exception. This should be extended
 
 
@@ -186,9 +187,7 @@ def format_project_as_list(site_name, project):
     """
     Format project data as a list
     """
-    return [
-        [project["id"], project["name"], project["enabled"], site_name]
-    ]
+    return [[project["id"], project["name"], project["enabled"], site_name]]
 
 
 def format_project_as_dict(site_name, project):
@@ -216,14 +215,18 @@ def get_projects_from_sites_as_list(access_token, site):
     """
     Get all projects from site(s) using access token, as a list
     """
-    return get_projects_from_sites_with_format(access_token, site, format_project_as_list)
+    return get_projects_from_sites_with_format(
+        access_token, site, format_project_as_list
+    )
 
 
 def get_projects_from_sites_as_dict(access_token, site):
     """
     Get all projects from site(s) using access token, as a dictionary
     """
-    return get_projects_from_sites_with_format(access_token, site, format_project_as_dict)
+    return get_projects_from_sites_with_format(
+        access_token, site, format_project_as_dict
+    )
 
 
 def get_projects_from_sites_with_format(access_token, site, output_format_function):
@@ -235,9 +238,12 @@ def get_projects_from_sites_with_format(access_token, site, output_format_functi
     for site_ep in find_endpoint(OPENSTACK_NOVA, site=site):
         site_name = site_ep[0]
         site_os_auth_url = site_ep[2]
+
         try:
             unscoped_token, _ = get_unscoped_token(site_os_auth_url, access_token)
-            for project in get_projects_from_single_site(site_os_auth_url, unscoped_token):
+            for project in get_projects_from_single_site(
+                site_os_auth_url, unscoped_token
+            ):
                 project_list.extend(output_format_function(site_name, project))
         except TokenException:
             # e.g. The user may have no permissions
@@ -279,9 +285,11 @@ def projects(
         print(tabulate(project_list, headers=["id", "Name", "enabled", "site"]))
     else:
         print(f"Error: You probably do not have access to any project at site {site}")
-        print('Check your access token and VO memberships using "fedcloud token list-vos"')
+        print(
+            'Check your access token and VO memberships using "fedcloud token list-vos"'
+        )
     if len(project_error_list) > 0:
-        print('[WARN] Sites not available: ', project_error_list, file=sys.stderr)
+        print("[WARN] Sites not available: ", project_error_list, file=sys.stderr)
 
 
 @endpoint.command()
@@ -331,7 +339,7 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-def endpoint_list(service_type, production, monitored, site, all_sites):
+def list(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
     """
@@ -373,4 +381,6 @@ def env(
         print_set_env_command("OS_PROTOCOL", protocol)
         print_set_env_command("OS_ACCESS_TOKEN", access_token)
     except RuntimeError as runtime_error:
-        raise SystemExit(f"Error: Unable to get Keystone token from site {site}") from runtime_error
+        raise SystemExit(
+            f"Error: Unable to get Keystone token from site {site}"
+        ) from runtime_error
