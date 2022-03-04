@@ -233,6 +233,13 @@ Raise error if no valid token exists</p>
 local disk, the commands try to get site information directly from GOCDB
 (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe
 test on sites</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.TokenException">
+<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">TokenException</span></span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#TokenException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.TokenException" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for Token related errors</p>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.endpoint.find_endpoint">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">find_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">production</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#find_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.find_endpoint" title="Permalink to this definition"></a></dt>
@@ -253,27 +260,51 @@ test on sites</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.format_project_as_dict">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">format_project_as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#format_project_as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.format_project_as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Format project data as a dictionary</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.format_project_as_list">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">format_project_as_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#format_project_as_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.format_project_as_list" title="Permalink to this definition"></a></dt>
+<dd><p>Format project data as a list</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.endpoint.get_keystone_url">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_keystone_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_keystone_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_keystone_url" title="Permalink to this definition"></a></dt>
 <dd><p>Helper function for fixing Keystone URL</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unscoped_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_single_site">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_single_site</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">os_auth_url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unscoped_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_single_site"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_single_site" title="Permalink to this definition"></a></dt>
 <dd><p>Get list of projects from unscoped token</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites" title="Permalink to this definition"></a></dt>
-<dd><p>Get all projects from site(s) using access token</p>
+<dd><p>Get all projects from site(s) using access token, in the default output format (list)</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites_dict">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_dict" title="Permalink to this definition"></a></dt>
-<dd><p>Get all projects as a dictionary from site(s) using access token</p>
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites_as_dict">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites_as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_as_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_as_dict" title="Permalink to this definition"></a></dt>
+<dd><p>Get all projects from site(s) using access token, as a dictionary</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites_as_list">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites_as_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_as_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_as_list" title="Permalink to this definition"></a></dt>
+<dd><p>Get all projects from site(s) using access token, as a list</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.endpoint.get_projects_from_sites_with_format">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_projects_from_sites_with_format</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_format_function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_projects_from_sites_with_format"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_projects_from_sites_with_format" title="Permalink to this definition"></a></dt>
+<dd><p>Get all projects from site(s) using access token</p>
 </dd></dl>
 
 <dl class="py function">
