@@ -339,7 +339,7 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-def endpoint_list(service_type, production, monitored, site, all_sites):
+def list(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
     """
