@@ -266,6 +266,7 @@ def endpoint():
     Obtain endpoint details and scoped tokens
     """
 
+
 @endpoint.command()
 @all_site_params
 @oidc_params
@@ -282,11 +283,14 @@ def vos(
 
     project_list, project_error_list = get_projects_from_sites(access_token, site)
     if len(project_list) > 0:
-        vo_list = []
         for p in project_list:
             vo = find_vo_from_project_id(p[3], p[0])
             p.insert(0, vo)
-        print(tabulate(project_list, headers=["VO", "id", "Project name", "enabled", "site"]))
+        print(
+            tabulate(
+                project_list, headers=["VO", "id", "Project name", "enabled", "site"]
+            )
+        )
     else:
         print(f"Error: You probably do not have access to any project at site {site}")
         print(
@@ -294,7 +298,6 @@ def vos(
         )
     if len(project_error_list) > 0:
         print("[WARN] Sites not available: ", project_error_list, file=sys.stderr)
-
 
 
 @endpoint.command()
