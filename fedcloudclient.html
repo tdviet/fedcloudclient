@@ -395,6 +395,24 @@ otherwise None, None, None</p>
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.sites.find_vo_from_project_id">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">find_vo_from_project_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_vo_from_project_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_vo_from_project_id" title="Permalink to this definition"></a></dt>
+<dd><p>Return the VO name form the project ID and site_name according
+to site configuration</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>site_name</strong> -- site ID in GOCDB</p></li>
+<li><p><strong>project_id</strong> -- project_id configured to support the VO</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>vo if the VO is configured, otherwise None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.sites.list_sites">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">list_sites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#list_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.list_sites" title="Permalink to this definition"></a></dt>
 <dd><p>List of all sites IDs in site configurations</p>
