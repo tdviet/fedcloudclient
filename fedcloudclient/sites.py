@@ -237,6 +237,27 @@ def find_endpoint_and_project_id(site_name, vo):
     return None, None, None
 
 
+def find_vo_from_project_id(site_name, project_id):
+    """
+    Return the VO name form the project ID and site_name according
+    to site configuration
+
+    :param site_name: site ID in GOCDB
+    :param project_id: project_id configured to support the VO
+    :return: vo if the VO is configured, otherwise None
+    """
+    site_info = find_site_data(site_name)
+    if site_info is None:
+        return None
+
+    for vo_info in site_info["vos"]:
+        if vo_info.get("auth", {}).get("project_id", None) == project_id:
+            return vo_info["name"]
+
+    # Return None if the project is not found
+    return None
+
+
 @click.group()
 def site():
     """

@@ -24,6 +24,7 @@ from fedcloudclient.decorators import (
     site_params,
 )
 from fedcloudclient.shell import print_set_env_command
+from fedcloudclient.sites import find_vo_from_project_id
 
 OPENSTACK_NOVA = "org.openstack.nova"
 GOCDB_PUBLICURL = "https://goc.egi.eu/gocdbpi/public/"
@@ -264,6 +265,39 @@ def endpoint():
     """
     Obtain endpoint details and scoped tokens
     """
+
+
+@endpoint.command()
+@all_site_params
+@oidc_params
+def vos(
+    access_token,
+    site,
+    all_sites,
+):
+    """
+    List projects from site(s)
+    """
+    if site in ALL_SITES_KEYWORDS or all_sites:
+        site = None
+
+    project_list, project_error_list = get_projects_from_sites(access_token, site)
+    if len(project_list) > 0:
+        for p in project_list:
+            vo = find_vo_from_project_id(p[3], p[0])
+            p.insert(0, vo)
+        print(
+            tabulate(
+                project_list, headers=["VO", "id", "Project name", "enabled", "site"]
+            )
+        )
+    else:
+        print(f"Error: You probably do not have access to any project at site {site}")
+        print(
+            'Check your access token and VO memberships using "fedcloud token list-vos"'
+        )
+    if len(project_error_list) > 0:
+        print("[WARN] Sites not available: ", project_error_list, file=sys.stderr)
 
 
 @endpoint.command()
