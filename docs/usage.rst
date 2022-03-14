@@ -126,7 +126,7 @@ fedcloud token commands
     Access token expires in 3571 seconds
 
 
-* **"fedcloud token list-vos --oidc-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to the EGI Check-in
+* **"fedcloud token list-vos --oidc-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to EGI Check-in
 
 ::
 
@@ -155,8 +155,8 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     ...
 
 
-* **"fedcloud endpoint projects --site <SITE> --oidc-access-token <ACCESS_TOKEN>"** : List of projects that the owner
-  of the access token can have access on the given site
+* **"fedcloud endpoint projects --site <SITE> --oidc-access-token <ACCESS_TOKEN>"** : List of projects to which the owner
+  of the access token has access at the given site
 
 ::
 
@@ -167,7 +167,35 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
     3b9754ad8c6046b4aec43ec21abe7d8c  VO:eosc-synergy.eu          True       IFCA-LCG2
     ...
 
-If the site is *ALL_SITES*, the command will show projects on all sites in EGI Federated Cloud.
+If the site is set to *ALL_SITES*, or the argument *-a* is used, the command will show accessible projects from all sites of the EGI Federated Cloud.
+
+
+* **"fedcloud endpoint vos --site <SITE> --oidc-access-token <ACCESS_TOKEN>"** : List of Virtual Organisations (VOs)
+   to which the owner of the access token has access at the given site
+
+::
+
+    $ fedcloud endpoint vos --site IFCA-LCG2
+    VO                id                                Project name         enabled    site
+    ----------------  --------------------------------  -------------------  ---------  ---------
+    vo.access.egi.eu  233f045cb1ff46842a15ebb33af69460  VO:vo.access.egi.eu  True       IFCA-LCG2
+    training.egi.eu   d340308880134d04294097524eace710  VO:training.egi.eu   True       IFCA-LCG2
+    ...
+
+If the site is set to *ALL_SITES*, or the argument *-a* is used, the command will show accessible VOs from all sites of the EGI Federated Cloud.
+
+::
+
+    $ fedcloud endpoint vos -a
+    VO                   id                                Project name         enabled    site
+    -------------------  --------------------------------  -------------------  ---------  -----------------
+    vo.access.egi.eu     233f045cb1ff46842a15ebb33af69460  VO:vo.access.egi.eu  True       IFCA-LCG2
+    training.egi.eu      d340308880134d04294097524eace710  VO:training.egi.eu   True       IFCA-LCG2
+    vo.access.egi.eu     7101022b9ae74ed9ac1a574497279499  EGI_access           True       IN2P3-IRES
+    vo.access.egi.eu     5bbdb5c1e0b2bcbac29904f4ac22dcaa  vo_access_egi_eu     True       UNIV-LILLE
+    vo.access.egi.eu     4cab325ca8c2495bf2d4e8f230bcd51a  VO:vo.access.egi.eu  True       INFN-PADOVA-STACK
+    ...
+
 
 * **"fedcloud endpoint token --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Get
   OpenStack keystone scoped token on the site for the project ID.
