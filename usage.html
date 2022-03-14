@@ -229,7 +229,7 @@ Access token expires in 3571 seconds
 </pre></div>
 </div>
 <ul class="simple">
-<li><p><strong>&quot;fedcloud token list-vos --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Print the list of VO memberships according to the EGI Check-in</p></li>
+<li><p><strong>&quot;fedcloud token list-vos --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Print the list of VO memberships according to EGI Check-in</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token list-vos
 eosc-synergy.eu
@@ -255,8 +255,8 @@ IN2P3-IRES          org.openstack.nova  https://sbgcloud.in2p3.fr:5000/v3
 </pre></div>
 </div>
 <ul class="simple">
-<li><p><strong>&quot;fedcloud endpoint projects --site &lt;SITE&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : List of projects that the owner
-of the access token can have access on the given site</p></li>
+<li><p><strong>&quot;fedcloud endpoint projects --site &lt;SITE&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : List of projects to which the owner
+of the access token has access at the given site</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint projects --site IFCA-LCG2
 id                                Name                        enabled    site
@@ -266,7 +266,34 @@ id                                Name                        enabled    site
 ...
 </pre></div>
 </div>
-<p>If the site is <em>ALL_SITES</em>, the command will show projects on all sites in EGI Federated Cloud.</p>
+<p>If the site is set to <em>ALL_SITES</em>, or the argument <em>-a</em> is used, the command will show accessible projects from all sites of the EGI Federated Cloud.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><strong>&quot;fedcloud endpoint vos --site &lt;SITE&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong><span class="classifier">List of Virtual Organisations (VOs)</span></dt><dd><p>to which the owner of the access token has access at the given site</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint vos --site IFCA-LCG2
+VO                id                                Project name         enabled    site
+----------------  --------------------------------  -------------------  ---------  ---------
+vo.access.egi.eu  233f045cb1ff46842a15ebb33af69460  VO:vo.access.egi.eu  True       IFCA-LCG2
+training.egi.eu   d340308880134d04294097524eace710  VO:training.egi.eu   True       IFCA-LCG2
+...
+</pre></div>
+</div>
+<p>If the site is set to <em>ALL_SITES</em>, or the argument <em>-a</em> is used, the command will show accessible VOs from all sites of the EGI Federated Cloud.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint vos -a
+VO                   id                                Project name         enabled    site
+-------------------  --------------------------------  -------------------  ---------  -----------------
+vo.access.egi.eu     233f045cb1ff46842a15ebb33af69460  VO:vo.access.egi.eu  True       IFCA-LCG2
+training.egi.eu      d340308880134d04294097524eace710  VO:training.egi.eu   True       IFCA-LCG2
+vo.access.egi.eu     7101022b9ae74ed9ac1a574497279499  EGI_access           True       IN2P3-IRES
+vo.access.egi.eu     5bbdb5c1e0b2bcbac29904f4ac22dcaa  vo_access_egi_eu     True       UNIV-LILLE
+vo.access.egi.eu     4cab325ca8c2495bf2d4e8f230bcd51a  VO:vo.access.egi.eu  True       INFN-PADOVA-STACK
+...
+</pre></div>
+</div>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud endpoint token --site &lt;SITE&gt; --project-id &lt;PROJECT&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong> : Get
 OpenStack keystone scoped token on the site for the project ID.</p></li>
