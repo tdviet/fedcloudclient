@@ -100,8 +100,8 @@ directly (via option <em>&quot;--oidc-access-token&quot;</em>), or via oidc-agen
 tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
 in most cases, the option <em>&quot;--oidc-access-token&quot;</em> can be replaced by the option <em>&quot;--oidc-agent-account&quot;</em>, or the
 combination of <em>&quot;--oidc-refresh-token&quot;</em>, <em>&quot;--oidc-client-id&quot;</em> and <em>&quot;--oidc-client-secret&quot;</em>.</p>
-<p>Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from <a class="reference external" href="https://aai.egi.eu/fedcloud/">Check-in FedCloud
-client</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
+<p>Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token
+Portal</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
 <a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
 give the client name (account name in <em>oidc-agent</em>) to <em>fedcloudclient</em> via option <em>&quot;--oidc-agent-account&quot;</em>.</p>
 <p>Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
