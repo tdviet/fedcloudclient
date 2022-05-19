@@ -51,7 +51,7 @@ at [https://fedcloudclient.fedcloud.eu/](https://fedcloudclient.fedcloud.eu/).
   ```
 
 - Get a new access token from EGI Check-in according to instructions from
-  FedCloud [Check-in client](https://aai.egi.eu/fedcloud/), or from
+   [EGI Check-in Token Portal](https://aai.egi.eu/token), or from
   [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi)
   and set environment variable.
 

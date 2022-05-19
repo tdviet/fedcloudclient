@@ -15,8 +15,8 @@ tokens (must be provided together with Check-in client ID and secret) to generat
 in most cases, the option *"--oidc-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
 combination of *"--oidc-refresh-token"*, *"--oidc-client-id"* and *"--oidc-client-secret"*.
 
-Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `Check-in FedCloud
-client <https://aai.egi.eu/fedcloud/>`_. For providing access token via *oidc-agent*, follow the instructions from
+Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `EGI Check-in Token
+Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
 `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
 give the client name (account name in *oidc-agent*) to *fedcloudclient* via option *"--oidc-agent-account"*.
 
