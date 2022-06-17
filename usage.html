@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -88,13 +89,13 @@
            <div itemprop="articleBody">
              
   <section id="usage">
-<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h1>
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
 <p><strong>fedcloudclient</strong> has four groups of commands: <strong>&quot;fedcloud token&quot;</strong> for interactions with EGI Check-in and access tokens,
 <strong>&quot;fedcloud endpoint&quot;</strong> for interactions with GOCDB (and site endpoints according to GOCDB), <strong>&quot;fedcloud site&quot;</strong> for
 manipulations with site configurations, and <strong>&quot;fedcloud openstack&quot;</strong> or <strong>&quot;fedcloud openstack-int&quot;</strong> for performing
 OpenStack commands on sites.</p>
 <section id="authentication">
-<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline"></a></h2>
+<h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading"></a></h2>
 <p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
 directly (via option <em>&quot;--oidc-access-token&quot;</em>), or via oidc-agent (via option <em>&quot;--oidc-agent-account&quot;</em>), use refresh
 tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
@@ -115,7 +116,7 @@ for OpenStack commands.</p>
 sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oidc&quot;</em> for INFN-CLOUD-BARI.</p>
 </section>
 <section id="environment-variables">
-<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this headline"></a></h2>
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Permalink to this heading"></a></h2>
 <p>Most of fedcloud options, including options for tokens can be set via environment variables:</p>
 <table class="docutils align-default">
 <colgroup>
@@ -180,7 +181,7 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 time.</p>
 </section>
 <section id="shell-completion">
-<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Permalink to this headline"></a></h2>
+<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Permalink to this heading"></a></h2>
 <p>Shell completion for <em>fedcloud</em> command in <em>bash</em> can be activated by executing the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
 </pre></div>
@@ -195,7 +196,7 @@ env              list             save-config      show             show-project
 </div>
 </section>
 <section id="fedcloud-help-command">
-<h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this headline"></a></h2>
+<h2>fedcloud --help command<a class="headerlink" href="#fedcloud-help-command" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud --help&quot;</strong> command will print help message. When using it in combination with other
 commands, e.g. <strong>&quot;fedcloud token --help&quot;</strong>, <strong>&quot;fedcloud token check --hep&quot;</strong>, it will print list of options for the
@@ -217,7 +218,7 @@ Commands:
 </div>
 </section>
 <section id="fedcloud-token-commands">
-<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud token check --oidc-access-token &lt;ACCESS_TOKEN&gt;&quot;</strong>: Check the expiration time of access token, so users can know whether
 they need to refresh it. As mentioned before, access token may be given via environment variable <em>OIDC_ACCESS_TOKEN</em>,
@@ -239,7 +240,7 @@ training.egi.eu
 </div>
 </section>
 <section id="fedcloud-endpoint-commands">
-<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Permalink to this heading"></a></h2>
 <p><strong>&quot;fedcloud endpoint&quot;</strong> commands are complementary part of the <strong>&quot;fedcloud site&quot;</strong> commands. Instead of using site
 configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
 directly from GOCDB (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe test on sites</p>
@@ -317,7 +318,7 @@ export OS_ACCESS_TOKEN=&quot;...&quot;
 </div>
 </section>
 <section id="fedcloud-ec3-commands">
-<h2>fedcloud ec3 commands<a class="headerlink" href="#fedcloud-ec3-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud ec3 commands<a class="headerlink" href="#fedcloud-ec3-commands" title="Permalink to this heading"></a></h2>
 <p><strong>&quot;fedcloud ec3&quot;</strong> commands are helper commands for deploying EC3 (Elastic Cloud Compute Cluster) in Cloud
 via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.</p>
 <ul class="simple">
@@ -337,7 +338,7 @@ Refresh the access token stored in authorization file (by default <em>auth.dat</
 </div>
 </section>
 <section id="fedcloud-site-commands">
-<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Permalink to this heading"></a></h2>
 <p><strong>&quot;fedcloud site&quot;</strong> commands will read site configurations and manipulate with them. If the local site configurations
 exist at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read
 from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
@@ -407,7 +408,7 @@ needs VO name as input parameter instead of project ID. The command may set also
 if access token is provided, otherwise it will print notification.</p>
 </section>
 <section id="fedcloud-select-commands">
-<h2>fedcloud select commands<a class="headerlink" href="#fedcloud-select-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud select commands<a class="headerlink" href="#fedcloud-select-commands" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud select flavor --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; --flavor-specs &lt;flavor-specs&gt;&quot;</strong> :
 Select flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
@@ -454,7 +455,7 @@ private-network
 </div>
 </section>
 <section id="fedcloud-openstack-commands">
-<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this headline"></a></h2>
+<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>&quot;fedcloud openstack --site &lt;SITE&gt; --vo &lt;VO&gt; --oidc-access-token &lt;ACCESS_TOKEN&gt; &lt;OPENSTACK_COMMAND&gt;&quot;</strong> : Execute an
 OpenStack command on the site and VO. Examples of OpenStack commands are <em>&quot;image list&quot;</em>, <em>&quot;server list&quot;</em> and can be used

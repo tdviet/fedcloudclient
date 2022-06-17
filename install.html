@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -81,9 +82,9 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
 <section id="installing-fedcloudclient-with-pip">
-<h2>Installing fedcloudclient with pip<a class="headerlink" href="#installing-fedcloudclient-with-pip" title="Permalink to this headline"></a></h2>
+<h2>Installing fedcloudclient with pip<a class="headerlink" href="#installing-fedcloudclient-with-pip" title="Permalink to this heading"></a></h2>
 <p>Simply use the following <strong>pip3</strong> command (should be done without root privileges).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip3 install fedcloudclient
 </pre></div>
@@ -99,7 +100,7 @@ Make sure to add <em>~/.local/bin</em> to $PATH if installing as user.</p>
 </div>
 </section>
 <section id="installing-egi-core-trust-anchor-certificates">
-<h2>Installing EGI Core Trust Anchor certificates<a class="headerlink" href="#installing-egi-core-trust-anchor-certificates" title="Permalink to this headline"></a></h2>
+<h2>Installing EGI Core Trust Anchor certificates<a class="headerlink" href="#installing-egi-core-trust-anchor-certificates" title="Permalink to this heading"></a></h2>
 <p>Some sites use certificates issued by national certificate authorities that are not included in the default
 OS distribution. If you receive error message <em>&quot;SSL exception connecting to https:// ...&quot;</em>,
 follow <a class="reference external" href="https://github.com/tdviet/python-requests-bundle-certs/blob/main/docs/Install_certificates.md">instructions</a>
@@ -112,7 +113,7 @@ $ bash install_certs.sh
 </div>
 </section>
 <section id="using-fedcloudclient-via-docker-container">
-<h2>Using fedcloudclient via Docker container<a class="headerlink" href="#using-fedcloudclient-via-docker-container" title="Permalink to this headline"></a></h2>
+<h2>Using fedcloudclient via Docker container<a class="headerlink" href="#using-fedcloudclient-via-docker-container" title="Permalink to this heading"></a></h2>
 <p>You can use Docker container for testing <strong>fedcloudclient</strong> without installation. EGI Core Trust Anchor certificates
 and site configurations are preinstalled.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker pull tdviet/fedcloudclient
