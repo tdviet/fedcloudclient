@@ -1,7 +1,7 @@
 """
 Decorators for command-line parameters
 """
-
+import os
 from functools import wraps
 
 import click
@@ -51,12 +51,13 @@ def all_site_params(func):
 
     @optgroup.group(
         "Site",
+        cls=RequiredMutuallyExclusiveOptionGroup,
         help="Single Openstack site or all sites",
     )
     @optgroup.option(
         "--site",
         help="Name of the site or ALL_SITES",
-        envvar="EGI_SITE",
+        default=lambda: os.environ.get("EGI_SITE", None),
         metavar="site-name",
     )
     @optgroup.option(
