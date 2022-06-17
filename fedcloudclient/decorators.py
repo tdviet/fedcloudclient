@@ -51,7 +51,7 @@ def all_site_params(func):
 
     @optgroup.group(
         "Site",
-        cls=RequiredAnyOptionGroup,
+        cls=RequiredMutuallyExclusiveOptionGroup,
         help="Single Openstack site or all sites",
     )
     @optgroup.option(
