@@ -51,13 +51,13 @@ def all_site_params(func):
 
     @optgroup.group(
         "Site",
-        cls=RequiredMutuallyExclusiveOptionGroup,
+        cls=RequiredAnyOptionGroup,
         help="Single Openstack site or all sites",
     )
     @optgroup.option(
         "--site",
         help="Name of the site or ALL_SITES",
-        default=lambda: os.environ.get("EGI_SITE", None),
+        envvar="EGI_SITE",
         metavar="site-name",
     )
     @optgroup.option(
