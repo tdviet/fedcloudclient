@@ -34,7 +34,7 @@ def secret_client(access_token, command, path, data):
         "read_secret": client.secrets.kv.v1.read_secret,
         "delete_secret": client.secrets.kv.v1.read_secret,
     }
-    if command == "set":
+    if command == "put":
         response = client.secrets.kv.v1.create_or_update_secret(
             path=full_path,
             mount_point=VAULT_MOUNT_POINT,
@@ -43,6 +43,31 @@ def secret_client(access_token, command, path, data):
     else:
         response = function_list[command](path=full_path, mount_point=VAULT_MOUNT_POINT)
     return response
+
+
+def secret_params_to_dict(params):
+    """
+    Convert secret params "key=value" to dict {"key":"value"}
+    :param params: input string in format "key=value"
+    :return: dict {"key":"value"}
+    """
+
+    result = {}
+
+    if len(params) == 0:
+        raise click.UsageError(
+            f"Expecting 'key=value' arguments for secrets, None provided"
+        )
+
+    for param in params:
+        try:
+            key, value = param.split("=", 1)
+        except ValueError:
+            raise click.UsageError(
+                f"Expecting 'key=value' arguments for secrets. '{param}' provided."
+            )
+        result[key] = value
+    return result
 
 
 @click.group()
@@ -80,3 +105,19 @@ def list_(
 
     data = secret_client(access_token, "list_secrets", short_path, None)
     print("\n".join(map(str, data["data"]["keys"])))
+
+
+@secret.command()
+@oidc_params
+@click.argument("short_path")
+@click.argument("secrets", nargs=-1, metavar="[key=value...]")
+def put(
+    access_token,
+    short_path,
+    secrets
+):
+    """
+    Put secrets to the path
+    """
+    secret_dict = secret_params_to_dict(secrets)
+    secret_client(access_token, "put", short_path, secret_dict)
