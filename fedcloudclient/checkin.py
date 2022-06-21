@@ -198,6 +198,24 @@ def check_token(oidc_token, quiet=False, verbose=False, refresh_token=False):
     return oidc_token
 
 
+def get_checkin_id(oidc_token, quiet=False,):
+    """
+    Get EGI Check-in ID from access token
+
+    :param oidc_token: the token
+    :param quiet: If true, print no error message
+
+    :return: Check-in ID
+    """
+    try:
+        payload = jwt.decode(oidc_token, options={"verify_signature": False})
+    except jwt.exceptions.InvalidTokenError:
+        print_error("Error: Invalid access token.", quiet)
+        return None
+
+    return payload["sub"]
+
+
 def get_access_token(
     oidc_access_token,
     oidc_refresh_token,
