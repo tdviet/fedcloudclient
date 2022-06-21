@@ -319,7 +319,7 @@ def token(
         print(f"Error: Unable to get Keystone token from site {site}")
 
 
-@endpoint.command()
+@endpoint.command("list")
 @all_site_params
 @click.option(
     "--service-type",
@@ -339,7 +339,7 @@ def token(
     help="Monitoring status",
     show_default=True,
 )
-def list(service_type, production, monitored, site, all_sites):
+def list_(service_type, production, monitored, site, all_sites):
     """
     List endpoints in site(s), will query GOCDB
     """

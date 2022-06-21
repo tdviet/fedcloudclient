@@ -295,8 +295,8 @@ def save_config():
     save_site_config(config_dir)
 
 
-@site.command()
-def list():
+@site.command("list")
+def list_():
     """
     List all sites
     """
