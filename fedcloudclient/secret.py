@@ -19,7 +19,7 @@ from fedcloudclient.decorators import oidc_params
 VAULT_ADDR = "https://vault.services.fedcloud.eu:8200"
 VAULT_ROLE = "demo"
 VAULT_MOUNT_POINT = "/secrets"
-VAULT_SALT = b'e8d3af638e26ede70afc3b3755e7c093'
+VAULT_SALT = b"e8d3af638e26ede70afc3b3755e7c093"
 
 
 def secret_client(access_token, command, path, data):
@@ -140,7 +140,6 @@ def secret():
     "-f",
     required=False,
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
-
 )
 @click.option("--decrypt-key", required=False)
 @click.argument("short_path", metavar="[secret path]")
