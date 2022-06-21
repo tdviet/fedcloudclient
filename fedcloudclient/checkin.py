@@ -198,7 +198,10 @@ def check_token(oidc_token, quiet=False, verbose=False, refresh_token=False):
     return oidc_token
 
 
-def get_checkin_id(oidc_token, quiet=False,):
+def get_checkin_id(
+    oidc_token,
+    quiet=False,
+):
     """
     Get EGI Check-in ID from access token
 
