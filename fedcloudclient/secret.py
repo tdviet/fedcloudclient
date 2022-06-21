@@ -56,7 +56,7 @@ def secret_params_to_dict(params):
 
     if len(params) == 0:
         raise click.UsageError(
-            f"Expecting 'key=value' arguments for secrets, None provided"
+            "Expecting 'key=value' arguments for secrets, None provided."
         )
 
     for param in params:
