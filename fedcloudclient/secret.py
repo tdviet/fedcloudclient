@@ -114,7 +114,7 @@ def list_(
 def put(
     access_token,
     short_path,
-    secrets
+    secrets,
 ):
     """
     Put secrets to the path
