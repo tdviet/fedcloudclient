@@ -1,7 +1,6 @@
 """
 Decorators for command-line parameters
 """
-
 from functools import wraps
 
 import click
