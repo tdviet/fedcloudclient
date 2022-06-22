@@ -3,14 +3,16 @@ Implementation of "fedcloud secret" commands for accessing secret management ser
 """
 import base64
 import json
+import os
 
 import click
 import hvac
 import yaml
 
-from cryptography.fernet import Fernet
+from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from hvac.exceptions import VaultError
 from tabulate import tabulate
 
 from fedcloudclient.checkin import get_checkin_id
@@ -19,7 +21,7 @@ from fedcloudclient.decorators import oidc_params
 VAULT_ADDR = "https://vault.services.fedcloud.eu:8200"
 VAULT_ROLE = "demo"
 VAULT_MOUNT_POINT = "/secrets"
-VAULT_SALT = b"e8d3af638e26ede70afc3b3755e7c093"
+VAULT_SALT = "fedcloud_salt"
 
 
 def secret_client(access_token, command, path, data):
@@ -32,24 +34,30 @@ def secret_client(access_token, command, path, data):
     :return: Output data from the service
     """
 
-    client = hvac.Client(url=VAULT_ADDR)
-    client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
-    checkin_id = get_checkin_id(access_token)
-    full_path = checkin_id + "/" + path
-    function_list = {
-        "list_secrets": client.secrets.kv.v1.list_secrets,
-        "read_secret": client.secrets.kv.v1.read_secret,
-        "delete_secret": client.secrets.kv.v1.read_secret,
-    }
-    if command == "put":
-        response = client.secrets.kv.v1.create_or_update_secret(
-            path=full_path,
-            mount_point=VAULT_MOUNT_POINT,
-            secret=data,
-        )
-    else:
-        response = function_list[command](path=full_path, mount_point=VAULT_MOUNT_POINT)
-    return response
+    try:
+        client = hvac.Client(url=VAULT_ADDR)
+        client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
+        checkin_id = get_checkin_id(access_token)
+        full_path = checkin_id + "/" + path
+        function_list = {
+            "list_secrets": client.secrets.kv.v1.list_secrets,
+            "read_secret": client.secrets.kv.v1.read_secret,
+            "delete_secret": client.secrets.kv.v1.read_secret,
+        }
+        if command == "put":
+            response = client.secrets.kv.v1.create_or_update_secret(
+                path=full_path,
+                mount_point=VAULT_MOUNT_POINT,
+                secret=data,
+            )
+        else:
+            response = function_list[command](
+                path=full_path,
+                mount_point=VAULT_MOUNT_POINT,
+            )
+        return response
+    except VaultError as e:
+        raise SystemExit(f"Error: Error when connecting to Vault server. {e}")
 
 
 def secret_params_to_dict(params):
@@ -62,27 +70,33 @@ def secret_params_to_dict(params):
     result = {}
 
     if len(params) == 0:
-        raise click.UsageError(
-            "Expecting 'key=value' arguments for secrets, None provided."
+        raise SystemExit(
+            "Error: Expecting 'key=value' arguments for secrets, None provided."
         )
 
     for param in params:
         try:
             key, value = param.split("=", 1)
         except ValueError:
-            raise click.UsageError(
-                f"Expecting 'key=value' arguments for secrets. '{param}' provided."
+            raise SystemExit(
+                f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
             )
         if value.startswith("@"):
-            with open(value[1:]) as f:
-                value = f.read()
+            try:
+                with open(value[1:]) as f:
+                    value = f.read()
+            except (ValueError, FileNotFoundError) as e:
+                raise SystemExit(
+                    f"Error: Error when reading file {value[1:]}. Error message: {e}"
+                )
         result[key] = value
     return result
 
 
-def generate_derived_key(passphrase):
+def generate_derived_key(salt, passphrase):
     """
-    Generate derived encryption/decryption key from passphrase
+    Generate derived encryption/decryption key from salted passphrase
+    :param salt:
     :param passphrase:
     :return: derived key
     """
@@ -90,10 +104,10 @@ def generate_derived_key(passphrase):
     kdf = PBKDF2HMAC(
         algorithm=hashes.SHA256(),
         length=32,
-        salt=VAULT_SALT,
+        salt=salt,
         iterations=390000,
     )
-    return base64.urlsafe_b64encode(kdf.derive(passphrase.encode()))
+    return base64.b64encode(kdf.derive(passphrase.encode()))
 
 
 def encrypt_data(encrypt_key, secrets):
@@ -103,12 +117,12 @@ def encrypt_data(encrypt_key, secrets):
     :param secrets: dict containing secrets
     :return: dict with encrypted values
     """
-
-    derived_key = generate_derived_key(encrypt_key)
+    salt = os.urandom(16)
+    derived_key = generate_derived_key(salt, encrypt_key)
     fernet = Fernet(derived_key)
     for key in secrets:
         secrets[key] = fernet.encrypt(secrets[key].encode())
-    return secrets
+    secrets[VAULT_SALT] = base64.b64encode(salt)
 
 
 def decrypt_data(decrypt_key, secrets):
@@ -118,12 +132,29 @@ def decrypt_data(decrypt_key, secrets):
     :param secrets: dict containing encrypted secrets
     :return: dict with decrypted values
     """
+    try:
+        salt = base64.b64decode(secrets.pop(VAULT_SALT))
+        derived_key = generate_derived_key(salt, decrypt_key)
+        fernet = Fernet(derived_key)
+        for key in secrets:
+            secrets[key] = fernet.decrypt(secrets[key].encode()).decode()
+    except InvalidToken as e:
+        raise SystemExit(f"Error: Error during decryption. {e}")
 
-    derived_key = generate_derived_key(decrypt_key)
-    fernet = Fernet(derived_key)
-    for key in secrets:
-        secrets[key] = fernet.decrypt(secrets[key].encode()).decode()
-    return secrets
+
+def print_secrets(output_format, secrets):
+    """
+    Print secrets in different formats
+    :param output_format:
+    :param secrets:
+    :return:
+    """
+    if output_format == "JSON":
+        print(json.dumps(secrets, indent=4))
+    elif output_format == "YAML":
+        print(yaml.dump(secrets, sort_keys=False))
+    else:
+        print(tabulate(secrets.items(), headers=["key", "value"]))
 
 
 @click.group()
@@ -155,19 +186,14 @@ def get(
     Get a secret from the path. If a key is given, print only the value of the key
     """
 
-    data = secret_client(access_token, "read_secret", short_path, None)
+    response = secret_client(access_token, "read_secret", short_path, None)
     if decrypt_key:
-        data["data"] = decrypt_data(decrypt_key, data["data"])
+        decrypt_data(decrypt_key, response["data"])
     if not key:
-        if output_format == "JSON":
-            print(json.dumps(data["data"], indent=4))
-        elif output_format == "YAML":
-            print(yaml.dump(data["data"], sort_keys=False))
-        else:
-            print(tabulate(data["data"].items(), headers=["key", "value"]))
+        print_secrets(output_format, response["data"])
     else:
-        if key in data["data"]:
-            print(data["data"][key])
+        if key in response["data"]:
+            print(response["data"][key])
         else:
             raise SystemExit(f"Error: {key} not found in {short_path}")
 
@@ -183,8 +209,8 @@ def list_(
     List secrets in the path
     """
 
-    data = secret_client(access_token, "list_secrets", short_path, None)
-    print("\n".join(map(str, data["data"]["keys"])))
+    response = secret_client(access_token, "list_secrets", short_path, None)
+    print("\n".join(map(str, response["data"]["keys"])))
 
 
 @secret.command()
@@ -201,7 +227,22 @@ def put(
     """
     Put secrets to the path. Secrets are provided in form key=value
     """
+
     secret_dict = secret_params_to_dict(secrets)
     if encrypt_key:
-        secret_dict = encrypt_data(encrypt_key, secret_dict)
+        encrypt_data(encrypt_key, secret_dict)
     secret_client(access_token, "put", short_path, secret_dict)
+
+
+@secret.command()
+@oidc_params
+@click.argument("short_path", metavar="[secret path]")
+def delete(
+    access_token,
+    short_path,
+):
+    """
+    Delete secret in the path
+    """
+
+    secret_client(access_token, "delete_secret", short_path, None)
