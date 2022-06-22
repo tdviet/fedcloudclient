@@ -12,6 +12,7 @@ import yaml
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from hvac.exceptions import VaultError
 from tabulate import tabulate
 
 from fedcloudclient.checkin import get_checkin_id
@@ -50,12 +51,13 @@ def secret_client(access_token, command, path, data):
                 secret=data,
             )
         else:
-            response = function_list[command](path=full_path, mount_point=VAULT_MOUNT_POINT)
+            response = function_list[command](
+                path=full_path,
+                mount_point=VAULT_MOUNT_POINT,
+            )
         return response
-    except hvac.exceptions.VaultError as e:
-        raise SystemExit(
-            f"Error: Error when connecting to Vault server. {e}"
-        )
+    except VaultError as e:
+        raise SystemExit(f"Error: Error when connecting to Vault server. {e}")
 
 
 def secret_params_to_dict(params):
