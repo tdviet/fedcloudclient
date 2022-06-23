@@ -12,4 +12,4 @@ setuptools~=62.6.0
 jsonschema~=4.6.0
 psutil~=5.9.1
 hvac~=0.11.2
-cryptography==37.0.3
+cryptography==37.0.2
