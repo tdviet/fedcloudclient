@@ -58,7 +58,7 @@ def secret_client(access_token, command, path, data):
             )
         return response
     except VaultError as e:
-        raise SystemExit(f"Error: Error when connecting to Vault server. {e}")
+        raise SystemExit(f"Error: Error when processing your request. Server response: {e}")
 
 
 def read_data_from_file(input_format, input_file):
@@ -258,7 +258,7 @@ def put(
     encrypt_key,
 ):
     """
-    Put secrets to the path. Secrets are provided in form key=value
+    Put a secret to the path. Secrets are provided in form key=value
     """
 
     secret_dict = secret_params_to_dict(secrets)
@@ -275,7 +275,7 @@ def delete(
     short_path,
 ):
     """
-    Delete secret in the path
+    Delete the secret in the path
     """
 
     secret_client(access_token, "delete_secret", short_path, None)
