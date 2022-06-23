@@ -58,7 +58,9 @@ def secret_client(access_token, command, path, data):
             )
         return response
     except VaultError as e:
-        raise SystemExit(f"Error: Error when processing your request. Server response: {e}")
+        raise SystemExit(
+            f"Error: Error when processing your request. Server response: {e}"
+        )
 
 
 def read_data_from_file(input_format, input_file):
