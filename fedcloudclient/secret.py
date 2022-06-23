@@ -85,6 +85,8 @@ def read_data_from_file(input_format, input_file):
                 data = json.load(f)
             else:
                 data = f.read()
+            if input_format in ("yaml", "json"):
+                data = dict(data)
     except (ValueError, FileNotFoundError, YAMLError) as e:
         raise SystemExit(
             f"Error: Error when reading file {input_file}. Error message: {e}"
