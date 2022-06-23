@@ -73,7 +73,7 @@ def read_data_from_file(input_format, input_file):
         if input_file.endswith(".yaml"):
             input_format = "yaml"
         elif input_file.endswith(".json"):
-            input_format = 'json'
+            input_format = "json"
         else:
             input_format = "yaml"
 
