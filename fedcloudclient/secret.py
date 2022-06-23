@@ -14,6 +14,7 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from hvac.exceptions import VaultError
 from tabulate import tabulate
+from yaml import YAMLError
 
 from fedcloudclient.checkin import get_checkin_id
 from fedcloudclient.decorators import oidc_params
@@ -60,6 +61,37 @@ def secret_client(access_token, command, path, data):
         raise SystemExit(f"Error: Error when connecting to Vault server. {e}")
 
 
+def read_data_from_file(input_format, input_file):
+    """
+    Read data from file. Format may be text, yaml, json or auto-detect according to file extension
+    :param input_format:
+    :param input_file:
+    :return:
+    """
+
+    if input_format is None or input_format == "auto-detect":
+        if input_file.endswith(".yaml"):
+            input_format = "yaml"
+        elif input_file.endswith(".json"):
+            input_format = 'json'
+        else:
+            input_format = "yaml"
+
+    try:
+        with open(input_file) as f:
+            if input_format == "yaml":
+                data = yaml.safe_load(f)
+            elif input_format == "json":
+                data = json.load(f)
+            else:
+                data = f.read()
+    except (ValueError, FileNotFoundError, YAMLError) as e:
+        raise SystemExit(
+            f"Error: Error when reading file {input_file}. Error message: {e}"
+        )
+    return data
+
+
 def secret_params_to_dict(params):
     """
     Convert secret params "key=value" to dict {"key":"value"}
@@ -75,21 +107,20 @@ def secret_params_to_dict(params):
         )
 
     for param in params:
-        try:
-            key, value = param.split("=", 1)
-        except ValueError:
-            raise SystemExit(
-                f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
-            )
-        if value.startswith("@"):
+        if param.startswith("@"):
+            data = read_data_from_file(None, param[1:])
+            result.update(data)
+        else:
             try:
-                with open(value[1:]) as f:
-                    value = f.read()
-            except (ValueError, FileNotFoundError) as e:
+                key, value = param.split("=", 1)
+            except ValueError:
                 raise SystemExit(
-                    f"Error: Error when reading file {value[1:]}. Error message: {e}"
+                    f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
                 )
-        result[key] = value
+            if value.startswith("@"):
+                value = read_data_from_file("text", value[1:])
+            result[key] = value
+
     return result
 
 
