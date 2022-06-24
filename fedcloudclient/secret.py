@@ -43,7 +43,7 @@ def secret_client(access_token, command, path, data):
         function_list = {
             "list_secrets": client.secrets.kv.v1.list_secrets,
             "read_secret": client.secrets.kv.v1.read_secret,
-            "delete_secret": client.secrets.kv.v1.read_secret,
+            "delete_secret": client.secrets.kv.v1.delete_secret,
         }
         if command == "put":
             response = client.secrets.kv.v1.create_or_update_secret(
