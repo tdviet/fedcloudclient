@@ -1,10 +1,21 @@
 Usage
 =====
 
-**fedcloudclient** has four groups of commands: **"fedcloud token"** for interactions with EGI Check-in and access tokens,
-**"fedcloud endpoint"** for interactions with GOCDB (and site endpoints according to GOCDB), **"fedcloud site"** for
-manipulations with site configurations, and **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing
-OpenStack commands on sites.
+**FedCloud client** has six  main groups of commands:
+
+* **"fedcloud token"** for interactions with EGI Check-in and access tokens,
+
+* **"fedcloud endpoint"** for interactions with GOCDB (and site endpoints according to GOCDB),
+
+* **"fedcloud site"** for manipulations with site configurations,
+
+* **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing OpenStack commands on sites,
+
+* **fedcloud secret** for accessing secrets in
+  `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
+
+* **"fedcloud ec3"** as helper commands for deploying EC3.
+
 
 Authentication
 **************
@@ -18,7 +29,7 @@ combination of *"--oidc-refresh-token"*, *"--oidc-client-id"* and *"--oidc-clien
 Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `EGI Check-in Token
 Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
 `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
-give the client name (account name in *oidc-agent*) to *fedcloudclient* via option *"--oidc-agent-account"*.
+give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
 
 Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
 tokens via environment variables or command-line options is considered as insecure and will be disable in near
@@ -392,4 +403,8 @@ If the site is *ALL_SITES*, the OpenStack command will be executed on all sites 
     ...
     (openstack)
 
+fedcloud secret commands
+***************************
 
+The **"fedcloud secret"** commands are described in details in the documentation of the
+`Secret management service <https://vault.docs.fedcloud.eu/usage.html>`_.

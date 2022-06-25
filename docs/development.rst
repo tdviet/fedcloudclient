@@ -1,14 +1,14 @@
-Using fedcloudclient in Python
-==============================
+Using FedCloud client in Python
+===============================
 
-fedcloudclient can be used as a library for developing other services and tools for EGI Federated Cloud. Most of
-functionalities of fedcloudclient can be called directly from other codes without side effects. An example of the code
-using fedcloud client is available at `GitHub <https://github.com/tdviet/fedcloudclient/blob/master/examples/demo.py>`_.
+FedCloud client can be used as a library for developing other services and tools for EGI Federated Cloud. Most of
+functionalities of FedCloud client can be called directly from other codes without side effects. An example of the code
+using FedCloud client is available at `GitHub <https://github.com/tdviet/fedcloudclient/blob/master/examples/demo.py>`_.
 Just copy/download the code, add your access token and execute *"python demo.py"* to see how it works.
 
 ::
 
-    # Import fedcloudclient library
+    # Import FedCloud client library
     from fedcloudclient.openstack import fedcloud_openstack
     import json
 
@@ -34,6 +34,6 @@ Just copy/download the code, add your access token and execute *"python demo.py"
         print("Error message is %s" % result)
 
 
-Read the `fedcloudclient API references <https://fedcloudclient.fedcloud.eu/fedcloudclient.html>`_
-for more details about each function in fedcloudclient library. Check the output of the equivalent command of
-fedcloudclient and its source code to see how the function is used.
+Read the `FedCloud client API references <https://fedcloudclient.fedcloud.eu/fedcloudclient.html>`_
+for more details about each function in FedCloud client library. Check the output of the equivalent command of
+FedCloud client and its source code to see how the function is used.

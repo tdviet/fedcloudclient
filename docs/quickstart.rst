@@ -2,13 +2,13 @@ Quick start
 ===========
 
 The `Tutorial <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_
-presentation is designed for new users of **fedcloudclient**. It starts with the quick setup and basic usages,
+presentation is designed for new users of **FedCloud client**. It starts with the quick setup and basic usages,
 then step by step to more advanced scenarios.
 
 Setup
 *****
 
-* Install fedcloudclient via pip:
+* Install FedCloud client via pip:
 
 ::
 
