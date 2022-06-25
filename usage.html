@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Using fedcloudclient in Python" href="development.html" />
+    <link rel="next" title="Using FedCloud client in Python" href="development.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
 </head>
 
@@ -55,11 +55,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-site-commands">fedcloud site commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-select-commands">fedcloud select commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-openstack-commands">fedcloud openstack commands</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fedcloud-secret-commands">fedcloud secret commands</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using fedcloudclient in scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">FedCloud client API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
@@ -90,10 +91,16 @@
              
   <section id="usage">
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h1>
-<p><strong>fedcloudclient</strong> has four groups of commands: <strong>&quot;fedcloud token&quot;</strong> for interactions with EGI Check-in and access tokens,
-<strong>&quot;fedcloud endpoint&quot;</strong> for interactions with GOCDB (and site endpoints according to GOCDB), <strong>&quot;fedcloud site&quot;</strong> for
-manipulations with site configurations, and <strong>&quot;fedcloud openstack&quot;</strong> or <strong>&quot;fedcloud openstack-int&quot;</strong> for performing
-OpenStack commands on sites.</p>
+<p><strong>FedCloud client</strong> has six  main groups of commands:</p>
+<ul class="simple">
+<li><p><strong>&quot;fedcloud token&quot;</strong> for interactions with EGI Check-in and access tokens,</p></li>
+<li><p><strong>&quot;fedcloud endpoint&quot;</strong> for interactions with GOCDB (and site endpoints according to GOCDB),</p></li>
+<li><p><strong>&quot;fedcloud site&quot;</strong> for manipulations with site configurations,</p></li>
+<li><p><strong>&quot;fedcloud openstack&quot;</strong> or <strong>&quot;fedcloud openstack-int&quot;</strong> for performing OpenStack commands on sites,</p></li>
+<li><p><strong>fedcloud secret</strong> for accessing secrets in
+<a class="reference external" href="https://vault.docs.fedcloud.eu/index.html">Secret management service</a>,</p></li>
+<li><p><strong>&quot;fedcloud ec3&quot;</strong> as helper commands for deploying EC3.</p></li>
+</ul>
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading"></a></h2>
 <p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
@@ -104,7 +111,7 @@ combination of <em>&quot;--oidc-refresh-token&quot;</em>, <em>&quot;--oidc-clien
 <p>Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token
 Portal</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
 <a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
-give the client name (account name in <em>oidc-agent</em>) to <em>fedcloudclient</em> via option <em>&quot;--oidc-agent-account&quot;</em>.</p>
+give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud client</em> via option <em>&quot;--oidc-agent-account&quot;</em>.</p>
 <p>Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
 tokens via environment variables or command-line options is considered as insecure and will be disable in near
 future in favor of using <em>oidc-agent</em>. If multiple methods of getting access tokens are given at the same time,
@@ -498,6 +505,11 @@ be used for successive commands without authentication via CheckIn again.</p></l
 </pre></div>
 </div>
 </section>
+<section id="fedcloud-secret-commands">
+<h2>fedcloud secret commands<a class="headerlink" href="#fedcloud-secret-commands" title="Permalink to this heading"></a></h2>
+<p>The <strong>&quot;fedcloud secret&quot;</strong> commands are described in details in the documentation of the
+<a class="reference external" href="https://vault.docs.fedcloud.eu/usage.html">Secret management service</a>.</p>
+</section>
 </section>
 
 
@@ -505,13 +517,13 @@ be used for successive commands without authentication via CheckIn again.</p></l
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="development.html" class="btn btn-neutral float-right" title="Using fedcloudclient in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Using FedCloud client in Python" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Viet Tran.</p>
+    <p>&#169; Copyright 2022, Viet Tran.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

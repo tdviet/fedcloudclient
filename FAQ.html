@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Cheat sheet" href="cheat.html" />
-    <link rel="prev" title="fedcloudclient API references" href="fedcloudclient.html" /> 
+    <link rel="prev" title="FedCloud client API references" href="fedcloudclient.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,9 +45,9 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using fedcloudclient in scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">FedCloud client API references</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FAQ and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
@@ -79,7 +79,7 @@
   <section id="faq-and-troubleshooting">
 <h1>FAQ and Troubleshooting<a class="headerlink" href="#faq-and-troubleshooting" title="Permalink to this heading"></a></h1>
 <ol class="arabic simple">
-<li><p><em>fedcloudclient</em> gives error message <em>&quot;SSL exception connecting to https:// ...&quot;</em> when connecting to some sites</p></li>
+<li><p><em>FedCloud client</em> gives error message <em>&quot;SSL exception connecting to https:// ...&quot;</em> when connecting to some sites</p></li>
 </ol>
 <p>Some sites use certificates issued by national certificate authorities that are not included in the default
 OS distribution. If you receive error message <em>&quot;SSL exception connecting to https:// ...&quot;</em>,
@@ -92,7 +92,7 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 <ol class="arabic simple" start="2">
-<li><p><em>fedcloudclient</em> frozen during initialization (mainly on virtual machines at some sites)</p></li>
+<li><p><em>FedCloud client</em> frozen during initialization (mainly on virtual machines at some sites)</p></li>
 </ol>
 <p>It is a known problem of <em>libsodium</em> which is used by <em>oidc-agent</em> Python library. The problem is described
 <a class="reference external" href="https://doc.libsodium.org/usage#sodium_init-stalling-on-linux">here</a>. Check the entropy on the VMs by executing command
@@ -104,14 +104,14 @@ On VMs with Centos, you also have to start the daemon manually after installatio
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="fedcloudclient.html" class="btn btn-neutral float-left" title="fedcloudclient API references" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fedcloudclient.html" class="btn btn-neutral float-left" title="FedCloud client API references" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="cheat.html" class="btn btn-neutral float-right" title="Cheat sheet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Viet Tran.</p>
+    <p>&#169; Copyright 2022, Viet Tran.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Quick start" href="quickstart.html" />
-    <link rel="prev" title="Welcome to fedcloudclient&#39;s documentation!" href="index.html" /> 
+    <link rel="prev" title="Welcome to FedCloud client&#39;s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,9 +45,9 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using fedcloudclient in scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">FedCloud client API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
@@ -99,10 +99,17 @@ run the following command:</p></li>
 <li><p>can be used in <a class="reference external" href="https://fedcloudclient.fedcloud.eu/scripts.html">scripts for automation</a> or called directly
 from <a class="reference external" href="https://fedcloudclient.fedcloud.eu/development.html">Python codes</a>.</p></li>
 </ul>
-<p>Five modules are included: <strong>fedcloudclient.checkin</strong> for operation with EGI Check-in like getting tokens,
-<strong>fedcloudclient.endpoint</strong> for searching endpoints via GOCDB, getting unscoped/scoped token from OpenStack keystone,
-<strong>fedcloudclient.sites</strong> for managing site configurations, <strong>fedcloudclient.openstack</strong> for performing OpenStack
-operations on sites, and finally <strong>fedcloudclient.ec3</strong> for deploying elastic computing clusters in Cloud.</p>
+<p>Six modules are included:</p>
+<ul class="simple">
+<li><p><strong>fedcloudclient.checkin</strong> for operation with EGI Check-in like getting tokens,</p></li>
+<li><p><strong>fedcloudclient.endpoint</strong> for searching endpoints via GOCDB, getting unscoped/scoped token from
+OpenStack keystone,</p></li>
+<li><p><strong>fedcloudclient.sites</strong> for managing site configurations,</p></li>
+<li><p><strong>fedcloudclient.openstack</strong> for performing OpenStack operations on sites,</p></li>
+<li><p><strong>fedcloudclient.secret</strong> for accessing secrets in
+<a class="reference external" href="https://vault.docs.fedcloud.eu/index.html">Secret management service</a>,</p></li>
+<li><p><strong>fedcloudclient.ec3</strong> for deploying elastic computing clusters in Cloud.</p></li>
+</ul>
 <p>A short tutorial of the fedcloudclient is available in <a class="reference external" href="https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing">this
 presentation</a>.
 The full documentation, including installation, usage and API description is available
@@ -113,14 +120,14 @@ at <a class="reference external" href="https://fedcloudclient.fedcloud.eu/">http
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to fedcloudclient&#39;s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to FedCloud client&#39;s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="quickstart.html" class="btn btn-neutral float-right" title="Quick start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Viet Tran.</p>
+    <p>&#169; Copyright 2022, Viet Tran.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

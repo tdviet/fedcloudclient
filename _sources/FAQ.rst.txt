@@ -1,7 +1,7 @@
 FAQ and Troubleshooting
 =======================
 
-1. *fedcloudclient* gives error message *"SSL exception connecting to https:// ..."* when connecting to some sites
+1. *FedCloud client* gives error message *"SSL exception connecting to https:// ..."* when connecting to some sites
 
 Some sites use certificates issued by national certificate authorities that are not included in the default
 OS distribution. If you receive error message *"SSL exception connecting to https:// ..."*,
@@ -16,7 +16,7 @@ test in virtual environment, just execute the following commands. See this
     $ bash install_certs.sh
 
 
-2. *fedcloudclient* frozen during initialization (mainly on virtual machines at some sites)
+2. *FedCloud client* frozen during initialization (mainly on virtual machines at some sites)
 
 It is a known problem of *libsodium* which is used by *oidc-agent* Python library. The problem is described
 `here <https://doc.libsodium.org/usage#sodium_init-stalling-on-linux>`_. Check the entropy on the VMs by executing command

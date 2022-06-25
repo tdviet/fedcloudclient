@@ -12,8 +12,8 @@
     }
     </script>
 
-Welcome to fedcloudclient's documentation!
-==========================================
+Welcome to FedCloud client's documentation!
+===========================================
 
 .. image:: https://zenodo.org/badge/336671726.svg
    :target: https://zenodo.org/badge/latestdoi/336671726

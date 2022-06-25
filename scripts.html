@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using fedcloudclient in scripts &mdash; fedcloudclient  documentation</title>
+  <title>Using FedCloud client in scripts &mdash; fedcloudclient  documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,8 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="fedcloudclient API references" href="fedcloudclient.html" />
-    <link rel="prev" title="Using fedcloudclient in Python" href="development.html" /> 
+    <link rel="next" title="FedCloud client API references" href="fedcloudclient.html" />
+    <link rel="prev" title="Using FedCloud client in Python" href="development.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,13 +45,13 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Using fedcloudclient in scripts</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using FedCloud client in scripts</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#setting-environment-variables-for-external-tools">Setting environment variables for external tools</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#processing-json-outputs-from-openstack-commands-via-jq">Processing JSON outputs from OpenStack commands via jq</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">FedCloud client API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
@@ -70,7 +70,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Using fedcloudclient in scripts</li>
+      <li>Using FedCloud client in scripts</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/tdviet/fedcloudclient/blob/master/docs/scripts.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -80,14 +80,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="using-fedcloudclient-in-scripts">
-<h1>Using fedcloudclient in scripts<a class="headerlink" href="#using-fedcloudclient-in-scripts" title="Permalink to this heading"></a></h1>
-<p>fedcloudclient can be used in scripts for simple automation, either for setting environment variables for other tools
+  <section id="using-fedcloud-client-in-scripts">
+<h1>Using FedCloud client in scripts<a class="headerlink" href="#using-fedcloud-client-in-scripts" title="Permalink to this heading"></a></h1>
+<p>FedCloud client can be used in scripts for simple automation, either for setting environment variables for other tools
 or processing outputs from OpenStack commands.</p>
 <section id="setting-environment-variables-for-external-tools">
 <h2>Setting environment variables for external tools<a class="headerlink" href="#setting-environment-variables-for-external-tools" title="Permalink to this heading"></a></h2>
-<p>Outputs from fedcloud commands for setting environment variables are already in the forms <em>&quot;export VAR=VALUE&quot;</em>. Simple
-<em>eval</em> command in scripts can be used for setting environment variables for external tools:</p>
+<p>Outputs from FedCloud client commands for setting environment variables are already in the forms <em>&quot;export VAR=VALUE&quot;</em>.
+Simple <em>eval</em> command in scripts can be used for setting environment variables for external tools:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
 export OS_AUTH_URL=&quot;https://cloud.ui.savba.sk:5000/v3/&quot;
 export OS_PROJECT_ID=&quot;51f736d36ce34b9ebdf196cfcabd24ee&quot;
@@ -167,14 +167,14 @@ commands without outputs (e.g. setting properties) will generate errors of unsup
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="development.html" class="btn btn-neutral float-left" title="Using fedcloudclient in Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="fedcloudclient.html" class="btn btn-neutral float-right" title="fedcloudclient API references" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="development.html" class="btn btn-neutral float-left" title="Using FedCloud client in Python" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="fedcloudclient.html" class="btn btn-neutral float-right" title="FedCloud client API references" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Viet Tran.</p>
+    <p>&#169; Copyright 2022, Viet Tran.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

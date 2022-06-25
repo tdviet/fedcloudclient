@@ -1,14 +1,14 @@
-Using fedcloudclient in scripts
-===============================
+Using FedCloud client in scripts
+================================
 
-fedcloudclient can be used in scripts for simple automation, either for setting environment variables for other tools
+FedCloud client can be used in scripts for simple automation, either for setting environment variables for other tools
 or processing outputs from OpenStack commands.
 
 Setting environment variables for external tools
 ************************************************
 
-Outputs from fedcloud commands for setting environment variables are already in the forms *"export VAR=VALUE"*. Simple
-*eval* command in scripts can be used for setting environment variables for external tools:
+Outputs from FedCloud client commands for setting environment variables are already in the forms *"export VAR=VALUE"*.
+Simple *eval* command in scripts can be used for setting environment variables for external tools:
 
 ::
 

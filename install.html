@@ -44,15 +44,15 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installing-fedcloudclient-with-pip">Installing fedcloudclient with pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installing-fedcloud-client-with-pip">Installing FedCloud client with pip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installing-egi-core-trust-anchor-certificates">Installing EGI Core Trust Anchor certificates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-fedcloudclient-via-docker-container">Using fedcloudclient via Docker container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-fedcloud-client-via-docker-container">Using FedCloud client via Docker container</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Using fedcloudclient in Python</a></li>
-<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using fedcloudclient in scripts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">fedcloudclient API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fedcloudclient.html">FedCloud client API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
 </ul>
@@ -83,17 +83,17 @@
              
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
-<section id="installing-fedcloudclient-with-pip">
-<h2>Installing fedcloudclient with pip<a class="headerlink" href="#installing-fedcloudclient-with-pip" title="Permalink to this heading"></a></h2>
+<section id="installing-fedcloud-client-with-pip">
+<h2>Installing FedCloud client with pip<a class="headerlink" href="#installing-fedcloud-client-with-pip" title="Permalink to this heading"></a></h2>
 <p>Simply use the following <strong>pip3</strong> command (should be done without root privileges).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip3 install fedcloudclient
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip3 install -U fedcloudclient
 </pre></div>
 </div>
-<p>That will install latest version <strong>fedcloudclient</strong> package together with its required packages (like <strong>openstackclient</strong>).
-It will also create executable files <strong>&quot;fedcloud&quot;</strong> and <strong>&quot;openstack&quot;</strong> and add them to corresponding directory
-according to your Python execution environment (<em>$VIRTUAL_ENV/bin</em> for executing <em>pip3</em> in Python virtual environment,
-<em>~/.local/bin</em> for executing <em>pip3</em> as user (with <em>--user</em> option), and <em>/usr/local/bin</em> when executing <em>pip3</em> as root).
-Make sure to add <em>~/.local/bin</em> to $PATH if installing as user.</p>
+<p>That will install latest version <strong>FedCloud client</strong> package together with its required packages
+(like <strong>openstackclient</strong>). It will also create executable files <strong>&quot;fedcloud&quot;</strong> and <strong>&quot;openstack&quot;</strong> and add them to
+corresponding directory according to your Python execution environment (<em>$VIRTUAL_ENV/bin</em> for executing <em>pip3</em> in
+Python virtual environment, <em>~/.local/bin</em> for executing <em>pip3</em> as user (with <em>--user</em> option), and <em>/usr/local/bin</em>
+when executing <em>pip3</em> as root). Make sure to add <em>~/.local/bin</em> to $PATH if installing as user.</p>
 <p>Check if the installation is correct by executing the client</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud
 </pre></div>
@@ -112,9 +112,9 @@ $ bash install_certs.sh
 </pre></div>
 </div>
 </section>
-<section id="using-fedcloudclient-via-docker-container">
-<h2>Using fedcloudclient via Docker container<a class="headerlink" href="#using-fedcloudclient-via-docker-container" title="Permalink to this heading"></a></h2>
-<p>You can use Docker container for testing <strong>fedcloudclient</strong> without installation. EGI Core Trust Anchor certificates
+<section id="using-fedcloud-client-via-docker-container">
+<h2>Using FedCloud client via Docker container<a class="headerlink" href="#using-fedcloud-client-via-docker-container" title="Permalink to this heading"></a></h2>
+<p>You can use Docker container for testing <strong>FedCloud client</strong> without installation. EGI Core Trust Anchor certificates
 and site configurations are preinstalled.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo docker pull tdviet/fedcloudclient
 $ sudo docker run -it  tdviet/fedcloudclient bash
@@ -134,7 +134,7 @@ $ sudo docker run -it  tdviet/fedcloudclient bash
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2020, Viet Tran.</p>
+    <p>&#169; Copyright 2022, Viet Tran.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
