@@ -59,7 +59,7 @@ def secret_client(access_token, command, path, data):
         return response
     except VaultError as e:
         raise SystemExit(
-            f"Error: Error when processing your request. Server response: {e}"
+            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
         )
 
 
