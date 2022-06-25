@@ -1,20 +1,20 @@
 Installation
 ============
 
-Installing fedcloudclient with pip
-**********************************
+Installing FedCloud client with pip
+***********************************
 
 Simply use the following **pip3** command (should be done without root privileges).
 
 ::
 
-    $ pip3 install fedcloudclient
+    $ pip3 install -U fedcloudclient
 
-That will install latest version **fedcloudclient** package together with its required packages (like **openstackclient**).
-It will also create executable files **"fedcloud"** and **"openstack"** and add them to corresponding directory
-according to your Python execution environment (*$VIRTUAL_ENV/bin* for executing *pip3* in Python virtual environment,
-*~/.local/bin* for executing *pip3* as user (with *--user* option), and */usr/local/bin* when executing *pip3* as root).
-Make sure to add *~/.local/bin* to $PATH if installing as user.
+That will install latest version **FedCloud client** package together with its required packages
+(like **openstackclient**). It will also create executable files **"fedcloud"** and **"openstack"** and add them to
+corresponding directory according to your Python execution environment (*$VIRTUAL_ENV/bin* for executing *pip3* in
+Python virtual environment, *~/.local/bin* for executing *pip3* as user (with *--user* option), and */usr/local/bin*
+when executing *pip3* as root). Make sure to add *~/.local/bin* to $PATH if installing as user.
 
 Check if the installation is correct by executing the client
 
@@ -37,10 +37,10 @@ test in virtual environment, just execute the following commands. See this
     $ wget https://raw.githubusercontent.com/tdviet/python-requests-bundle-certs/main/scripts/install_certs.sh
     $ bash install_certs.sh
 
-Using fedcloudclient via Docker container
-*****************************************
+Using FedCloud client via Docker container
+******************************************
 
-You can use Docker container for testing **fedcloudclient** without installation. EGI Core Trust Anchor certificates
+You can use Docker container for testing **FedCloud client** without installation. EGI Core Trust Anchor certificates
 and site configurations are preinstalled.
 
 ::

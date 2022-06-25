@@ -27,10 +27,21 @@ The most notable features of FedCloud client are following:
 * can be used in `scripts for automation <https://fedcloudclient.fedcloud.eu/scripts.html>`_ or called directly
   from `Python codes <https://fedcloudclient.fedcloud.eu/development.html>`_.
 
-Five modules are included: **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens,
-**fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from OpenStack keystone,
-**fedcloudclient.sites** for managing site configurations, **fedcloudclient.openstack** for performing OpenStack
-operations on sites, and finally **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
+Six modules are included:
+
+* **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens,
+
+* **fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from
+  OpenStack keystone,
+
+* **fedcloudclient.sites** for managing site configurations,
+
+* **fedcloudclient.openstack** for performing OpenStack operations on sites,
+
+* **fedcloudclient.secret** for accessing secrets in
+  `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
+
+* **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
 
 A short tutorial of the fedcloudclient is available in `this
 presentation <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_.

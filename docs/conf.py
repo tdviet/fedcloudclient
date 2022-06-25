@@ -19,7 +19,7 @@ sys.path.insert(0, os.path.abspath("../"))
 # -- Project information -----------------------------------------------------
 
 project = "fedcloudclient"
-copyright = "2020, Viet Tran"
+copyright = "2022, Viet Tran"
 author = "Viet Tran"
 
 # The full version, including alpha/beta/rc tags
