@@ -258,7 +258,8 @@ def secret():
     "-d",
     metavar="[key]",
     required=False,
-    help="Decryption key or passphrase")
+    help="Decryption key or passphrase",
+)
 @click.option(
     "--binary-file",
     "-b",
