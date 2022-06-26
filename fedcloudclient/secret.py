@@ -264,13 +264,14 @@ def secret():
     "-b",
     required=False,
     is_flag=True,
-    help="True for writing secrets to binary files")
+    help="True for writing secrets to binary files",
+)
 @click.option(
     "--output-file",
     "-o",
     metavar="[filename]",
     required=False,
-    help="Name of output file"
+    help="Name of output file",
 )
 def get(
     access_token,
@@ -321,14 +322,14 @@ def list_(
     "-e",
     metavar="[key]",
     required=False,
-    help="Encryption key or passphrase"
+    help="Encryption key or passphrase",
 )
 @click.option(
     "--binary-file",
     "-b",
     required=False,
     is_flag=True,
-    help="True for reading secrets from binary files"
+    help="True for reading secrets from binary files",
 )
 def put(
     access_token,
