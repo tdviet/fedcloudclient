@@ -204,11 +204,11 @@ def print_secrets(output_file, output_format, secrets):
             elif output_format == "YAML":
                 yaml.dump(secrets, f, sort_keys=False)
             else:
-                print(tabulate(secrets.items(), headers=["key", "value"]),file=f)
+                print(tabulate(secrets.items(), headers=["key", "value"]), file=f)
 
     except (ValueError, FileNotFoundError, YAMLError) as e:
         raise SystemExit(
-            f"Error: Error when wrting file {output_file}. Error message: {type(e).__name__}: {e}"
+            f"Error: Error when writing file {output_file}. Error message: {type(e).__name__}: {e}"
         )
 
 
@@ -245,15 +245,33 @@ def secret():
 @secret.command()
 @oidc_params
 @click.option(
-    "--output-format", "-f",
-    required=False, help="Output format",
+    "--output-format",
+    "-f",
+    required=False,
+    help="Output format",
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
 )
 @click.argument("short_path", metavar="[secret path]")
 @click.argument("key", metavar="[key]", required=False)
-@click.option("--decrypt-key", "-d", metavar="[key]", required=False, help="Decryption key or passphrase")
-@click.option("--binary-file", "-b", required=False, is_flag=True, help="True for reading binary files")
-@click.option("--output-file", "-o", metavar="[filename]", required=False, help="Name of output file")
+@click.option(
+    "--decrypt-key",
+    "-d",
+    metavar="[key]",
+    required=False,
+    help="Decryption key or passphrase")
+@click.option(
+    "--binary-file",
+    "-b",
+    required=False,
+    is_flag=True,
+    help="True for writing secrets to binary files")
+@click.option(
+    "--output-file",
+    "-o",
+    metavar="[filename]",
+    required=False,
+    help="Name of output file"
+)
 def get(
     access_token,
     short_path,
@@ -298,8 +316,20 @@ def list_(
 @oidc_params
 @click.argument("short_path", metavar="[secret path]")
 @click.argument("secrets", nargs=-1, metavar="[key=value...]")
-@click.option("--encrypt-key", "-e", metavar="[key]", required=False, help="Encryption key or passphrase")
-@click.option("--binary-file", "-b", required=False, is_flag=True, help="True for reading binary files")
+@click.option(
+    "--encrypt-key",
+    "-e",
+    metavar="[key]",
+    required=False,
+    help="Encryption key or passphrase"
+)
+@click.option(
+    "--binary-file",
+    "-b",
+    required=False,
+    is_flag=True,
+    help="True for reading secrets from binary files"
+)
 def put(
     access_token,
     short_path,
