@@ -83,14 +83,14 @@ def read_data_from_file(input_format, input_file):
 
         # read text/binary files to strings
         if input_format == "binary":
-            with open(input_file, "rb") as f:
+            with open(input_file, "rb") if input_file else sys.stdin.buffer as f:
                 return base64.b64encode(f.read()).decode()
         if input_format == "text":
-            with open(input_file, "r") as f:
+            with open(input_file, "r") if input_file else sys.stdin as f:
                 return f.read()
 
         # reading YAML or JSON to dict
-        with open(input_file) as f:
+        with open(input_file) if input_file else sys.stdin as f:
             if input_format == "yaml":
                 data = yaml.safe_load(f)
             elif input_format == "json":
@@ -119,7 +119,7 @@ def secret_params_to_dict(params, binary_file=False):
         )
 
     for param in params:
-        if param.startswith("@"):
+        if param.startswith("@") or param == "-":
             data = read_data_from_file(None, param[1:])
             result.update(data)
         else:
@@ -129,7 +129,7 @@ def secret_params_to_dict(params, binary_file=False):
                 raise SystemExit(
                     f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
                 )
-            if value.startswith("@"):
+            if value.startswith("@") or value == "-":
                 if binary_file:
                     value = read_data_from_file("binary", value[1:])
                 else:
