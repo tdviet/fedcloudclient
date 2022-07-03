@@ -11,21 +11,24 @@ commands on OpenStack sites in EGI infrastructure.
 
 The most notable features of FedCloud client are following:
 
-* have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs,
-  and interaction with OpenStack sites.
+* **Rich functionalities:** have wide ranges of useful commands, including checking access token, searching for
+  services, listing sites and VOs, and interaction with OpenStack sites.
 
-* can perform any OpenStack command on any sites with only three parameters: the site, the VO and the command. For
-  example, to list virtual machines (VM) images available to members of VO ``fedcloud.egi.eu`` on the site ``CYFRONET-CLOUD``,
-  run the following command:
+* **Simple usages:** can perform any OpenStack command on any sites with only three parameters: the site, the VO
+  and the command. For example, to list virtual machines (VM) images available to members of ``vo.access.egi.eu`` VO
+  on ``IISAS-FedCloud`` site, run the following command:
 
 ::
 
-   $ fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
+   $ fedcloud openstack image list --vo vo.access.egi.eu --site IISAS-FedCloud
 
-* can perform an action/command on all OpenStack sites in EGI infrastructure by specifying :code:`--site ALL_SITES`.
+* **Federation-wide:** Single client for all OpenStack sites and related services of EGI Cloud infrastructure.
+  Single command may perform an action on all sites by specifying :code:`--site ALL_SITES`.
 
-* can be used in `scripts for automation <https://fedcloudclient.fedcloud.eu/scripts.html>`_ or called directly
-  from `Python codes <https://fedcloudclient.fedcloud.eu/development.html>`_.
+* **Programmable:** the client is designed for using in
+  `scripts for automation <https://fedcloudclient.fedcloud.eu/scripts.html>`_
+  or as a `Python library <https://fedcloudclient.fedcloud.eu/development.html>`_
+  for programming FedCloud services.
 
 Six modules are included:
 

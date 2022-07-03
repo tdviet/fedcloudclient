@@ -85,19 +85,22 @@ services and can perform many tasks for users including managing access tokens, 
 commands on OpenStack sites in EGI infrastructure.</p>
 <p>The most notable features of FedCloud client are following:</p>
 <ul class="simple">
-<li><p>have wide ranges of useful commands, including checking access token, searching for services, listing sites and VOs,
-and interaction with OpenStack sites.</p></li>
-<li><p>can perform any OpenStack command on any sites with only three parameters: the site, the VO and the command. For
-example, to list virtual machines (VM) images available to members of VO <code class="docutils literal notranslate"><span class="pre">fedcloud.egi.eu</span></code> on the site <code class="docutils literal notranslate"><span class="pre">CYFRONET-CLOUD</span></code>,
-run the following command:</p></li>
+<li><p><strong>Rich functionalities:</strong> have wide ranges of useful commands, including checking access token, searching for
+services, listing sites and VOs, and interaction with OpenStack sites.</p></li>
+<li><p><strong>Simple usages:</strong> can perform any OpenStack command on any sites with only three parameters: the site, the VO
+and the command. For example, to list virtual machines (VM) images available to members of <code class="docutils literal notranslate"><span class="pre">vo.access.egi.eu</span></code> VO
+on <code class="docutils literal notranslate"><span class="pre">IISAS-FedCloud</span></code> site, run the following command:</p></li>
 </ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --vo fedcloud.egi.eu --site CYFRONET-CLOUD
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud openstack image list --vo vo.access.egi.eu --site IISAS-FedCloud
 </pre></div>
 </div>
 <ul class="simple">
-<li><p>can perform an action/command on all OpenStack sites in EGI infrastructure by specifying <code class="code docutils literal notranslate"><span class="pre">--site</span> <span class="pre">ALL_SITES</span></code>.</p></li>
-<li><p>can be used in <a class="reference external" href="https://fedcloudclient.fedcloud.eu/scripts.html">scripts for automation</a> or called directly
-from <a class="reference external" href="https://fedcloudclient.fedcloud.eu/development.html">Python codes</a>.</p></li>
+<li><p><strong>Federation-wide:</strong> Single client for all OpenStack sites and related services of EGI Cloud infrastructure.
+Single command may perform an action on all sites by specifying <code class="code docutils literal notranslate"><span class="pre">--site</span> <span class="pre">ALL_SITES</span></code>.</p></li>
+<li><p><strong>Programmable:</strong> the client is designed for using in
+<a class="reference external" href="https://fedcloudclient.fedcloud.eu/scripts.html">scripts for automation</a>
+or as a <a class="reference external" href="https://fedcloudclient.fedcloud.eu/development.html">Python library</a>
+for programming FedCloud services.</p></li>
 </ul>
 <p>Six modules are included:</p>
 <ul class="simple">
