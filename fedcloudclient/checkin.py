@@ -17,6 +17,7 @@ from fedcloudclient.decorators import (
     DEFAULT_OIDC_URL,
     oidc_access_token_params,
     oidc_params,
+    oidc_params_with_url,
     oidc_refresh_token_params,
 )
 
@@ -319,11 +320,10 @@ def check(oidc_refresh_token, oidc_access_token):
 
 
 @token.command()
-@oidc_params
-def list_vos(access_token):
+@oidc_params_with_url
+def list_vos(access_token, oidc_url):
     """
     List VO membership(s) of access token
     """
-
-    vos = token_list_vos(access_token, DEFAULT_OIDC_URL)
+    vos = token_list_vos(access_token, oidc_url)
     print("\n".join(vos))
