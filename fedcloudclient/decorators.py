@@ -177,6 +177,73 @@ def oidc_params(func):
     return wrapper
 
 
+def oidc_params_with_url(func):
+    """
+    Decorator for OIDC parameters.
+    Get access token from oidc-* parameters and replace them in the wrapper function
+    Also adds the OIDC URL as part of the call to the inner function
+    """
+
+    @optgroup.group("OIDC token", help="Choose one of options for providing token")
+    @optgroup.option(
+        "--oidc-agent-account",
+        help="Account name in oidc-agent",
+        envvar="OIDC_AGENT_ACCOUNT",
+        metavar="account",
+    )
+    @optgroup.option(
+        "--oidc-access-token",
+        help="OIDC access token",
+        envvar="OIDC_ACCESS_TOKEN",
+        metavar="token",
+    )
+    @optgroup.option(
+        "--oidc-refresh-token",
+        help="OIDC refresh token. Require also client ID and secret",
+        envvar="OIDC_REFRESH_TOKEN",
+        metavar="token",
+    )
+    @optgroup.option(
+        "--oidc-client-id",
+        help="OIDC client ID",
+        envvar="OIDC_CLIENT_ID",
+        metavar="id",
+    )
+    @optgroup.option(
+        "--oidc-client-secret",
+        help="OIDC client secret",
+        envvar="OIDC_CLIENT_SECRET",
+        metavar="secret",
+    )
+    @optgroup.option(
+        "--oidc-url",
+        help="OIDC identity provider URL",
+        envvar="OIDC_URL",
+        default=DEFAULT_OIDC_URL,
+        show_default=True,
+        metavar="provider-url",
+    )
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        from fedcloudclient.checkin import get_access_token
+
+        oidc_url = kwargs.pop("oidc_url")
+
+        access_token = get_access_token(
+            kwargs.pop("oidc_access_token"),
+            kwargs.pop("oidc_refresh_token"),
+            kwargs.pop("oidc_client_id"),
+            kwargs.pop("oidc_client_secret"),
+            oidc_url,
+            kwargs.pop("oidc_agent_account"),
+        )
+        kwargs["access_token"] = access_token
+        kwargs["oidc_url"] = oidc_url
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
 def openstack_params(func):
     """
     Decorator for OpenStack authentication parameters
