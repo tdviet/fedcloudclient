@@ -60,7 +60,7 @@ Using oidc-agent
 
 ::
 
-    $ oidc-gen --pub --issuer https://aai.egi.eu/oidc --scope "eduperson_entitlement email" egi
+    $ oidc-gen --pub --issuer https://aai.egi.eu/auth/realms/egi --scope "eduperson_entitlement email" egi
 
 * Load oidc-agent account and set environment for fedcloudclient:
 

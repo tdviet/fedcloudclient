@@ -36,7 +36,7 @@ tokens via environment variables or command-line options is considered as insecu
 future in favor of using *oidc-agent*. If multiple methods of getting access tokens are given at the same time,
 the client will try to get the tokens from the oidc-agent first, then from refresh tokens.
 
-The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/oidc). Users can set other OIDC identity
+The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/auth/realms/egi). Users can set other OIDC identity
 provider via option *"--oidc-url"*. Remember to set identity provider's name *"--openstack-auth-provider"* accordingly
 for OpenStack commands.
 
@@ -48,31 +48,31 @@ Environment variables
 
 Most of fedcloud options, including options for tokens can be set via environment variables:
 
-+-----------------------------+---------------------------------+----------------------------------+
-|     Environment variables   |   Command-line options          |          Default value           |
-+=============================+=================================+==================================+
-|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_REFRESH_TOKEN       |   --oidc-refresh-token          |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_CLIENT_ID           |   --oidc-client-id              |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_CLIENT_SECRET       |   --oidc-client-secret          |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OIDC_URL                 |   --oidc-url                    |    https://aai.egi.eu/oidc       |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid               |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OPENSTACK_AUTH_PROVIDER  |   --openstack-auth-provider     |             egi.eu               |
-+-----------------------------+---------------------------------+----------------------------------+
-|    OPENSTACK_AUTH_TYPE      |   --openstack-auth-type         |         v3oidcaccesstoken        |
-+-----------------------------+---------------------------------+----------------------------------+
-|    EGI_SITE                 |   --site                        |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
-|    EGI_VO                   |   --vo                          |                                  |
-+-----------------------------+---------------------------------+----------------------------------+
++-----------------------------+---------------------------------+------------------------------------+
+|     Environment variables   |   Command-line options          |          Default value             |
++=============================+=================================+====================================+
+|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    OIDC_REFRESH_TOKEN       |   --oidc-refresh-token          |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    OIDC_CLIENT_ID           |   --oidc-client-id              |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    OIDC_CLIENT_SECRET       |   --oidc-client-secret          |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    OIDC_URL                 |   --oidc-url                    | https://aai.egi.eu/auth/realms/egi |
++-----------------------------+---------------------------------+------------------------------------+
+|    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid                 |
++-----------------------------+---------------------------------+------------------------------------+
+|    OPENSTACK_AUTH_PROVIDER  |   --openstack-auth-provider     |             egi.eu                 |
++-----------------------------+---------------------------------+------------------------------------+
+|    OPENSTACK_AUTH_TYPE      |   --openstack-auth-type         |         v3oidcaccesstoken          |
++-----------------------------+---------------------------------+------------------------------------+
+|    EGI_SITE                 |   --site                        |                                    |
++-----------------------------+---------------------------------+------------------------------------+
+|    EGI_VO                   |   --vo                          |                                    |
++-----------------------------+---------------------------------+------------------------------------+
 
 For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
 time.

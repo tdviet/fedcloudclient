@@ -10,7 +10,7 @@ from click_option_group import (
     optgroup,
 )
 
-DEFAULT_OIDC_URL = "https://aai.egi.eu/oidc/"
+DEFAULT_OIDC_URL = "https://aai.egi.eu/auth/realms/egi"
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
 DEFAULT_IDENTITY_PROVIDER = "egi.eu"
