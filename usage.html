@@ -116,7 +116,7 @@ give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud clien
 tokens via environment variables or command-line options is considered as insecure and will be disable in near
 future in favor of using <em>oidc-agent</em>. If multiple methods of getting access tokens are given at the same time,
 the client will try to get the tokens from the oidc-agent first, then from refresh tokens.</p>
-<p>The default OIDC identity provider is EGI Check-in (<a class="reference external" href="https://aai.egi.eu/oidc">https://aai.egi.eu/oidc</a>). Users can set other OIDC identity
+<p>The default OIDC identity provider is EGI Check-in (<a class="reference external" href="https://aai.egi.eu/auth/realms/egi">https://aai.egi.eu/auth/realms/egi</a>). Users can set other OIDC identity
 provider via option <em>&quot;--oidc-url&quot;</em>. Remember to set identity provider's name <em>&quot;--openstack-auth-provider&quot;</em> accordingly
 for OpenStack commands.</p>
 <p>The default protocol is <em>&quot;openid&quot;</em>. Users can change default protocol via option <em>&quot;--openstack-auth-protocol&quot;</em>. However,
@@ -129,7 +129,7 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 <colgroup>
 <col style="width: 30%" />
 <col style="width: 34%" />
-<col style="width: 35%" />
+<col style="width: 37%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Environment variables</p></th>
@@ -160,7 +160,7 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 </tr>
 <tr class="row-odd"><td><p>OIDC_URL</p></td>
 <td><p>--oidc-url</p></td>
-<td><p><a class="reference external" href="https://aai.egi.eu/oidc">https://aai.egi.eu/oidc</a></p></td>
+<td><p><a class="reference external" href="https://aai.egi.eu/auth/realms/egi">https://aai.egi.eu/auth/realms/egi</a></p></td>
 </tr>
 <tr class="row-even"><td><p>OPENSTACK_AUTH_PROTOCOL</p></td>
 <td><p>--openstack-auth-protocol</p></td>
