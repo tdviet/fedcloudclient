@@ -1,6 +1,7 @@
 """
 Read/write configuration files
 """
+import json
 import os
 import sys
 from pathlib import Path
@@ -9,14 +10,16 @@ import click
 import yaml
 from tabulate import tabulate
 
-DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.ini"
+DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {
     "site": "IISAS-FedCloud",
     "vo": "vo.access.egi.eu",
-    "oidc-url": "https://aai.egi.eu/auth/realms/egi",
-    "openstack-auth-protocol": "openid",
-    "openstack-auth-provider": "egi.eu",
-    "openstack-auth-type": "v3oidcaccesstoken",
+    "site_list_url": "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml",
+    "site_dir": str(Path.home() / ".config/fedcloud/site-config/"),
+    "oidc_url": "https://aai.egi.eu/auth/realms/egi",
+    "openstack_auth_protocol": "openid",
+    "openstack_auth_provider": "egi.eu",
+    "openstack_auth_type": "v3oidcaccesstoken",
     "gocdb_public_url": "https://goc.egi.eu/gocdbpi/public/",
     "gocdb_service_group": "org.openstack.nova",
     "vault_endpoint": "https://vault.services.fedcloud.eu:8200",
@@ -84,11 +87,13 @@ def config():
     type=click.Path(dir_okay=False),
     default=DEFAULT_CONFIG_LOCATION,
     help="configuration file",
+    envvar="FEDCLOUD_CONFIG_FILE",
     show_default=True,
 )
 def create(config_file):
     """Create default configuration file"""
     save_config(config_file, DEFAULT_SETTINGS)
+    print(f"Default configuration is saved in {config_file}")
 
 
 @config.command()
@@ -97,6 +102,7 @@ def create(config_file):
     type=click.Path(dir_okay=False),
     default=DEFAULT_CONFIG_LOCATION,
     help="configuration file",
+    envvar="FEDCLOUD_CONFIG_FILE",
     show_default=True,
 )
 @click.option(
@@ -113,5 +119,7 @@ def show(config_file, output_format):
     act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
+    elif output_format == "JSON":
+        json.dump(act_config, sys.stdout, indent=4)
     else:
         print(tabulate(act_config.items(), headers=["parameter", "value"]))
