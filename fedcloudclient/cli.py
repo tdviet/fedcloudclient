@@ -5,6 +5,7 @@ Main CLI module
 import click
 
 from fedcloudclient.checkin import token
+from fedcloudclient.config import config
 from fedcloudclient.ec3 import ec3
 from fedcloudclient.endpoint import endpoint
 from fedcloudclient.openstack import openstack, openstack_int
@@ -29,6 +30,7 @@ cli.add_command(secret)
 cli.add_command(select)
 cli.add_command(openstack)
 cli.add_command(openstack_int)
+cli.add_command(config)
 
 
 if __name__ == "__main__":
