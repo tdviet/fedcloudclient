@@ -25,7 +25,10 @@ DEFAULT_SETTINGS = {
     "vault_endpoint": "https://vault.services.fedcloud.eu:8200",
     "vault_role": "demo",
     "vault_mount_point": "/secrets",
-    "vault_salt": "fedcloud_salt"
+    "vault_salt": "fedcloud_salt",
+    "log_file": str(Path.home() / ".config/fedcloud/logs/fedcloud.log"),
+    "requests_cert_file": str(Path.home() / ".config/fedcloud/cert/certs.pem"),
+    "oidc-agent-account": "egi"
 }
 
 

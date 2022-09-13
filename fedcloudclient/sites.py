@@ -83,14 +83,16 @@ def safe_read_yaml_from_url(url, max_length):
     :param max_length:
     :return: data from URL
     """
-    if isinstance(url, str) and url.lower().startswith(
-        "https://"
-    ):  # Only read from HTTPS location
-        req = Request(url)
-    else:
-        raise SystemExit(f"Error: remote filename not starting with https:// : {url}")
 
-    # URLs already checked, so ignore bandit test
+    # if isinstance(url, str) and url.lower().startswith(
+    #     "https://"
+    # ):  # Only read from HTTPS location
+    #     req = Request(url)
+    # else:
+    #     raise SystemExit(f"Error: remote filename not starting with https:// : {url}")
+
+    # ignore bandit test because url is taken from configuration
+    req = Request(url)
     data = None
     try:
         with urlopen(req) as yaml_file:  # nosec
@@ -307,12 +309,12 @@ def show_project_id(site, vo):
 def save_config():
     """
     Load site configs from GitHub, save them to local folder in $HOME
-    Overwrite local configs if exist.
+    Overwrite local configs if existed.
     """
     read_default_site_config()
     config_dir = Path.home() / __LOCAL_CONFIG_DIR
+    # delete_site_config(config_dir) # too dangerous, should check and ask for confirmation before deleting
     print(f"Saving site configs to directory {config_dir}")
-    delete_site_config(config_dir)
     save_site_config(config_dir)
 
 
