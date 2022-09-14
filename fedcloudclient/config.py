@@ -28,7 +28,7 @@ DEFAULT_SETTINGS = {
     "vault_salt": "fedcloud_salt",
     "log_file": str(Path.home() / ".config/fedcloud/logs/fedcloud.log"),
     "requests_cert_file": str(Path.home() / ".config/fedcloud/cert/certs.pem"),
-    "oidc-agent-account": "egi"
+    "oidc_agent_account": "egi"
 }
 
 
