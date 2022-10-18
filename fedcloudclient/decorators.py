@@ -10,7 +10,7 @@ from click_option_group import (
     optgroup,
 )
 
-DEFAULT_OIDC_URL = "https://aai.egi.eu/auth/realms/egi"
+DEFAULT_MYTOKEN_SERVER = "https://mytoken.data.kit.edu"
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
 DEFAULT_IDENTITY_PROVIDER = "egi.eu"
@@ -134,30 +134,18 @@ def oidc_params(func):
         metavar="token",
     )
     @optgroup.option(
-        "--oidc-refresh-token",
-        help="OIDC refresh token. Require also client ID and secret",
-        envvar="OIDC_REFRESH_TOKEN",
-        metavar="token",
+        "--mytoken",
+        help="Mytoken string",
+        envvar="FEDCLOUD_MYTOKEN",
+        metavar="mytoken",
     )
     @optgroup.option(
-        "--oidc-client-id",
-        help="OIDC client ID",
-        envvar="OIDC_CLIENT_ID",
-        metavar="id",
-    )
-    @optgroup.option(
-        "--oidc-client-secret",
-        help="OIDC client secret",
-        envvar="OIDC_CLIENT_SECRET",
-        metavar="secret",
-    )
-    @optgroup.option(
-        "--oidc-url",
-        help="OIDC identity provider URL",
-        envvar="OIDC_URL",
-        default=DEFAULT_OIDC_URL,
+        "--mytoken-server",
+        help="Mytoken sever",
+        envvar="FEDCLOUD_MYTOKEN_SERVER",
+        default=DEFAULT_MYTOKEN_SERVER,
         show_default=True,
-        metavar="provider-url",
+        metavar="mytoken-server",
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -165,80 +153,11 @@ def oidc_params(func):
 
         access_token = get_access_token(
             kwargs.pop("oidc_access_token"),
-            kwargs.pop("oidc_refresh_token"),
-            kwargs.pop("oidc_client_id"),
-            kwargs.pop("oidc_client_secret"),
-            kwargs.pop("oidc_url"),
             kwargs.pop("oidc_agent_account"),
+            kwargs.pop("mytoken"),
+            kwargs.pop("mytoken_server"),
         )
         kwargs["access_token"] = access_token
-        return func(*args, **kwargs)
-
-    return wrapper
-
-
-def oidc_params_with_url(func):
-    """
-    Decorator for OIDC parameters.
-    Get access token from oidc-* parameters and replace them in the wrapper function
-    Also adds the OIDC URL as part of the call to the inner function
-    """
-
-    @optgroup.group("OIDC token", help="Choose one of options for providing token")
-    @optgroup.option(
-        "--oidc-agent-account",
-        help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
-        metavar="account",
-    )
-    @optgroup.option(
-        "--oidc-access-token",
-        help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
-        metavar="token",
-    )
-    @optgroup.option(
-        "--oidc-refresh-token",
-        help="OIDC refresh token. Require also client ID and secret",
-        envvar="OIDC_REFRESH_TOKEN",
-        metavar="token",
-    )
-    @optgroup.option(
-        "--oidc-client-id",
-        help="OIDC client ID",
-        envvar="OIDC_CLIENT_ID",
-        metavar="id",
-    )
-    @optgroup.option(
-        "--oidc-client-secret",
-        help="OIDC client secret",
-        envvar="OIDC_CLIENT_SECRET",
-        metavar="secret",
-    )
-    @optgroup.option(
-        "--oidc-url",
-        help="OIDC identity provider URL",
-        envvar="OIDC_URL",
-        default=DEFAULT_OIDC_URL,
-        show_default=True,
-        metavar="provider-url",
-    )
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        from fedcloudclient.checkin import get_access_token
-
-        oidc_url = kwargs.pop("oidc_url")
-
-        access_token = get_access_token(
-            kwargs.pop("oidc_access_token"),
-            kwargs.pop("oidc_refresh_token"),
-            kwargs.pop("oidc_client_id"),
-            kwargs.pop("oidc_client_secret"),
-            oidc_url,
-            kwargs.pop("oidc_agent_account"),
-        )
-        kwargs["access_token"] = access_token
-        kwargs["oidc_url"] = oidc_url
         return func(*args, **kwargs)
 
     return wrapper
