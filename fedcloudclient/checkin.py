@@ -2,7 +2,6 @@
 Implementation of "fedcloud token" commands for interactions with EGI Check-in and
 access tokens
 """
-import json
 import re
 import sys
 import time
@@ -96,7 +95,7 @@ def get_token_from_mytoken_server(mytoken, mytoken_server):
         "mytoken": mytoken,
     }
     req = requests.post(
-        mytoken_server+"/api/v0/token/access",
+        mytoken_server + "/api/v0/token/access",
         json=data,
     )
     req.raise_for_status()
@@ -245,3 +244,12 @@ def list_vos(access_token):
     """
     vos = token_list_vos(access_token)
     print("\n".join(vos))
+
+
+@token.command()
+@oidc_params
+def issue(access_token):
+    """
+    print access token (from mytoken or oidc-agent)
+    """
+    print(access_token)
