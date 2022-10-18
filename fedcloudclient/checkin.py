@@ -191,7 +191,7 @@ def get_access_token(
     raise SystemExit(
         "Error: An access token is needed for the operation. You can specify "
         "access token directly via --oidc-access-token option or use oidc-agent "
-        "via --oidc-agent-account"
+        "via --oidc-agent-account or mytoken via --mytoken"
     )
 
 
