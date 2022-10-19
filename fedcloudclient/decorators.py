@@ -25,14 +25,6 @@ oidc_access_token_params = click.option(
     metavar="token",
 )
 
-# Decorator for --oidc-refresh-token
-oidc_refresh_token_params = click.option(
-    "--oidc-refresh-token",
-    help="OIDC refresh token",
-    envvar="OIDC_REFRESH_TOKEN",
-    metavar="token",
-)
-
 # Decorator for --site
 site_params = click.option(
     "--site",
