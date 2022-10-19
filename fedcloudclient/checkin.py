@@ -196,7 +196,7 @@ def get_access_token(
         )
 
     # then, try to get access token from oidc-agent
-    if oidc_agent_account and access_token is None):
+    if oidc_agent_account and access_token is None:
         access_token = get_token_from_oidc_agent(
             oidc_agent_account, quiet=True
         )
