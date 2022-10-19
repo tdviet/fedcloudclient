@@ -105,21 +105,14 @@
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Permalink to this heading"></a></h2>
 <p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option <em>&quot;--oidc-access-token&quot;</em>), or via oidc-agent (via option <em>&quot;--oidc-agent-account&quot;</em>), use refresh
-tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
-in most cases, the option <em>&quot;--oidc-access-token&quot;</em> can be replaced by the option <em>&quot;--oidc-agent-account&quot;</em>, or the
-combination of <em>&quot;--oidc-refresh-token&quot;</em>, <em>&quot;--oidc-client-id&quot;</em> and <em>&quot;--oidc-client-secret&quot;</em>.</p>
-<p>Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token
+directly (via option <em>&quot;--oidc-access-token&quot;</em>), via <a class="reference external" href="https://indigo-dc.gitbooks.io/oidc-agent/">oidc-agent</a>
+(via option <em>&quot;--oidc-agent-account&quot;</em>), or via <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> (via option <em>&quot;--mytoken&quot;</em>).</p>
+<p>Users of EGI Check-in can get all information needed for obtaining access tokens from <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token
 Portal</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
 <a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
-give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud client</em> via option <em>&quot;--oidc-agent-account&quot;</em>.</p>
-<p>Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
-tokens via environment variables or command-line options is considered as insecure and will be disable in near
-future in favor of using <em>oidc-agent</em>. If multiple methods of getting access tokens are given at the same time,
-the client will try to get the tokens from the oidc-agent first, then from refresh tokens.</p>
-<p>The default OIDC identity provider is EGI Check-in (<a class="reference external" href="https://aai.egi.eu/auth/realms/egi">https://aai.egi.eu/auth/realms/egi</a>). Users can set other OIDC identity
-provider via option <em>&quot;--oidc-url&quot;</em>. Remember to set identity provider's name <em>&quot;--openstack-auth-provider&quot;</em> accordingly
-for OpenStack commands.</p>
+give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud client</em> via option <em>&quot;--oidc-agent-account&quot;</em>.
+On the other hand visit the <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> website to configure a <em>mytoken</em>, and
+use the option <em>&quot;--mytoken&quot;</em> to pass it to <a href="#id3"><span class="problematic" id="id4">*</span></a>FedCloud client&quot;.</p>
 <p>The default protocol is <em>&quot;openid&quot;</em>. Users can change default protocol via option <em>&quot;--openstack-auth-protocol&quot;</em>. However,
 sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oidc&quot;</em> for INFN-CLOUD-BARI.</p>
 </section>
@@ -147,21 +140,13 @@ sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oi
 <td><p>--oidc-access-token</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p>OIDC_REFRESH_TOKEN</p></td>
-<td><p>--oidc-refresh-token</p></td>
-<td></td>
+<tr class="row-even"><td><p>FEDCLOUD_MYTOKEN_SERVER</p></td>
+<td><p>--mytoken-server</p></td>
+<td><p><a class="reference external" href="https://mytoken.data.kit.edu">https://mytoken.data.kit.edu</a></p></td>
 </tr>
-<tr class="row-odd"><td><p>OIDC_CLIENT_ID</p></td>
-<td><p>--oidc-client-id</p></td>
+<tr class="row-odd"><td><p>FEDCLOUD_MYTOKEN</p></td>
+<td><p>--mytoken</p></td>
 <td></td>
-</tr>
-<tr class="row-even"><td><p>OIDC_CLIENT_SECRET</p></td>
-<td><p>--oidc-client-secret</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p>OIDC_URL</p></td>
-<td><p>--oidc-url</p></td>
-<td><p><a class="reference external" href="https://aai.egi.eu/auth/realms/egi">https://aai.egi.eu/auth/realms/egi</a></p></td>
 </tr>
 <tr class="row-even"><td><p>OPENSTACK_AUTH_PROTOCOL</p></td>
 <td><p>--openstack-auth-protocol</p></td>
