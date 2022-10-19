@@ -26,8 +26,6 @@ or use Docker container:
   or `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/>`_ and set
   environment variable.
 
-  Note: Do not supply refresh tokens as access tokens.
-
 ::
 
     $ export OIDC_ACCESS_TOKEN=<ACCESS_TOKEN>
