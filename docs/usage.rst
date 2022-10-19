@@ -28,8 +28,9 @@ Users of EGI Check-in can get all information needed for obtaining access tokens
 Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
 `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
 give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
-On the other hand visit the `mytoken <https://mytoken.data.kit.edu/>`_ website to configure a *mytoken*, and
-use the option *"--mytoken"* to pass it to *FedCloud client".
+On the other hand visit the `mytoken <https://mytoken.data.kit.edu/>`_ website to configure a *mytoken*,
+remember to check the first option *"Allows obtaining OpenID Connect Access Tokens"*, and use the option
+*"--mytoken"* to pass it to *FedCloud client".
 
 The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
