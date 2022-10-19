@@ -111,8 +111,10 @@ directly (via option <em>&quot;--oidc-access-token&quot;</em>), via <a class="re
 Portal</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
 <a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
 give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud client</em> via option <em>&quot;--oidc-agent-account&quot;</em>.
-On the other hand visit the <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> website to configure a <em>mytoken</em>, and
-use the option <em>&quot;--mytoken&quot;</em> to pass it to <a href="#id3"><span class="problematic" id="id4">*</span></a>FedCloud client&quot;.</p>
+On the other hand visit the <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> website to configure a <em>mytoken</em>,
+remember to check <em>&quot;Allows obtaining OpenID Connect Access Tokens&quot;</em>, and use the option <em>&quot;--mytoken&quot;</em>
+to pass it to <em>FedCloud client&quot;</em>. Environment variables can be use instead of the command-line options,
+as explained in the table below.</p>
 <p>The default protocol is <em>&quot;openid&quot;</em>. Users can change default protocol via option <em>&quot;--openstack-auth-protocol&quot;</em>. However,
 sites may have protocol fixedly defined in site configuration, e.g. <em>&quot;oidc&quot;</em> for INFN-CLOUD-BARI.</p>
 </section>
