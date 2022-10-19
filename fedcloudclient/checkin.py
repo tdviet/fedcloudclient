@@ -190,14 +190,18 @@ def get_access_token(
         access_token = check_token(oidc_access_token)
 
     # then try to get access token from mytoken server
-    if mytoken and (access_token == None):
-        access_token = get_token_from_mytoken_server(mytoken, mytoken_server, quiet=True)
+    if mytoken and access_token is None:
+        access_token = get_token_from_mytoken_server(
+            mytoken, mytoken_server, quiet=True
+        )
 
     # then, try to get access token from oidc-agent
-    if oidc_agent_account and (access_token == None):
-        access_token = get_token_from_oidc_agent(oidc_agent_account, quiet=True)
+    if oidc_agent_account and access_token is None):
+        access_token = get_token_from_oidc_agent(
+            oidc_agent_account, quiet=True
+        )
 
-    if access_token == None:
+    if access_token is None:
         # Nothing available
         raise SystemExit(
             "Error: An access token is needed for the operation. You can specify "
