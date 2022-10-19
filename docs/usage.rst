@@ -30,7 +30,8 @@ Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*
 give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
 On the other hand visit the `mytoken <https://mytoken.data.kit.edu/>`_ website to configure a *mytoken*,
 remember to check *"Allows obtaining OpenID Connect Access Tokens"*, and use the option *"--mytoken"*
-to pass it to *FedCloud client".
+to pass it to *FedCloud client"*. Environment variables can be use instead of the command-line options,
+as explained in the table below.
 
 The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
