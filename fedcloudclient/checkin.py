@@ -58,7 +58,7 @@ def oidc_discover(oidc_url):
     return request.json()
 
 
-def get_token_from_oidc_agent(oidc_agent_account):
+def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
     """
     Get access token from oidc-agent
     :param oidc_agent_account: account name in oidc-agent
@@ -75,31 +75,40 @@ def get_token_from_oidc_agent(oidc_agent_account):
             return access_token
         except agent.OidcAgentError as exception:
             print_error(
-                "Error during getting access token from oidc-agent\n"
+                "Error getting access token from oidc-agent\n"
                 f"Error message: {exception}",
-                False,
+                quiet,
             )
     return None
 
 
-def get_token_from_mytoken_server(mytoken, mytoken_server):
+def get_token_from_mytoken_server(mytoken, mytoken_server, quiet=False):
     """
-
+    Get access token from mytoken server
     :param mytoken:
     :param mytoken_server:
-    :return:
+    :return: access token, or None on error
     """
 
-    data = {
-        "grant_type": "mytoken",
-        "mytoken": mytoken,
-    }
-    req = requests.post(
-        mytoken_server + "/api/v0/token/access",
-        json=data,
-    )
-    req.raise_for_status()
-    return req.json().get("access_token")
+    if mytoken:
+        try:
+            data = {
+                "grant_type": "mytoken",
+                "mytoken": mytoken,
+            }
+            req = requests.post(
+                mytoken_server + "/api/v0/token/access",
+                json=data,
+            )
+            req.raise_for_status()
+            return req.json().get("access_token")
+        except requests.exceptions.HTTPError as exception:
+            print_error(
+                "Error getting access token from mytoken\n"
+                f"Error message: {exception}",
+                quiet,
+            )
+    return None
 
 
 def check_token(oidc_token, verbose=False):
@@ -108,7 +117,7 @@ def check_token(oidc_token, verbose=False):
 
     :param verbose:
     :param oidc_token: the token to check
-    :return:
+    :return: access token, or None on error
     """
 
     payload = decode_token(oidc_token)
@@ -171,28 +180,32 @@ def get_access_token(
     :param oidc_agent_account:
     :param mytoken:
     :param mytoken_server:
-
-
     :return: access token
     """
+
+    access_token = None
+
     # access token via parameter has the highest priority
     if oidc_access_token:
-        return check_token(oidc_access_token)
+        access_token = check_token(oidc_access_token)
 
     # then try to get access token from mytoken server
-    if mytoken:
-        return get_token_from_mytoken_server(mytoken, mytoken_server)
+    if mytoken and (access_token == None):
+        access_token = get_token_from_mytoken_server(mytoken, mytoken_server, quiet=True)
 
     # then, try to get access token from oidc-agent
-    if oidc_agent_account:
-        return get_token_from_oidc_agent(oidc_agent_account)
+    if oidc_agent_account and (access_token == None):
+        access_token = get_token_from_oidc_agent(oidc_agent_account, quiet=True)
 
-    # Nothing available
-    raise SystemExit(
-        "Error: An access token is needed for the operation. You can specify "
-        "access token directly via --oidc-access-token option or use oidc-agent "
-        "via --oidc-agent-account or mytoken via --mytoken"
-    )
+    if access_token == None:
+        # Nothing available
+        raise SystemExit(
+            "Error: An access token is needed for the operation. You can specify "
+            "access token directly via --oidc-access-token option or use oidc-agent "
+            "via --oidc-agent-account or mytoken via --mytoken"
+        )
+
+    return access_token
 
 
 def token_list_vos(oidc_access_token):
