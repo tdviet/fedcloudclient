@@ -148,7 +148,7 @@ access tokens</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>access token, or None on error</p>
 </dd>
 </dl>
 </dd></dl>
@@ -200,23 +200,16 @@ Raise error if no valid token exists</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_mytoken_server">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_mytoken_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_mytoken_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_mytoken_server" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>mytoken</strong> -- </p></li>
-<li><p><strong>mytoken_server</strong> -- </p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-</dl>
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_mytoken_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_mytoken_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_mytoken_server" title="Permalink to this definition"></a></dt>
+<dd><p>Get access token from mytoken server
+:param mytoken:
+:param mytoken_server:
+:return: access token, or None on error</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_oidc_agent">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_oidc_agent" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_oidc_agent" title="Permalink to this definition"></a></dt>
 <dd><p>Get access token from oidc-agent
 :param oidc_agent_account: account name in oidc-agent
 :return: access token, or None on error</p>
