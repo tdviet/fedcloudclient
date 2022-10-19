@@ -225,6 +225,27 @@ Useful commands
     $ source fedcloud_bash_completion.sh
 
 
+* Pass a *mytoken* to Virtual Machines in the EGI Federated Cloud
+
+::
+
+    # Create the file "user.txt" with
+    $ cat user.txt
+    FEDCLOUD_MYTOKEN=<mytoken> # created on https://mytoken.data.kit.edu/
+
+    # Pass it to OpenStack
+    EGI_SITE=IISAS-FedCloud
+    EGI_VO=vo.access.egi.eu
+    fedcloud openstack server create --flavor <flavor> --image <image> --user-data user.txt --key-name <keypair> testvm
+
+    # Once you log into the VM you can retrieve the "mytoken" with
+    curl http://169.254.169.254/openstack/latest/user_data/
+
+    # and use it with
+    FEDCLOUD_MYTOKEN=<mytoken> # copied from the previous curl command
+    fedcloud token check
+
+
 More information
 ****************
 
