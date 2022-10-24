@@ -18,7 +18,6 @@ from fedcloudclient.decorators import (
 
 # Minimal lifetime of the access token is 30s and max 24h
 _MIN_ACCESS_TOKEN_TIME = 30
-_MAX_ACCESS_TOKEN_TIME = 24 * 3600
 
 VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
