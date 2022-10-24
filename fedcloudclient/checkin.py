@@ -170,7 +170,7 @@ def get_access_token(
     """
     Get access token
     Generates new access token from oidc-agent or
-    refresh token (if given), or use existing token
+    or mytoken
 
     Check expiration time of access token
     Raise error if no valid token exists
@@ -237,7 +237,7 @@ def token_list_vos(oidc_access_token):
 @click.group()
 def token():
     """
-    Get details of access/refresh tokens
+    Get details of access token
     """
 
 
@@ -245,7 +245,7 @@ def token():
 @oidc_params
 def check(access_token):
     """
-    Check validity of access/refresh token
+    Check validity of access token
     """
     check_token(access_token, verbose=True)
 

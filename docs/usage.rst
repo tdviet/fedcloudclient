@@ -21,24 +21,17 @@ Authentication
 **************
 
 Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option *"--oidc-access-token"*), or via oidc-agent (via option *"--oidc-agent-account"*), use refresh
-tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
-in most cases, the option *"--oidc-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
-combination of *"--oidc-refresh-token"*, *"--oidc-client-id"* and *"--oidc-client-secret"*.
+directly (via option *"--oidc-access-token"*), via `oidc-agent <https://indigo-dc.gitbooks.io/oidc-agent/>`_
+(via option *"--oidc-agent-account"*), or via `mytoken <https://mytoken.data.kit.edu/>`_ (via option *"--mytoken"*).
 
-Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `EGI Check-in Token
+Users of EGI Check-in can get all information needed for obtaining access tokens from `EGI Check-in Token
 Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
 `oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
 give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
-
-Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
-tokens via environment variables or command-line options is considered as insecure and will be disable in near
-future in favor of using *oidc-agent*. If multiple methods of getting access tokens are given at the same time,
-the client will try to get the tokens from the oidc-agent first, then from refresh tokens.
-
-The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/auth/realms/egi). Users can set other OIDC identity
-provider via option *"--oidc-url"*. Remember to set identity provider's name *"--openstack-auth-provider"* accordingly
-for OpenStack commands.
+On the other hand visit the `mytoken <https://mytoken.data.kit.edu/>`_ website to configure a *mytoken*,
+remember to check *"Allows obtaining OpenID Connect Access Tokens"*, and use the option *"--mytoken"*
+to pass it to *FedCloud client"*. Environment variables can be use instead of the command-line options,
+as explained in the table below.
 
 The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
@@ -55,13 +48,9 @@ Most of fedcloud options, including options for tokens can be set via environmen
 +-----------------------------+---------------------------------+------------------------------------+
 |    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                    |
 +-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_REFRESH_TOKEN       |   --oidc-refresh-token          |                                    |
+|    FEDCLOUD_MYTOKEN_SERVER  |   --mytoken-server              | https://mytoken.data.kit.edu       |
 +-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_CLIENT_ID           |   --oidc-client-id              |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_CLIENT_SECRET       |   --oidc-client-secret          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_URL                 |   --oidc-url                    | https://aai.egi.eu/auth/realms/egi |
+|    FEDCLOUD_MYTOKEN         |   --mytoken                     |                                    |
 +-----------------------------+---------------------------------+------------------------------------+
 |    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid                 |
 +-----------------------------+---------------------------------+------------------------------------+
