@@ -130,7 +130,7 @@ def check_token(oidc_token, verbose=False):
     exp_time_in_sec = exp_timestamp - current_timestamp
 
     if exp_time_in_sec < _MIN_ACCESS_TOKEN_TIME:
-        print_error("Error: Expired access token.", True)
+        print_error("Error: Expired access token.", False)
         return None
 
     if verbose:
@@ -193,12 +193,12 @@ def get_access_token(
     # then try to get access token from mytoken server
     if mytoken and access_token is None:
         access_token = get_token_from_mytoken_server(
-            mytoken, mytoken_server, quiet=True
+            mytoken, mytoken_server, quiet=False
         )
 
     # then, try to get access token from oidc-agent
     if oidc_agent_account and access_token is None:
-        access_token = get_token_from_oidc_agent(oidc_agent_account, quiet=True)
+        access_token = get_token_from_oidc_agent(oidc_agent_account, quiet=False)
 
     if access_token is None:
         # Nothing available
