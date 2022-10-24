@@ -60,6 +60,7 @@ def oidc_discover(oidc_url):
 def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
     """
     Get access token from oidc-agent
+    :param quiet:
     :param oidc_agent_account: account name in oidc-agent
     :return: access token, or None on error
     """
@@ -84,6 +85,7 @@ def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
 def get_token_from_mytoken_server(mytoken, mytoken_server, quiet=False):
     """
     Get access token from mytoken server
+    :param quiet:
     :param mytoken:
     :param mytoken_server:
     :return: access token, or None on error
