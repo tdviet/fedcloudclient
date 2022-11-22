@@ -236,7 +236,7 @@ Useful commands
     # Pass it to OpenStack
     EGI_SITE=IISAS-FedCloud
     EGI_VO=vo.access.egi.eu
-    fedcloud openstack server create --flavor <flavor> --image <image> --user-data user.txt --key-name <keypair> testvm
+    fedcloud openstack server create --site $EGI_SITE --flavor <flavor> --image <image> --user-data user.txt --key-name <keypair> testvm
 
     # Once you log into the VM you can retrieve the "mytoken" with
     curl http://169.254.169.254/openstack/latest/user_data/
