@@ -171,7 +171,7 @@ def get_access_token(
 ):
     """
     Get access token
-    Generates new access token from oidc-agent or
+    Generates new access token from oidc-agent
     or mytoken
 
     Check expiration time of access token
