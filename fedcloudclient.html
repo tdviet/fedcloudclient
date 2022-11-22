@@ -119,8 +119,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>FedCloud client API references</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">FedCloud client API references</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/tdviet/fedcloudclient/blob/master/docs/fedcloudclient.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -165,7 +165,7 @@ access tokens</p>
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_access_token">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_access_token" title="Permalink to this definition"></a></dt>
 <dd><p>Get access token
-Generates new access token from oidc-agent or
+Generates new access token from oidc-agent
 or mytoken</p>
 <p>Check expiration time of access token
 Raise error if no valid token exists</p>
@@ -202,6 +202,7 @@ Raise error if no valid token exists</p>
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_mytoken_server">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_mytoken_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_mytoken_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_mytoken_server" title="Permalink to this definition"></a></dt>
 <dd><p>Get access token from mytoken server
+:param quiet:
 :param mytoken:
 :param mytoken_server:
 :return: access token, or None on error</p>
@@ -211,6 +212,7 @@ Raise error if no valid token exists</p>
 <dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_oidc_agent">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_oidc_agent" title="Permalink to this definition"></a></dt>
 <dd><p>Get access token from oidc-agent
+:param quiet:
 :param oidc_agent_account: account name in oidc-agent
 :return: access token, or None on error</p>
 </dd></dl>

@@ -75,8 +75,8 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Cheat sheet</li>
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Cheat sheet</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/tdviet/fedcloudclient/blob/master/docs/cheat.rst" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -307,7 +307,7 @@ FEDCLOUD_MYTOKEN=&lt;mytoken&gt; # created on https://mytoken.data.kit.edu/
 # Pass it to OpenStack
 EGI_SITE=IISAS-FedCloud
 EGI_VO=vo.access.egi.eu
-fedcloud openstack server create --flavor &lt;flavor&gt; --image &lt;image&gt; --user-data user.txt --key-name &lt;keypair&gt; testvm
+fedcloud openstack server create --site $EGI_SITE --flavor &lt;flavor&gt; --image &lt;image&gt; --user-data user.txt --key-name &lt;keypair&gt; testvm
 
 # Once you log into the VM you can retrieve the &quot;mytoken&quot; with
 curl http://169.254.169.254/openstack/latest/user_data/
