@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FedCloud client API references &mdash; fedcloudclient  documentation</title>
@@ -29,12 +29,16 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html">
-            <img src="_static/fedcloudclient-logo-non-transparent-small.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/fedcloudclient-logo-non-transparent-small.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -119,7 +123,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">FedCloud client API references</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/tdviet/fedcloudclient/blob/master/docs/fedcloudclient.rst" class="fa fa-github"> Edit on GitHub</a>
@@ -141,13 +145,13 @@ access tokens</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.check_token" title="Permalink to this definition"></a></dt>
 <dd><p>Check validity of access token</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>verbose</strong> -- </p></li>
 <li><p><strong>oidc_token</strong> -- the token to check</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>access token, or None on error</p>
 </dd>
 </dl>
@@ -170,7 +174,7 @@ or mytoken</p>
 <p>Check expiration time of access token
 Raise error if no valid token exists</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>oidc_access_token</strong> -- </p></li>
 <li><p><strong>oidc_agent_account</strong> -- </p></li>
@@ -178,7 +182,7 @@ Raise error if no valid token exists</p>
 <li><p><strong>mytoken_server</strong> -- </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>access token</p>
 </dd>
 </dl>
@@ -189,10 +193,10 @@ Raise error if no valid token exists</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_checkin_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_checkin_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_checkin_id" title="Permalink to this definition"></a></dt>
 <dd><p>Get EGI Check-in ID from access token</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>oidc_token</strong> -- the token</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Check-in ID</p>
 </dd>
 </dl>
@@ -222,10 +226,10 @@ Raise error if no valid token exists</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.oidc_discover" title="Permalink to this definition"></a></dt>
 <dd><p>Discover OIDC endpoints</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>oidc_url</strong> -- CheckIn URL</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>JSON object of OIDC configuration</p>
 </dd>
 </dl>
@@ -242,10 +246,10 @@ Raise error if no valid token exists</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_list_vos" title="Permalink to this definition"></a></dt>
 <dd><p>List VO memberships in EGI Check-in</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>oidc_access_token</strong> -- </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of VO names</p>
 </dd>
 </dl>
@@ -271,7 +275,7 @@ test on sites</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">find_endpoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">service_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">production</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">monitored</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#find_endpoint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.find_endpoint" title="Permalink to this definition"></a></dt>
 <dd><p>Searching GOCDB for endpoints according to service types and status</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>service_type</strong> -- </p></li>
 <li><p><strong>production</strong> -- </p></li>
@@ -279,7 +283,7 @@ test on sites</p>
 <li><p><strong>site</strong> -- list of sites, None for searching all sites</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of endpoints</p>
 </dd>
 </dl>
@@ -344,7 +348,7 @@ test on sites</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.endpoint.</span></span><span class="sig-name descname"><span class="pre">get_sites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/endpoint.html#get_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.endpoint.get_sites" title="Permalink to this definition"></a></dt>
 <dd><p>Get list of sites (using GOCDB instead of site configuration)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of site IDs</p>
 </dd>
 </dl>
@@ -378,10 +382,10 @@ do not have access, and so on.</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">delete_site_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#delete_site_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.delete_site_config" title="Permalink to this definition"></a></dt>
 <dd><p>Delete site configs to local directory specified in config_dir</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_dir</strong> -- path to directory containing site configuration</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -393,13 +397,13 @@ do not have access, and so on.</p>
 <dd><p>Return Keystone endpoint and project ID from site name and VO according
 to site configuration</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>site_name</strong> -- site ID in GOCDB</p></li>
 <li><p><strong>vo</strong> -- VO name or None to find site endpoint only</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>endpoint, project_id, protocol if the VO has access to the site,
 otherwise None, None, None</p>
 </dd>
@@ -411,10 +415,10 @@ otherwise None, None, None</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">find_site_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#find_site_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.find_site_data" title="Permalink to this definition"></a></dt>
 <dd><p>Return configuration of the correspondent site with site_name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>site_name</strong> -- site ID in GOCDB</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>configuration of site if found, otherwise None</p>
 </dd>
 </dl>
@@ -426,13 +430,13 @@ otherwise None, None, None</p>
 <dd><p>Return the VO name form the project ID and site_name according
 to site configuration</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>site_name</strong> -- site ID in GOCDB</p></li>
 <li><p><strong>project_id</strong> -- project_id configured to support the VO</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>vo if the VO is configured, otherwise None</p>
 </dd>
 </dl>
@@ -443,7 +447,7 @@ to site configuration</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">list_sites</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#list_sites"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.list_sites" title="Permalink to this definition"></a></dt>
 <dd><p>List of all sites IDs in site configurations</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of site IDs</p>
 </dd>
 </dl>
@@ -455,7 +459,7 @@ to site configuration</p>
 <dd><p>Read default site configurations from GitHub
 Storing site configurations in a global variable that will be used by other functions</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
@@ -467,10 +471,10 @@ Storing site configurations in a global variable that will be used by other func
 <dd><p>Read site configurations from local directory specified in config_dir
 Storing site configurations in global variable, that will be used by other functions</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_dir</strong> -- path to directory containing site configuration</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -484,7 +488,7 @@ GitHub location. Storing site configurations in global variable, that will be
 used by other functions. Call read_local_site_config()
 or read_default_site_config()</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>None</p>
 </dd>
 </dl>
@@ -495,7 +499,7 @@ or read_default_site_config()</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.sites.</span></span><span class="sig-name descname"><span class="pre">read_site_schema</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/sites.html#read_site_schema"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.sites.read_site_schema" title="Permalink to this definition"></a></dt>
 <dd><p>Read schema.json for validating site configuration</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>JSON object from schema.json</p>
 </dd>
 </dl>
@@ -507,13 +511,13 @@ or read_default_site_config()</p>
 <dd><p>Safe reading from URL
 Check URL and size before reading</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>url</strong> -- </p></li>
 <li><p><strong>max_length</strong> -- </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>data from URL</p>
 </dd>
 </dl>
@@ -525,10 +529,10 @@ Check URL and size before reading</p>
 <dd><p>Save site configs to local directory specified in config_dir
 Overwrite local configs if exist</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_dir</strong> -- path to directory containing site configuration</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>None</p>
 </dd>
 </dl>
@@ -544,7 +548,7 @@ OpenStack commands on sites</p>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">check_openstack_client_installation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#check_openstack_client_installation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.check_openstack_client_installation" title="Permalink to this definition"></a></dt>
 <dd><p>Check if openstack command-line client is installed and available via $PATH</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if available</p>
 </dd>
 </dl>
@@ -557,7 +561,7 @@ OpenStack commands on sites</p>
 default EGI setting for identity provider and protocols
 Calls OpenStack CLI with default options for EGI Check-in</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>oidc_access_token</strong> -- Checkin access token.
 Passed to openstack client as --os-access-token</p></li>
@@ -568,7 +572,7 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 <li><p><strong>json_output</strong> -- if result is JSON object or string. Default:True</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>error code, result or error message</p>
 </dd>
 </dl>
@@ -580,7 +584,7 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 <dd><p>Calling openstack client with full options specified, including support
 for other identity providers and protocols</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>oidc_access_token</strong> -- Checkin access token. Passed to openstack client
 as --os-access-token</p></li>
@@ -597,7 +601,7 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 <li><p><strong>json_output</strong> -- if result is JSON object or string. Default:True</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>error code, result or error message</p>
 </dd>
 </dl>
@@ -608,7 +612,7 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">print_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc_msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">result</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_missing_vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#print_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.print_result" title="Permalink to this definition"></a></dt>
 <dd><p>Print output from an OpenStack command</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>site</strong> -- </p></li>
 <li><p><strong>vo</strong> -- </p></li>
@@ -621,7 +625,7 @@ e.g. (&quot;image&quot;, &quot;list&quot;, &quot;--long&quot;)</p></li>
 <li><p><strong>first</strong> -- </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
