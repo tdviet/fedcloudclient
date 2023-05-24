@@ -43,6 +43,7 @@ secret_output_params = click.option(
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
 )
 
+
 def all_site_params(func):
     """
     Decorator for all-sites options

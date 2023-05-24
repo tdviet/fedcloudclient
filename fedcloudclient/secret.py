@@ -10,7 +10,6 @@ import click
 import hvac
 import requests
 import yaml
-
 from cryptography.fernet import Fernet, InvalidToken
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -19,7 +18,11 @@ from tabulate import tabulate
 from yaml import YAMLError
 
 from fedcloudclient.checkin import get_checkin_id
-from fedcloudclient.decorators import oidc_params, secret_output_params, secret_token_params
+from fedcloudclient.decorators import (
+    oidc_params,
+    secret_output_params,
+    secret_token_params,
+)
 
 VAULT_ADDR = "https://vault.services.fedcloud.eu:8200"
 VAULT_ROLE = "demo"
@@ -388,7 +391,6 @@ def put(
         secret_client(access_token, "put", short_path, secret_dict)
 
 
-
 @secret.command()
 @secret_token_params
 @click.argument("short_path", metavar="[secret path]")
@@ -404,6 +406,7 @@ def delete(
         locker_client(locker_token, "delete_secret", short_path, None)
     else:
         secret_client(access_token, "delete_secret", short_path, None)
+
 
 @secret.group()
 def locker():
@@ -426,7 +429,11 @@ def create(access_token, ttl, num_uses, output_format, token_only):
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
         client.auth.token.renew_self(increment=ttl)
-        locker_token = client.auth.token.create(policies=["default"], ttl=ttl, num_uses=num_uses)
+        locker_token = client.auth.token.create(
+            policies=["default"],
+            ttl=ttl,
+            num_uses=num_uses
+        )
         if token_only:
             print(locker_token["auth"]["client_token"])
         else:
@@ -436,9 +443,14 @@ def create(access_token, ttl, num_uses, output_format, token_only):
             f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
         )
 
+
 @locker.command()
 @secret_output_params
-@click.argument("locker_token", metavar="[locker_token]", envvar="FEDCLOUD_LOCKER_TOKEN")
+@click.argument(
+    "locker_token",
+    metavar="[locker_token]",
+    envvar="FEDCLOUD_LOCKER_TOKEN"
+)
 def check(locker_token, output_format):
     """
     Check status of locker token
@@ -457,9 +469,9 @@ def check(locker_token, output_format):
 
 @locker.command()
 @click.argument("locker_token", metavar="[locker_token]", envvar="FEDCLOUD_LOCKER_TOKEN")
-def delete(locker_token):
+def revoke(locker_token):
     """
-    Delete the locker token
+    Revoke the locker token and delete all data in the locker
     """
     try:
         client = hvac.Client(url=VAULT_ADDR)
