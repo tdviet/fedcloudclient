@@ -430,9 +430,7 @@ def create(access_token, ttl, num_uses, output_format, token_only):
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
         client.auth.token.renew_self(increment=ttl)
         locker_token = client.auth.token.create(
-            policies=["default"],
-            ttl=ttl,
-            num_uses=num_uses
+            policies=["default"], ttl=ttl, num_uses=num_uses
         )
         if token_only:
             print(locker_token["auth"]["client_token"])
@@ -447,9 +445,7 @@ def create(access_token, ttl, num_uses, output_format, token_only):
 @locker.command()
 @secret_output_params
 @click.argument(
-    "locker_token",
-    metavar="[locker_token]",
-    envvar="FEDCLOUD_LOCKER_TOKEN"
+    "locker_token", metavar="[locker_token]", envvar="FEDCLOUD_LOCKER_TOKEN"
 )
 def check(locker_token, output_format):
     """
@@ -468,7 +464,9 @@ def check(locker_token, output_format):
 
 
 @locker.command()
-@click.argument("locker_token", metavar="[locker_token]", envvar="FEDCLOUD_LOCKER_TOKEN")
+@click.argument(
+    "locker_token", metavar="[locker_token]", envvar="FEDCLOUD_LOCKER_TOKEN"
+)
 def revoke(locker_token):
     """
     Revoke the locker token and delete all data in the locker
