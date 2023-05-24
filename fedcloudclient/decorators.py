@@ -34,6 +34,14 @@ site_params = click.option(
     metavar="site-name",
 )
 
+# Output format for secret module
+secret_output_params = click.option(
+    "--output-format",
+    "-f",
+    required=False,
+    help="Output format",
+    type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
+)
 
 def all_site_params(func):
     """
@@ -329,6 +337,74 @@ def select_output_format_params(func):
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)
+
+    return wrapper
+
+
+def secret_token_params(func):
+    """
+    Decorator for secret token.
+    If locker token is not defined, get access token from oidc-* parameters
+    and replace them in the wrapper function
+    """
+
+    @optgroup.group("Token options", help="Choose one of options for providing token")
+    @optgroup.option(
+        "--locker-token",
+        help="Locker token",
+        envvar="FEDCLOUD_LOCKER_TOKEN",
+        metavar="locker_token",
+    )
+    @optgroup.option(
+        "--oidc-agent-account",
+        help="Account name in oidc-agent",
+        envvar="OIDC_AGENT_ACCOUNT",
+        metavar="account",
+    )
+    @optgroup.option(
+        "--oidc-access-token",
+        help="OIDC access token",
+        envvar="OIDC_ACCESS_TOKEN",
+        metavar="token",
+    )
+    @optgroup.option(
+        "--mytoken",
+        help="Mytoken string",
+        envvar="FEDCLOUD_MYTOKEN",
+        metavar="mytoken",
+    )
+    @optgroup.option(
+        "--mytoken-server",
+        help="Mytoken sever",
+        envvar="FEDCLOUD_MYTOKEN_SERVER",
+        default=DEFAULT_MYTOKEN_SERVER,
+        show_default=True,
+        metavar="mytoken-server",
+    )
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        from fedcloudclient.checkin import get_access_token
+
+        # If locker token is given, ignore OIDC token options
+        locker_token = kwargs.pop("locker_token")
+        if locker_token:
+            kwargs.pop("oidc_access_token")
+            kwargs.pop("oidc_agent_account")
+            kwargs.pop("mytoken")
+            kwargs.pop("mytoken_server")
+            kwargs["access_token"] = None
+            kwargs["locker_token"] = locker_token
+            return func(*args, **kwargs)
+
+        access_token = get_access_token(
+            kwargs.pop("oidc_access_token"),
+            kwargs.pop("oidc_agent_account"),
+            kwargs.pop("mytoken"),
+            kwargs.pop("mytoken_server"),
+        )
+        kwargs["access_token"] = access_token
+        kwargs["locker_token"] = None
         return func(*args, **kwargs)
 
     return wrapper
