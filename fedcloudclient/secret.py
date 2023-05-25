@@ -419,7 +419,7 @@ def locker():
 @oidc_params
 @secret_output_params
 @click.option("--ttl", default="24h", help="Time-to-live for the new locker")
-@click.option("--num_uses", default=0, help="Max number of uses")
+@click.option("--num-uses", default=0, help="Max number of uses")
 @click.option("--token-only", is_flag=True, help="True for print token only")
 def create(access_token, ttl, num_uses, output_format, token_only):
     """
