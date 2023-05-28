@@ -419,9 +419,9 @@ def locker():
 @oidc_params
 @secret_output_params
 @click.option("--ttl", default="24h", help="Time-to-live for the new locker")
-@click.option("--num-uses", default=0, help="Max number of uses")
-@click.option("--token-only", is_flag=True, help="True for print token only")
-def create(access_token, ttl, num_uses, output_format, token_only):
+@click.option("--num-uses", default=10, help="Max number of uses")
+@click.option("--verbose", is_flag=True, help="Print token details")
+def create(access_token, ttl, num_uses, output_format, verbose):
     """
     Create a locker and return the locker token
     """
@@ -430,9 +430,9 @@ def create(access_token, ttl, num_uses, output_format, token_only):
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
         client.auth.token.renew_self(increment=ttl)
         locker_token = client.auth.token.create(
-            policies=["default"], ttl=ttl, num_uses=num_uses
+            policies=["default"], ttl=ttl, num_uses=num_uses, renewable=False
         )
-        if token_only:
+        if not verbose:
             print(locker_token["auth"]["client_token"])
         else:
             print_secrets(None, output_format, locker_token["auth"])
