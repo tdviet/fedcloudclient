@@ -10,6 +10,10 @@ from click_option_group import (
     optgroup,
 )
 
+from fedcloudclient.exception import TokenError
+from fedcloudclient.locker_auth import LockerToken
+from fedcloudclient.vault_auth import VaultToken
+
 DEFAULT_MYTOKEN_SERVER = "https://mytoken.data.kit.edu"
 DEFAULT_PROTOCOL = "openid"
 DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
@@ -145,8 +149,7 @@ def oidc_params(func):
         help="Mytoken sever",
         envvar="FEDCLOUD_MYTOKEN_SERVER",
         default=DEFAULT_MYTOKEN_SERVER,
-        show_default=True,
-        metavar="mytoken-server",
+        metavar="url",
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
@@ -358,6 +361,12 @@ def secret_token_params(func):
         metavar="locker_token",
     )
     @optgroup.option(
+        "--vault-token",
+        help="Vault token",
+        envvar="FEDCLOUD_VAULT_TOKEN",
+        metavar="vault_token",
+    )
+    @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
         envvar="OIDC_AGENT_ACCOUNT",
@@ -375,37 +384,29 @@ def secret_token_params(func):
         envvar="FEDCLOUD_MYTOKEN",
         metavar="mytoken",
     )
-    @optgroup.option(
-        "--mytoken-server",
-        help="Mytoken sever",
-        envvar="FEDCLOUD_MYTOKEN_SERVER",
-        default=DEFAULT_MYTOKEN_SERVER,
-        show_default=True,
-        metavar="mytoken-server",
-    )
     @wraps(func)
     def wrapper(*args, **kwargs):
-        from fedcloudclient.checkin import get_access_token
 
         # If locker token is given, ignore OIDC token options
         locker_token = kwargs.pop("locker_token")
-        if locker_token:
-            kwargs.pop("oidc_access_token")
-            kwargs.pop("oidc_agent_account")
-            kwargs.pop("mytoken")
-            kwargs.pop("mytoken_server")
-            kwargs["access_token"] = None
-            kwargs["locker_token"] = locker_token
-            return func(*args, **kwargs)
+        vault_token = kwargs.pop("vault_token")
+        access_token = kwargs.pop("oidc_access_token")
+        oidc_agent_account = kwargs.pop("oidc_agent_account")
+        mytoken = kwargs.pop("mytoken")
 
-        access_token = get_access_token(
-            kwargs.pop("oidc_access_token"),
-            kwargs.pop("oidc_agent_account"),
-            kwargs.pop("mytoken"),
-            kwargs.pop("mytoken_server"),
-        )
-        kwargs["access_token"] = access_token
-        kwargs["locker_token"] = None
+        if locker_token:
+            token = LockerToken(locker_token=locker_token)
+        elif vault_token:
+            token = VaultToken(vault_token=vault_token)
+        else:
+            token = VaultToken()
+            try:
+                token.multiple_token(access_token, oidc_agent_account, mytoken)
+            except TokenError as e:
+                print(e)
+                SystemExit(1)
+
+        kwargs["token"] = token
         return func(*args, **kwargs)
 
     return wrapper
