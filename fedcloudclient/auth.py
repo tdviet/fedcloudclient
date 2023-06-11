@@ -130,7 +130,7 @@ class OIDCToken(Token):
             error_msg = f"Error getting access token from mytoken server: mytoken is {mytoken}"
             log_and_raise(error_msg, TokenError)
 
-    def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str ):
+    def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str):
         """
         Select valid token from multiple options
         :param access_token:
@@ -154,4 +154,3 @@ class OIDCToken(Token):
             self.access_token = access_token
             return
         log_and_raise("Cannot get access token", TokenError)
-

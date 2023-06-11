@@ -3,7 +3,7 @@ click_option_group>=0.5.3
 tabulate>=0.8.9
 requests>=2.27.1
 defusedxml~=0.7.1
-pyjwt>=2.3.0
+pyjwt==2.7.0
 python-openstackclient>=5.7.0
 liboidcagent~=0.4.0
 jsonpath-ng==1.5.3

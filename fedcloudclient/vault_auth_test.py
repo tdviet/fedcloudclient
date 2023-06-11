@@ -51,7 +51,6 @@ def test_get_vo_secret(vault_token: str, vo: str):
 
 
 if __name__ == "__main__":
-
     """
     Before testing, setup testing environment with
     export  FEDCLOUD_MYTOKEN=<mytoken>
