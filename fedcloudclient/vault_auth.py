@@ -110,14 +110,14 @@ class VaultToken(OIDCToken):
         full_path = ""
         if vo:
             if self.get_vault_auth_method() == "oidc":
-                full_path = vo + "/" + path
+                full_path = "vos/" + vo + "/" + path
             else:
                 log_and_raise(
                     "VO-shared folders are accessible only for token created by OIDC method via GUI",
                     TokenError,
                 )
         else:
-            full_path = self.get_user_id() + "/" + path
+            full_path = "users/" + self.get_user_id() + "/" + path
 
         function_list = {
             "list": client.secrets.kv.v1.list_secrets,

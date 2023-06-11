@@ -25,7 +25,7 @@ DEFAULT_SETTINGS = {
     "gocdb_public_url": "https://goc.egi.eu/gocdbpi/public/",
     "gocdb_service_group": "org.openstack.nova",
     "vault_endpoint": "https://vault.services.fedcloud.eu:8200",
-    "vault_role": "demo",
+    "vault_role": "",
     "vault_mount_point": "/secrets/",
     "vault_locker_mount_point": "/v1/cubbyhole/",
     "vault_salt": "fedcloud_salt",
