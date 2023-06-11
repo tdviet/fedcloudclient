@@ -25,7 +25,7 @@ from fedcloudclient.decorators import (
 )
 
 VAULT_ADDR = "https://vault.services.fedcloud.eu:8200"
-VAULT_ROLE = "demo"
+VAULT_ROLE = ""
 VAULT_MOUNT_POINT = "/secrets/"
 VAULT_SALT = "fedcloud_salt"
 VAULT_LOCKER_MOUNT_POINT = "/v1/cubbyhole/"
@@ -45,7 +45,7 @@ def secret_client(access_token, command, path, data):
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
         checkin_id = get_checkin_id(access_token)
-        full_path = checkin_id + "/" + path
+        full_path = "users/" + checkin_id + "/" + path
         function_list = {
             "list_secrets": client.secrets.kv.v1.list_secrets,
             "read_secret": client.secrets.kv.v1.read_secret,
