@@ -27,7 +27,7 @@ def test_user_id_from_vault_token(vault_token: str, user_id: str):
     vault_id = None
     try:
         vault_id = token.get_user_id()
-    except TokenError as e:
+    except TokenError:
         print("Please check validity of your OIDC Vault token")
     assert vault_id == user_id
 
