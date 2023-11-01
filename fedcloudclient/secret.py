@@ -17,6 +17,7 @@ from fedcloudclient.logger import LOG as LOG
 from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, secret_params_to_dict
 from fedcloudclient.vault_auth import VaultToken
 
+
 VAULT_ADDR = CONF.get("vault_endpoint")
 VAULT_ROLE = CONF.get("vault_role")
 VAULT_MOUNT_POINT = CONF.get("vault_mount_point")
@@ -38,7 +39,7 @@ def secret_client(access_token, command, path, data):
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
         checkin_id = get_checkin_id(access_token)
-        full_path = checkin_id + "/" + path
+        full_path = "users/" + checkin_id + "/" + path
         function_list = {
             "list_secrets": client.secrets.kv.v1.list_secrets,
             "read_secret": client.secrets.kv.v1.read_secret,
