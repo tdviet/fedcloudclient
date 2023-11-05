@@ -349,7 +349,7 @@ def secret_token_params(func):
     @optgroup.option(
         "--locker-token",
         help="Locker token",
-        edefault=CONF.get("locker_token"),
+        default=CONF.get("locker_token"),
         metavar="locker_token",
     )
     @optgroup.option(
