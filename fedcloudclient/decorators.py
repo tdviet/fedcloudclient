@@ -10,14 +10,10 @@ from click_option_group import (
     optgroup,
 )
 
+from fedcloudclient.conf import CONF
 from fedcloudclient.exception import TokenError
 from fedcloudclient.locker_auth import LockerToken
 from fedcloudclient.vault_auth import VaultToken
-
-DEFAULT_MYTOKEN_SERVER = "https://mytoken.data.kit.edu"
-DEFAULT_PROTOCOL = "openid"
-DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
-DEFAULT_IDENTITY_PROVIDER = "egi.eu"
 
 ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 
@@ -25,7 +21,7 @@ ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 oidc_access_token_params = click.option(
     "--oidc-access-token",
     help="OIDC access token",
-    envvar="OIDC_ACCESS_TOKEN",
+    default=CONF.get("oidc_access_token"),
     metavar="token",
 )
 
@@ -34,7 +30,7 @@ site_params = click.option(
     "--site",
     help="Name of the site",
     required=True,
-    envvar="EGI_SITE",
+    default=CONF.get("site"),
     metavar="site-name",
 )
 
@@ -61,7 +57,7 @@ def all_site_params(func):
     @optgroup.option(
         "--site",
         help="Name of the site or ALL_SITES",
-        envvar="EGI_SITE",
+        default=CONF.get("site"),
         metavar="site-name",
     )
     @optgroup.option(
@@ -82,7 +78,7 @@ project_id_params = click.option(
     "--project-id",
     help="Project ID",
     required=True,
-    envvar="OS_PROJECT_ID",
+    default=CONF.get("project_id"),
     metavar="project-id",
 )
 
@@ -100,7 +96,7 @@ vo_params = click.option(
     "--vo",
     help="Name of the VO",
     required=True,
-    envvar="EGI_VO",
+    default=CONF.get("vo"),
     metavar="vo-name",
 )
 
@@ -129,26 +125,25 @@ def oidc_params(func):
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
+        default=CONF.get("oidc_agent_account"),
         metavar="account",
     )
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
+        default=CONF.get("oidc_access_token"),
         metavar="token",
     )
     @optgroup.option(
         "--mytoken",
         help="Mytoken string",
-        envvar="FEDCLOUD_MYTOKEN",
+        default=CONF.get("mytoken"),
         metavar="mytoken",
     )
     @optgroup.option(
         "--mytoken-server",
         help="Mytoken sever",
-        envvar="FEDCLOUD_MYTOKEN_SERVER",
-        default=DEFAULT_MYTOKEN_SERVER,
+        default=CONF.get("mytoken_server"),
         metavar="url",
     )
     @wraps(func)
@@ -179,24 +174,21 @@ def openstack_params(func):
     @optgroup.option(
         "--openstack-auth-protocol",
         help="Authentication protocol",
-        envvar="OPENSTACK_AUTH_PROTOCOL",
-        default=DEFAULT_PROTOCOL,
+        default=CONF.get("os_protocol"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
         "--openstack-auth-provider",
         help="Identity provider",
-        envvar="OPENSTACK_AUTH_PROVIDER",
-        default=DEFAULT_IDENTITY_PROVIDER,
+        default=CONF.get("os_identity_provider"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
         "--openstack-auth-type",
         help="Authentication type",
-        envvar="OPENSTACK_AUTH_TYPE",
-        default=DEFAULT_AUTH_TYPE,
+        default=CONF.get("os_auth_type"),
         show_default=True,
         metavar="",
     )
@@ -357,31 +349,31 @@ def secret_token_params(func):
     @optgroup.option(
         "--locker-token",
         help="Locker token",
-        envvar="FEDCLOUD_LOCKER_TOKEN",
+        edefault=CONF.get("locker_token"),
         metavar="locker_token",
     )
     @optgroup.option(
         "--vault-token",
         help="Vault token",
-        envvar="FEDCLOUD_VAULT_TOKEN",
+        default=CONF.get("vault_token"),
         metavar="vault_token",
     )
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
+        default=CONF.get("oidc_agent_account"),
         metavar="account",
     )
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
+        default=CONF.get("oidc_access_token"),
         metavar="token",
     )
     @optgroup.option(
         "--mytoken",
         help="Mytoken string",
-        envvar="FEDCLOUD_MYTOKEN",
+        default=CONF.get("mytoken"),
         metavar="mytoken",
     )
     @wraps(func)

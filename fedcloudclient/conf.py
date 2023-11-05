@@ -36,6 +36,9 @@ DEFAULT_SETTINGS = {
     "oidc_agent_account": "egi",
     "min_access_token_time": 30,
     "mytoken_server": "https://mytoken.data.kit.edu",
+    "os_protocol": "openid",
+    "os_auth_type": "v3oidcaccesstoken",
+    "os_identity_provider": "egi.eu",
 }
 
 
