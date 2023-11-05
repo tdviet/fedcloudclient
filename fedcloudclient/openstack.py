@@ -28,7 +28,7 @@ from fedcloudclient.sites import (
 )
 
 DEFAULT_AUTH_TYPE = CONF.get("os_auth_type")
-DEFAULT_IDENTITY_PROVIDER  = CONF.get("os_identity_provider")
+DEFAULT_IDENTITY_PROVIDER = CONF.get("os_identity_provider")
 DEFAULT_PROTOCOL = CONF.get("os_protocol")
 
 __OPENSTACK_CLIENT = "openstack"
@@ -40,9 +40,9 @@ CONFLICTING_ENVS = ["OS_TOKEN", "OS_USER_DOMAIN_NAME"]
 
 def fedcloud_openstack_full(
     oidc_access_token,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    checkin_identity_provider,
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
     site,
     vo,
     openstack_command,
@@ -54,11 +54,12 @@ def fedcloud_openstack_full(
 
     :param oidc_access_token: Checkin access token. Passed to openstack client
            as --os-access-token
-    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to
+    :param os_protocol: Checkin protocol (openi
+    , oidc). Passed to
            openstack client as --os-protocol
-    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).
+    :param os_auth_type: Checkin authentication type (v3oidcaccesstoken).
            Passed to openstack client as --os-auth-type
-    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).
+    :param os_identity_provider: Checkin identity provider in mapping (egi.eu).
            Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
@@ -74,17 +75,17 @@ def fedcloud_openstack_full(
         return __MISSING_VO_ERROR_CODE, f"VO {vo} not found on site {site}\n"
 
     if protocol is None:
-        protocol = openstack_auth_protocol
+        protocol = os_protocol
 
     options = (
         "--os-auth-url",
         endpoint,
         "--os-auth-type",
-        openstack_auth_type,
+        os_auth_type,
         "--os-protocol",
         protocol,
         "--os-identity-provider",
-        checkin_identity_provider,
+        os_identity_provider,
         "--os-access-token",
         oidc_access_token,
     )
@@ -240,9 +241,9 @@ def openstack(
     all_sites,
     vo,
     openstack_command,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    openstack_auth_provider,
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
     ignore_missing_vo,
     json_output,
 ):
@@ -267,9 +268,9 @@ def openstack(
             executor.submit(
                 fedcloud_openstack_full,
                 access_token,
-                openstack_auth_protocol,
-                openstack_auth_type,
-                openstack_auth_provider,
+                os_protocol,
+                os_auth_type,
+                os_identity_provider,
                 site,
                 vo,
                 openstack_command,
@@ -281,7 +282,7 @@ def openstack(
         # Get results and print them
         first = True
 
-        # Get the result, first come first serve
+        # Get the result, first come, first served
         for future in concurrent.futures.as_completed(results):
             site = results[future]
             exc_msg = None
@@ -318,9 +319,9 @@ def openstack_int(
     access_token,
     site,
     vo,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    openstack_auth_provider,
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
 ):
     """
     Interactive OpenStack client on site and VO
@@ -334,12 +335,12 @@ def openstack_int(
         raise SystemExit(f"Error: VO {vo} not found on site {site}")
 
     if protocol is None:
-        protocol = openstack_auth_protocol
+        protocol = os_protocol
     my_env = os.environ.copy()
     my_env["OS_AUTH_URL"] = endpoint
-    my_env["OS_AUTH_TYPE"] = openstack_auth_type
+    my_env["OS_AUTH_TYPE"] = os_auth_type
     my_env["OS_PROTOCOL"] = protocol
-    my_env["OS_IDENTITY_PROVIDER"] = openstack_auth_provider
+    my_env["OS_IDENTITY_PROVIDER"] = os_identity_provider
     my_env["OS_ACCESS_TOKEN"] = access_token
     my_env["OS_PROJECT_ID"] = project_id
 

@@ -168,21 +168,21 @@ def openstack_params(func):
         help="Only change default values if necessary",
     )
     @optgroup.option(
-        "--openstack-auth-protocol",
+        "--os-protocol",
         help="Authentication protocol",
         default=CONF.get("os_protocol"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
-        "--openstack-auth-provider",
+        "--os-identity-provider",
         help="Identity provider",
         default=CONF.get("os_identity_provider"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
-        "--openstack-auth-type",
+        "--os-auth-type",
         help="Authentication type",
         default=CONF.get("os_auth_type"),
         show_default=True,

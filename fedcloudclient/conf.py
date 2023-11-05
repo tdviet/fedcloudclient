@@ -19,8 +19,6 @@ DEFAULT_SETTINGS = {
     "site_list_url": "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml",
     "site_dir": str(Path.home() / ".config/fedcloud/site-config/"),
     "oidc_url": "https://aai.egi.eu/auth/realms/egi",
-    "openstack_auth_protocol": "openid",
-    "openstack_auth_provider": "egi.eu",
     "openstack_auth_type": "v3oidcaccesstoken",
     "gocdb_public_url": "https://goc.egi.eu/gocdbpi/public/",
     "gocdb_service_group": "org.openstack.nova",
