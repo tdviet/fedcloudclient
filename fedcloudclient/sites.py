@@ -22,14 +22,16 @@ import pkg_resources
 import yaml
 from jsonschema import validate
 
+from fedcloudclient.conf import CONF
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
-    DEFAULT_PROTOCOL,
     all_site_params,
     oidc_params,
     site_vo_params,
 )
 from fedcloudclient.shell import print_set_env_command
+
+DEFAULT_PROTOCOL = CONF.get("os_protocol")
 
 __REMOTE_CONFIG_FILE = (
     "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
