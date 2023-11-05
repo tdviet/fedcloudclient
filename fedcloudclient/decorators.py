@@ -6,8 +6,7 @@ from functools import wraps
 import click
 from click_option_group import (
     RequiredAnyOptionGroup,
-    RequiredMutuallyExclusiveOptionGroup,
-    optgroup,
+    optgroup, MutuallyExclusiveOptionGroup,
 )
 
 from fedcloudclient.conf import CONF
@@ -29,7 +28,6 @@ oidc_access_token_params = click.option(
 site_params = click.option(
     "--site",
     help="Name of the site",
-    required=True,
     default=CONF.get("site"),
     metavar="site-name",
 )
@@ -51,7 +49,7 @@ def all_site_params(func):
 
     @optgroup.group(
         "Site",
-        cls=RequiredMutuallyExclusiveOptionGroup,
+        cls=MutuallyExclusiveOptionGroup,
         help="Single Openstack site or all sites",
     )
     @optgroup.option(
@@ -77,7 +75,6 @@ def all_site_params(func):
 project_id_params = click.option(
     "--project-id",
     help="Project ID",
-    required=True,
     default=CONF.get("project_id"),
     metavar="project-id",
 )
@@ -95,7 +92,6 @@ auth_file_params = click.option(
 vo_params = click.option(
     "--vo",
     help="Name of the VO",
-    required=True,
     default=CONF.get("vo"),
     metavar="vo-name",
 )
