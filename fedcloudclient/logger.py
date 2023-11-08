@@ -23,7 +23,7 @@ def init_logger():
             disable_existing_loggers=False,
             defaults={"log_file": log_file, "log_level": log_level},
         )
-    except  (ValueError, TypeError, AttributeError, ImportError, KeyError):
+    except (ValueError, TypeError, AttributeError, ImportError, KeyError, FileNotFoundError):
         logging.basicConfig(filename=log_file, level=logging.getLevelName(log_level))
 
 
