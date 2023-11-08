@@ -126,7 +126,7 @@ def config():
 def create(config_file: str):
     """Create default configuration file"""
     save_config(config_file, CONF)
-    print(f"Default configuration is saved in {config_file}")
+    print(f"Current configuration is saved in {config_file}")
 
 
 @config.command()
