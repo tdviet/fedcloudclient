@@ -166,7 +166,7 @@ Additional parameters can also be configured:
 +------------------------------+-----------------------+
 
 For convenience, always set transient parameters like tokens via
-environment variables, that can simplify the call to *fedcloud*.
+environment variables, as it simplifies the call to *fedcloud*.
 
 
 Shell completion
