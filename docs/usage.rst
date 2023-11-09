@@ -1,7 +1,9 @@
 Usage
 =====
 
-**FedCloud client** has six  main groups of commands:
+**FedCloud client** has the following main groups of commands:
+
+* **"fedcloud config"** for handling fedcloudclient configuration,
 
 * **"fedcloud token"** for interactions with EGI Check-in and access tokens,
 
@@ -11,7 +13,7 @@ Usage
 
 * **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing OpenStack commands on sites,
 
-* **fedcloud secret** for accessing secrets in
+* **"fedcloud secret"** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
 * **"fedcloud ec3"** as helper commands for deploying EC3.
@@ -33,36 +35,139 @@ remember to check *"Allows obtaining OpenID Connect Access Tokens"*, and use the
 to pass it to *FedCloud client"*. Environment variables can be use instead of the command-line options,
 as explained in the table below.
 
-The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
+The default protocol is *"openid"*. Users can change default protocol via option *"--os-protocol"*. However,
 sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
 
-Environment variables
-*********************
 
-Most of fedcloud options, including options for tokens can be set via environment variables:
+Configuration
+*************
 
-+-----------------------------+---------------------------------+------------------------------------+
-|     Environment variables   |   Command-line options          |          Default value             |
-+=============================+=================================+====================================+
-|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    FEDCLOUD_MYTOKEN_SERVER  |   --mytoken-server              | https://mytoken.data.kit.edu       |
-+-----------------------------+---------------------------------+------------------------------------+
-|    FEDCLOUD_MYTOKEN         |   --mytoken                     |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid                 |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_PROVIDER  |   --openstack-auth-provider     |             egi.eu                 |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_TYPE      |   --openstack-auth-type         |         v3oidcaccesstoken          |
-+-----------------------------+---------------------------------+------------------------------------+
-|    EGI_VO                   |   --vo                          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
+Display the current configuration of *fedcloud* with:
 
-For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
-time.
+::
+
+    $ fedcloud config show
+
+This will show a list of configuration parameters:
+
++----------------------------+------------------------------------------------------------------------------------+
+|  Parameter                 |  Default value                                                                     |
++============================+====================================================================================+
+|  site                      |  IISAS-FedCloud                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vo                        |  vo.access.egi.eu                                                                  |
++----------------------------+------------------------------------------------------------------------------------+
+|  site_list_url             |  https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml  |
++----------------------------+------------------------------------------------------------------------------------+
+|  site_dir                  |  ${HOME}/.config/fedcloud/site-config                                              |
++----------------------------+------------------------------------------------------------------------------------+
+|  oidc_url                  |  https://aai.egi.eu/auth/realms/egi                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  gocdb_public_url          |  https://goc.egi.eu/gocdbpi/public/                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  gocdb_service_group       |  org.openstack.nova                                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_endpoint            |  https://vault.services.fedcloud.eu:8200                                           |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_role                |                                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_mount_point         |  /secrets/                                                                         |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_locker_mount_point  |  /v1/cubbyhole/                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_salt                |  fedcloud_salt                                                                     |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_file                  |  ${HOME}/.config/fedcloud/logs/fedcloud.log                                        |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_level                 |  DEBUG                                                                             |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_config_file           |  ${HOME}/.config/fedcloud/logging.conf                                             |
++----------------------------+------------------------------------------------------------------------------------+
+|  requests_cert_file        |  ${HOME}/.config/fedcloud/cert/certs.pem                                           |
++----------------------------+------------------------------------------------------------------------------------+
+|  oidc_agent_account        |  egi                                                                               |
++----------------------------+------------------------------------------------------------------------------------+
+|  min_access_token_time     |  30                                                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  mytoken_server            |  https://mytoken.data.kit.edu                                                      |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_protocol               |  openid                                                                            |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_auth_type              |  v3oidcaccesstoken                                                                 |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_identity_provider      |  egi.eu                                                                            |
++----------------------------+------------------------------------------------------------------------------------+
+
+The *fedcloud* configuration can be saved to a file with:
+
+::
+
+    $ fedcloud config create
+
+By default the configuration file is saved to **${HOME}/.config/fedcloud/config.yaml**
+but this can be changed:
+
+::
+
+    $ fedcloud config create --config-file /path/to/file.yaml
+
+It is also possible to use the *FEDCLOUD_CONFIG_FILE* environment variable instead
+of the *--config-file* option in the command line. This way users may save and load
+multiple configuration files, one per project, with its own configuraion.
+
+*fedcloud* parameters can be configured using:
+
+#. comand-line options (highest priority); e.g.: *--site*
+
+#. environment variables starting with the prefix *FEDCLOUD_*;
+   e.g.: *FEDCLOUD_SITE*.
+
+#. configuration file; e.g. *site* in *config.yaml*
+
+#. default configuration (lowest priority), `harcoded <../fedcloudclient/conf.py#L16>`_.
+
+The order is important: the default configuration is overwritten by the
+configuration file, and this is overwritten by values stored in environment
+variables, and this is overwritten by values in the command-line. For example,
+the default configuration comes with *site = IISAS-FedCloud* and
+*vo = vo.access.egi.eu*. This can be changed with:
+
+::
+
+    $ fedcloud openstack --vo training.egi.eu --site IFCA-LCG2 server list
+
+or
+
+::
+
+    $ export FEDCLOUD_VO=training.egi.eu
+    $ export FEDCLOUD_SITE=IFCA-LCG2
+    $ fedcloud openstack server list
+
+Note the nomenclature referring to the same parameter:
+
+* *--oidc-agent-account* in the command-line
+
+* *FEDCLOUD_OIDC_AGENT_ACCOUNT* as environment variable
+
+* *oidc_agent_account* in the configuration file
+
+They all refer to the same. All configuration parameters follow this
+consistent approach.
+
+Additional parameters can also be configured:
+
++------------------------------+-----------------------+
+|  Environment variable        |  Command-line option  |
++==============================+=======================+
+|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token  |
++------------------------------+-----------------------+
+|  FEDCLOUD_MYTOKEN            |  --mytoken            |
++------------------------------+-----------------------+
+
+For convenience, always set transient parameters like tokens via
+environment variables, as it simplifies the call to *fedcloud*.
+
 
 Shell completion
 ****************
