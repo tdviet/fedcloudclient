@@ -112,8 +112,8 @@ but this can be changed:
     $ fedcloud config create --config-file /path/to/file.yaml
 
 It is also possible to use the *FEDCLOUD_CONFIG_FILE* environment variable instead
-of the *--config-file* option in the command line. This way users may save and work
-with multiple configuration files, one per project, with its own configuraion.
+of the *--config-file* option in the command line. This way users may save and load
+multiple configuration files, one per project, with its own configuraion.
 
 *fedcloud* parameters can be configured using:
 
