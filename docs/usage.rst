@@ -3,7 +3,7 @@ Usage
 
 **FedCloud client** has the following main groups of commands:
 
-* **fedcloud config** for handling fedcloudclient configuration,
+* **"fedcloud config"** for handling fedcloudclient configuration,
 
 * **"fedcloud token"** for interactions with EGI Check-in and access tokens,
 
@@ -13,7 +13,7 @@ Usage
 
 * **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing OpenStack commands on sites,
 
-* **fedcloud secret** for accessing secrets in
+* **"fedcloud secret"** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
 * **"fedcloud ec3"** as helper commands for deploying EC3.
