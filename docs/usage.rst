@@ -124,7 +124,7 @@ multiple configuration files, one per project, with its own configuraion.
 
 #. configuration file; e.g. *site* in *config.yaml*
 
-#. default configuration (lowest priority);
+#. default configuration (lowest priority), `harcoded <../fedcloudclient/conf.py>`_
 
 The order is important: the default configuration is overwritten by the
 configuration file, and this is overwritten by values stored in environment
