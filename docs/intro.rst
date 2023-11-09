@@ -30,7 +30,9 @@ The most notable features of FedCloud client are following:
   or as a `Python library <https://fedcloudclient.fedcloud.eu/development.html>`_
   for programming FedCloud services.
 
-Six modules are included:
+The following modules are included:
+
+* **fedcloudclient.conf** for handling fedcloudclient configuration,
 
 * **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens,
 
