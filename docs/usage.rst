@@ -117,14 +117,14 @@ configuration files, one per project, with its own configuraion.
 
 *fedcloud* parameters can be configured using:
 
-1. comand-line options (highest priority); e.g.: *--site*
+#. comand-line options (highest priority); e.g.: *--site*
 
-1. environment variables starting with the prefix *FEDCLOUD_*;
+#. environment variables starting with the prefix *FEDCLOUD_*;
    e.g.: *FEDCLOUD_SITE*.
 
-1. configuration file; e.g. *site* in *config.yaml*
+#. configuration file; e.g. *site* in *config.yaml*
 
-1. default configuration (lowest priority);
+#. default configuration (lowest priority);
 
 The order is important: the default configuration is overwritten by the
 configuration file, and this is overwritten by values stored in environment
