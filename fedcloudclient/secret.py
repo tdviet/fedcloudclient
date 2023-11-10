@@ -1,7 +1,7 @@
 """
 Implementation of "fedcloud secret" commands for accessing secret management service
 """
-from urllib.error import HTTPError
+import sys
 
 import click
 import hvac
@@ -145,16 +145,19 @@ def get(
     Get the secret object in the path. If a key is given, print only the value of the key
     """
 
-    response = token.vault_command(command="get", path=short_path, data={})
-    if decrypt_key:
-        decrypt_data(decrypt_key, response["data"])
-    if not key:
-        print_secrets(output_file, output_format, response["data"])
-    else:
-        if key in response["data"]:
-            print_value(output_file, binary_file, response["data"][key])
+    try:
+        response = token.vault_command(command="get", path=short_path, data={})
+        if decrypt_key:
+            decrypt_data(decrypt_key, response["data"])
+        if not key:
+            print_secrets(output_file, output_format, response["data"])
         else:
-            raise SystemExit(f"Error: {key} not found in {short_path}")
+            if key in response["data"]:
+                print_value(output_file, binary_file, response["data"][key])
+            else:
+                raise SystemExit(f"Error: {key} not found in {short_path}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
 
 
 @secret.command("list")
@@ -170,13 +173,12 @@ def list_(
     try:
         response = token.vault_command(command="list", path=short_path, data={})
         print("\n".join(map(str, response["data"]["keys"])))
-    except HTTPError as e:
-        if e.code == 404:
-            pass
-        else:
-            print(f"HTTPError occurred. Error code: {e.code}")
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        message = str(e)
+        if "HTTPError: 404" in message:
+            print(f"The target path is empty or does not exist.", file=sys.stderr)
+        else:
+            print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
 
 
 @secret.command()

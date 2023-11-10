@@ -72,6 +72,7 @@ class LockerToken(VaultToken):
                 log_and_raise(f"Invalid command {command}", ConfigError)
 
             response.raise_for_status()
+
             if command in ["list", "get"]:
                 response_json = response.json()
                 return dict(response_json)
