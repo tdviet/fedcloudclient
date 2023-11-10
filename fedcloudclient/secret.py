@@ -1,6 +1,8 @@
 """
 Implementation of "fedcloud secret" commands for accessing secret management service
 """
+from urllib.error import HTTPError
+
 import click
 import hvac
 import requests
@@ -16,7 +18,6 @@ from fedcloudclient.decorators import (
 from fedcloudclient.logger import LOG as LOG
 from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, secret_params_to_dict
 from fedcloudclient.vault_auth import VaultToken
-
 
 VAULT_ADDR = CONF.get("vault_endpoint")
 VAULT_ROLE = CONF.get("vault_role")
@@ -132,13 +133,13 @@ def secret():
     help="Name of output file",
 )
 def get(
-    token: VaultToken,
-    short_path: str,
-    key: str,
-    output_format: str,
-    decrypt_key: str,
-    binary_file: bool,
-    output_file: str,
+        token: VaultToken,
+        short_path: str,
+        key: str,
+        output_format: str,
+        decrypt_key: str,
+        binary_file: bool,
+        output_file: str,
 ):
     """
     Get the secret object in the path. If a key is given, print only the value of the key
@@ -160,14 +161,22 @@ def get(
 @secret_token_params
 @click.argument("short_path", metavar="[secret path]", required=False, default="")
 def list_(
-    token: VaultToken,
-    short_path: str,
+        token: VaultToken,
+        short_path: str,
 ):
     """
     List secret objects in the path
     """
-    response = token.vault_command(command="list", path=short_path, data={})
-    print("\n".join(map(str, response["data"]["keys"])))
+    try:
+        response = token.vault_command(command="list", path=short_path, data={})
+        print("\n".join(map(str, response["data"]["keys"])))
+    except HTTPError as e:
+        if e.code == 404:
+            pass
+        else:
+            print(f"HTTPError occurred. Error code: {e.code}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
 
 
 @secret.command()
@@ -187,11 +196,11 @@ def list_(
     help="True for reading secrets from binary files",
 )
 def put(
-    token: VaultToken,
-    short_path: str,
-    secrets: list,
-    encrypt_key: str,
-    binary_file: bool,
+        token: VaultToken,
+        short_path: str,
+        secrets: list,
+        encrypt_key: str,
+        binary_file: bool,
 ):
     """
     Put a secret object to the path. Secrets are provided in form key=value
@@ -207,8 +216,8 @@ def put(
 @secret_token_params
 @click.argument("short_path", metavar="[secret path]")
 def delete(
-    token: VaultToken,
-    short_path,
+        token: VaultToken,
+        short_path,
 ):
     """
     Delete the secret object in the path
