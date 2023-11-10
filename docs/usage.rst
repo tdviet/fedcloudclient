@@ -164,6 +164,8 @@ Additional parameters can also be configured:
 +------------------------------+-----------------------+
 |  FEDCLOUD_MYTOKEN            |  --mytoken            |
 +------------------------------+-----------------------+
+|  FEDCLOUD_LOCKER_TOKEN       |  --locker-token       |
++------------------------------+-----------------------+
 
 For convenience, always set transient parameters like tokens via
 environment variables, as it simplifies the call to *fedcloud*.
