@@ -176,7 +176,7 @@ def list_(
     except Exception as e:
         message = str(e)
         if "HTTPError: 404" in message:
-            print(f"The target path is empty or does not exist.", file=sys.stderr)
+            print(f"No secrets found", file=sys.stderr)
         else:
             print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
 
