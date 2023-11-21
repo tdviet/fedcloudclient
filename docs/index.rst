@@ -3,14 +3,6 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. raw:: html
-
-    <script type="text/javascript">
-    if (String(window.location).indexOf("readthedocs") !== -1) {
-        window.alert('The documentation has moved to https://fedcloudclient.fedcloud.eu. I will redirect you to the new location.');
-        window.location.replace('https://fedcloudclient.fedcloud.eu');
-    }
-    </script>
 
 Welcome to FedCloud client's documentation!
 ===========================================
