@@ -13,7 +13,6 @@
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CYFRONET-CLOUD.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/DESY-CC.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/GRNET-OPENSTACK.yaml"
-- "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/GSI-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/IFCA-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/IISAS-FedCloud-cloud.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/ILIFU-UCT.yaml"
