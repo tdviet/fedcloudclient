@@ -1,3 +1,3 @@
 GitHub Pages of [tdviet/fedcloudclient](https://github.com/tdviet/fedcloudclient.git)
 ===
-Sphinx html documentation of [b826d242](https://github.com/tdviet/fedcloudclient/tree/b826d2424ab548bbdcb1a726a78676f163d5bbab)
+Sphinx html documentation of [40792193](https://github.com/tdviet/fedcloudclient/tree/4079219365e2fd6b356331867ec5e697b3aef1f0)
