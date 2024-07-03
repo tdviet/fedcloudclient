@@ -28,6 +28,7 @@ from fedcloudclient.decorators import (
     all_site_params,
     oidc_params,
     site_vo_params,
+    vo_params,
 )
 from fedcloudclient.shell import print_set_env_command
 
@@ -321,9 +322,21 @@ def list_():
     """
     List all sites
     """
+    for site in list_sites():
+        print(site)
+
+
+@site.command("vo-list")
+@vo_params
+def vo_list(vo):
+    """
+    List all sites in a VO
+    """
     read_site_config()
     for site_info in __site_config_data:
-        print(site_info["gocdb"])
+       for vos in site_info["vos"]:
+           if vo == vos["name"]:
+               print(site_info["gocdb"])
 
 
 @site.command()
