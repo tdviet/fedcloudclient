@@ -334,9 +334,9 @@ def vo_list(vo):
     """
     read_site_config()
     for site_info in __site_config_data:
-       for vos in site_info["vos"]:
-           if vo == vos["name"]:
-               print(site_info["gocdb"])
+        for vos in site_info["vos"]:
+            if vo == vos["name"]:
+                print(site_info["gocdb"])
 
 
 @site.command()
