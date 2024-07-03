@@ -87,7 +87,7 @@ Basic usages
 
 ::
 
-    $ fedcloud site vo-list --vo vo.access.egi.eu
+    $ fedcloud site list --vo vo.access.egi.eu
 
 * Execute an OpenStack command:
 

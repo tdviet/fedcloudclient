@@ -278,7 +278,7 @@ VOs and so on.
     ...
 
 
-* **"fedcloud site vo-list --vo <VO-name>"** : List all sites supporting a Virtual Organization
+* **"fedcloud site list --vo <VO-name>"** : List all sites supporting a Virtual Organization
 
 ::
 
