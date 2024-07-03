@@ -109,6 +109,7 @@ vo_params_optional = click.option(
     metavar="vo-name",
 )
 
+
 def site_vo_params(func):
     """
     Decorator for site and VO parameters
