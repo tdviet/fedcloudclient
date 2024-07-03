@@ -77,11 +77,17 @@ Basic usages
 
     $ fedcloud token list-vos
 
-* List sites in EGI Federated Cloud:
+* List sites in the EGI Federated Cloud:
 
 ::
 
     $ fedcloud site list
+
+* List all sites supporting a Virtual Organization in the EGI Federated Cloud:
+
+::
+
+    $ fedcloud site vo-list --vo vo.access.egi.eu
 
 * Execute an OpenStack command:
 
