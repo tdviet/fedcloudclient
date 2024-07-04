@@ -278,6 +278,17 @@ VOs and so on.
     ...
 
 
+* **"fedcloud site list --vo <VO-name>"** : List all sites supporting a Virtual Organization
+
+::
+
+    $ fedcloud site vo-list --vo vo.access.egi.eu
+    BIFI
+    CENI
+    CESGA-CLOUD
+    ...
+
+
 * **"fedcloud site show --site <SITE>"** : Show configuration of the corresponding site.
 
 ::
