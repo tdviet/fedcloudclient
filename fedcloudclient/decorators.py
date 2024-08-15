@@ -100,6 +100,15 @@ vo_params = click.option(
     metavar="vo-name",
 )
 
+# Optional decorator for --vo
+vo_params_optional = click.option(
+    "--vo",
+    help="Name of the VO",
+    required=False,
+    envvar="EGI_VO",
+    metavar="vo-name",
+)
+
 
 def site_vo_params(func):
     """

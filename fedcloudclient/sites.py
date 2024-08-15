@@ -28,6 +28,7 @@ from fedcloudclient.decorators import (
     all_site_params,
     oidc_params,
     site_vo_params,
+    vo_params_optional,
 )
 from fedcloudclient.shell import print_set_env_command
 
@@ -182,16 +183,22 @@ def delete_site_config(config_dir):
     shutil.rmtree(config_dir, ignore_errors=True)
 
 
-def list_sites():
+def list_sites(vo=None):
     """
-    List of all sites IDs in site configurations
+    List all sites IDs in site configurations
+    Optionally list all sites supporting a Virtual Organization
 
     :return: list of site IDs
     """
     read_site_config()
     result = []
     for site_info in __site_config_data:
-        result.append(site_info["gocdb"])
+        if vo is None:
+            result.append(site_info["gocdb"])
+        else:
+            for vos in site_info["vos"]:
+                if vo == vos["name"]:
+                    result.append(site_info["gocdb"])
     return result
 
 
@@ -317,13 +324,14 @@ def save_config():
 
 
 @site.command("list")
-def list_():
+@vo_params_optional
+def list_(vo=None):
     """
-    List all sites
+    List all sites. If "--vo <name>" is provided, list only sites
+    supporting a Virtual Organization.
     """
-    read_site_config()
-    for site_info in __site_config_data:
-        print(site_info["gocdb"])
+    for site in list_sites(vo):
+        print(site)
 
 
 @site.command()
