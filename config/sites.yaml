@@ -6,6 +6,7 @@
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CESGA.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CESGA-CLOUD.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CESNET-MCC.yaml"
+- "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CESNET-MCCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CETA-GRID.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CLOUDIFIN.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CSTCLOUD-EGI.yaml"
