@@ -43,7 +43,7 @@ Basic usages
     training.egi.eu
     ...
 
-* List sites in EGI Federated Cloud
+* List sites in the EGI Federated Cloud
 
 ::
 
@@ -51,6 +51,16 @@ Basic usages
     100IT
     BIFI
     CESGA
+    ...
+
+* List sites supporting a Virtual Organization in the EGI Federated Cloud
+
+::
+
+    $ fedcloud site list --vo vo.access.egi.eu
+    BIFI
+    CENI
+    CESGA-CLOUD
     ...
 
 * Execute an OpenStack command, e.g. list images in eosc-synergy.eu VO on IISAS-FedCloud site
