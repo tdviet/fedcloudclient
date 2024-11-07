@@ -30,6 +30,7 @@ def print_error(message, quiet):
         print(message, file=sys.stderr)
 
 
+""" Included in  auth.py, line 50"""
 def decode_token(oidc_access_token):
     """
     Decoding access token to a dict
@@ -42,6 +43,7 @@ def decode_token(oidc_access_token):
         print_error("Error: Invalid access token.", False)
         return None
     return payload
+
 
 
 def oidc_discover(oidc_url):
@@ -57,6 +59,7 @@ def oidc_discover(oidc_url):
     return request.json()
 
 
+""" Included in  auth.py, line 74"""
 def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
     """
     Get access token from oidc-agent
@@ -82,6 +85,7 @@ def get_token_from_oidc_agent(oidc_agent_account, quiet=False):
     return None
 
 
+""" Included in  auth.py, line 99"""
 def get_token_from_mytoken_server(mytoken, mytoken_server, quiet=False):
     """
     Get access token from mytoken server
@@ -167,8 +171,7 @@ def get_access_token(
     oidc_access_token,
     oidc_agent_account,
     mytoken,
-    mytoken_server,
-):
+    mytoken_server,):
     """
     Get access token
     Generates new access token from oidc-agent
