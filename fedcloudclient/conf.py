@@ -158,3 +158,12 @@ def show(config_file: str, output_format: str):
 
 
 CONF = init_config()
+
+for env in os.environ:
+    print(f"\n {env} \t {type(env)}")
+print(f"Test of config: {None}")
+print(f"Done")
+
+
+
+

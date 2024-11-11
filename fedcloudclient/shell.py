@@ -35,7 +35,7 @@ def get_shell_type():
 
     return Shell.LINUX
 
-
+""" Imported to the sites """
 def print_set_env_command(name, value):
     """
     Print command to set environment variable,
@@ -62,3 +62,14 @@ def print_comment(comment):
         print(f"# {comment!s}")
     else:
         print(f"rem {comment!s}")
+
+
+out_1=Shell(1)
+
+print(type(out_1))
+print(Shell.LINUX)
+
+print(print_comment({"gewgweg": False}))
+print(f"Done")
+
+

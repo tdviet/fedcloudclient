@@ -153,7 +153,7 @@ def check_token(oidc_token, verbose=False):
 
 def get_checkin_id(
     oidc_token,
-):
+    ):
     """
     Get EGI Check-in ID from access token
 

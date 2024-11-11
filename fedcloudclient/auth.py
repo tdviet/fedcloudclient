@@ -154,3 +154,8 @@ class OIDCToken(Token):
             self.access_token = access_token
             return
         log_and_raise("Cannot get access token", TokenError)
+
+print("Done")
+print("Done")
+
+
