@@ -2,8 +2,10 @@
 Testing unit for auth.py
 """
 import os
+print(f"Start of auth_test")
 
 import fedcloudclient.auth as auth
+
 
 
 def get_token_from_mytoken_decode_verify(mytoken: str, user_id: str):
@@ -19,6 +21,7 @@ def get_token_from_mytoken_decode_verify(mytoken: str, user_id: str):
 
 
 if __name__ == "__main__":
+    print(f"Start of main auth_test")
     mytoken = os.environ["FEDCLOUD_MYTOKEN"]
     user_id = os.environ["FEDCLOUD_ID"]
     get_token_from_mytoken_decode_verify(mytoken, user_id)
