@@ -155,7 +155,7 @@ class OIDCToken(Token):
             return
         log_and_raise("Cannot get access token", TokenError)
 
-print("Done")
-print("Done")
+print("Done auth.py")
+
 
 
