@@ -67,6 +67,7 @@ class OIDCToken(Token):
         Return use ID
         :return:
         """
+        
         if not self.payload:
             self.decode_token()
         return self.user_id

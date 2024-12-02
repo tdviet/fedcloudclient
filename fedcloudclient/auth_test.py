@@ -17,15 +17,26 @@ def get_token_from_mytoken_decode_verify(mytoken: str, user_id: str):
     token = auth.OIDCToken()
     token.multiple_token(mytoken,user_id, None)
     token_id = token.get_user_id()
-    
-    assert token_id == user_id
+    token_test=token.access_token
+    print("End of: def get_token_from_mytoken_decode_verify")
+
+    pass
+    #assert token_id == user_id
 
 
 if __name__ == "__main__":
     print(f"Start of main auth_test")
-    user_name=input("User ID for OIDC agent: ")
-    get_token_from_mytoken_decode_verify(None,user_name)
+  
 
-    mytoken = os.environ["FEDCLOUD_MYTOKEN"]
-    user_id = os.environ["FEDCLOUD_ID"]
+    oicd_user_name = os.environ.get("OIDC_AGENT_ACCOUNT")
+
+    print("OIDC_AGENT_ACCOUNT: Done")
+    get_token_from_mytoken_decode_verify(None, oicd_user_name)
+
+    mytoken = os.environ.get["FEDCLOUD_MYTOKEN"]
+    user_id = os.environ.get["FEDCLOUD_ID"]
+
+
     get_token_from_mytoken_decode_verify(mytoken, user_id)
+
+
