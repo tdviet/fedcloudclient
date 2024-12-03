@@ -5,6 +5,7 @@ Class for managing tokens
 import jwt
 import liboidcagent as agent
 import requests
+import os
 
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.exception import TokenError
@@ -67,7 +68,7 @@ class OIDCToken(Token):
         Return use ID
         :return:
         """
-        
+
         if not self.payload:
             self.decode_token()
         return self.user_id
@@ -88,6 +89,8 @@ class OIDCToken(Token):
                 )
                 self.access_token = access_token
                 self.oidc_agent_account = oidc_agent_account
+
+
                 return access_token
             except agent.OidcAgentError as exception:
                 error_msg = f"Error getting access token from oidc-agent: {exception}"
@@ -141,20 +144,30 @@ class OIDCToken(Token):
         """
         if mytoken:
             try:
+
+                """need to implement from mytoken and check"""
+
                 self.get_token_from_mytoken(mytoken)
+                #os.environ["FEDCLOUD_MYTOKEN"]=self.access_token
+                #os.environ["FEDCLOUD_ID"]=self.get_user_id()
                 return
             except TokenError:
                 pass
         if oidc_agent_account:
             try:
                 self.get_token_from_oidc_agent(oidc_agent_account)
+                os.environ["FEDCLOUD_MYTOKEN"]=self.access_token
+                os.environ["FEDCLOUD_ID"]=self.get_user_id()
                 return
             except TokenError:
                 pass
         if access_token:
             self.access_token = access_token
+            os.environ["FEDCLOUD_MYTOKEN"]=access_token
+            os.environ["FEDCLOUD_ID"]=self.get_user_id()
             return
         log_and_raise("Cannot get access token", TokenError)
+        
 
 print("Done auth.py")
 
