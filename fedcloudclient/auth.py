@@ -6,6 +6,7 @@ import jwt
 import liboidcagent as agent
 import requests
 import os
+import re
 
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.exception import TokenError
@@ -24,6 +25,7 @@ class Token:
         ...
 
 
+
 class OIDCToken(Token):
     """
     OIDC tokens. Managing access tokens, oidc-agent account and mytoken
@@ -36,6 +38,7 @@ class OIDCToken(Token):
         self.oidc_agent_account = None
         self.mytoken = None
         self.user_id = None
+        self._VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
     def get_token(self):
         """
@@ -148,28 +151,50 @@ class OIDCToken(Token):
                 """need to implement from mytoken and check"""
 
                 self.get_token_from_mytoken(mytoken)
-                #os.environ["FEDCLOUD_MYTOKEN"]=self.access_token
-                #os.environ["FEDCLOUD_ID"]=self.get_user_id()
                 return
             except TokenError:
                 pass
         if oidc_agent_account:
             try:
                 self.get_token_from_oidc_agent(oidc_agent_account)
-                os.environ["FEDCLOUD_MYTOKEN"]=self.access_token
-                os.environ["FEDCLOUD_ID"]=self.get_user_id()
                 return
             except TokenError:
                 pass
         if access_token:
             self.access_token = access_token
-            os.environ["FEDCLOUD_MYTOKEN"]=access_token
-            os.environ["FEDCLOUD_ID"]=self.get_user_id()
             return
         log_and_raise("Cannot get access token", TokenError)
         
+    def oidc_discover(self) -> dict:
+        """
+        :param oidc_url: CheckIn URL get from payload
+        :return: JSON object of OIDC configuration
+        """
+        oidc_url=self.payload["iss"]
+        request = requests.get(oidc_url + "/.well-known/openid-configuration")
+        request.raise_for_status()
+        self.request_json=request.json()
+        return self.request_json
 
-print("Done auth.py")
+    def token_list_vos(self):
+        """
+        List VO memberships in EGI Check-in
+        :return: list of VO names
+        """
 
+        oidc_ep  = self.request_json
+        var1=oidc_ep["userinfo_endpoint"]
+        var2={"Authorization": f"Bearer {self.access_token}"}
+        request = requests.get(oidc_ep["userinfo_endpoint"], auth= ("Bearer", self.access_token))
+        #request = requests.get(oidc_ep["userinfo_endpoint"], auth=('user', 'pass'))
+
+        request.raise_for_status()
+        vos = set()
+        pattern = re.compile(self._VO_PATTERN)
+        for claim in request.json().get("eduperson_entitlement", []):
+            vo = pattern.match(claim)
+            if vo:
+                vos.add(vo.groups()[0])
+        return sorted(vos)
 
 
