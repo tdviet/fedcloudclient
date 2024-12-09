@@ -185,12 +185,15 @@ class OIDCToken(Token):
         oidc_ep  = self.request_json
         var1=oidc_ep["userinfo_endpoint"]
         var2={"Authorization": f"Bearer {self.access_token}"}
-        request = requests.get(oidc_ep["userinfo_endpoint"], auth= ("Bearer", self.access_token))
-        #request = requests.get(oidc_ep["userinfo_endpoint"], auth=('user', 'pass'))
+        
+        headers = {"Authorization": f"Bearer {self.access_token}"}
+        
+        request = requests.get("https://aai.egi.eu/auth/realms/egi/protocol/openid-connect/userinfo", headers=headers) #"https://aai.egi.eu/auth/realms/egi"
 
         request.raise_for_status()
         vos = set()
         pattern = re.compile(self._VO_PATTERN)
+        json_got=request.json()#.get("eduperson_entitlement", [])
         for claim in request.json().get("eduperson_entitlement", []):
             vo = pattern.match(claim)
             if vo:

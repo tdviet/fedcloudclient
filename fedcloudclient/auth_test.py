@@ -55,11 +55,11 @@ def verify_pyload(access_token:str) -> dict:
     token = auth.OIDCToken()
     token.access_token=access_token
     #try:
-        user_id=token.get_user_id()
-        payload=token.payload
-        request_json=token.oidc_discover()
-        list_vos=token.token_list_vos()
-        return payload,request_json,list_vos
+    user_id=token.get_user_id()
+    payload=token.payload
+    request_json=token.oidc_discover()
+    list_vos=token.token_list_vos()
+    return payload,request_json,list_vos
     #except:
     #    print("No user_id!")
 
