@@ -84,8 +84,6 @@ if __name__ == "__main__":
     payload,request_json,list_vos=verify_pyload(access_token_check)
 
 
-
-
     print(f"{type(payload)}")
     printing_dict(payload)
     print("-------------------------------------------------")
