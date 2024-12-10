@@ -188,7 +188,7 @@ class OIDCToken(Token):
         
         headers = {"Authorization": f"Bearer {self.access_token}"}
         
-        request = requests.get("https://aai.egi.eu/auth/realms/egi/protocol/openid-connect/userinfo", headers=headers) #"https://aai.egi.eu/auth/realms/egi"
+        request = requests.get("https://aai.egi.eu/auth/realms/egi/protocol/openid-connect/auth", headers=headers) #"https://aai.egi.eu/auth/realms/egi"
 
         request.raise_for_status()
         vos = set()
