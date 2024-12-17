@@ -13,6 +13,7 @@ from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import log_and_raise
 
 
+
 class Token:
     """
     Abstract object for managing tokens
@@ -183,21 +184,23 @@ class OIDCToken(Token):
         """
 
         oidc_ep  = self.request_json
-        var1=oidc_ep["userinfo_endpoint"]
-        var2={"Authorization": f"Bearer {self.access_token}"}
+        z_user_info=oidc_ep["userinfo_endpoint"]
+        z_head={"Authorization": f"Bearer {self.access_token}"}
         
-        headers = {"Authorization": f"Bearer {self.access_token}"}
-        
-        request = requests.get("https://aai.egi.eu/auth/realms/egi/protocol/openid-connect/userinfo", headers=headers) #"https://aai.egi.eu/auth/realms/egi"
+        request = requests.get(
+            oidc_ep["userinfo_endpoint"],
+            headers={"Authorization": f"Bearer {self.access_token}"},
+        )
 
         request.raise_for_status()
         vos = set()
         pattern = re.compile(self._VO_PATTERN)
-        json_got=request.json()#.get("eduperson_entitlement", [])
         for claim in request.json().get("eduperson_entitlement", []):
             vo = pattern.match(claim)
             if vo:
                 vos.add(vo.groups()[0])
+            request.raise_for_status()
+
         return sorted(vos)
 
 

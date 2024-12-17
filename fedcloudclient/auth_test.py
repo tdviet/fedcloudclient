@@ -9,7 +9,7 @@ from colorama import Style
 import fedcloudclient.auth as auth
 from fedcloudclient.conf import CONF as CONF
 
-
+VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
 
 def verify_MYTOKEN(mytoken: str) -> str:
     """
@@ -71,23 +71,26 @@ def printing_dict(var_dict:dict):
 
 if __name__ == "__main__":
     print(f"Start of verifying auth.py")
+
+    access_token= os.environ.get("ACCESS_TOKEN","")
+    access_token_check=verify_ACCESS_TOKEN(access_token)
+
     mytoken=os.environ.get("FEDCLOUD_MYTOKEN","")
     access_token_mytok=verify_MYTOKEN(mytoken)
 
     oidc_agent_name=os.environ.get("OIDC_AGENT_ACCOUNT","")
     access_token_oidca=verify_OIDC_AGENT(oidc_agent_name)
 
-    access_token= os.environ.get("ACCESS_TOKEN","")
-    access_token_check=verify_ACCESS_TOKEN(access_token)
-
-    user_id=verify_user_id(access_token_check)
-    payload,request_json,list_vos=verify_pyload(access_token_check)
+    user_id=verify_user_id(access_token_oidca)
+    payload,request_json,list_vos=verify_pyload(access_token_oidca)
 
 
     print(f"{type(payload)}")
     printing_dict(payload)
     print("-------------------------------------------------")
     printing_dict(request_json)
+    print("-------------------------------------------------")
+    print(list_vos)
     print(f"Break")
 
 
