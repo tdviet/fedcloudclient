@@ -79,10 +79,10 @@ if __name__ == "__main__":
     access_token_mytok=verify_MYTOKEN(mytoken)
 
     oidc_agent_name=os.environ.get("OIDC_AGENT_ACCOUNT","")
-    access_token_oidca=verify_OIDC_AGENT(oidc_agent_name)
+    access_token_oidc=verify_OIDC_AGENT(oidc_agent_name)
 
-    user_id=verify_user_id(access_token_oidca)
-    payload,request_json,list_vos=verify_pyload(access_token_oidca)
+    user_id=verify_user_id(access_token_oidc)
+    payload,request_json,list_vos=verify_pyload(access_token_oidc)
 
 
     print(f"{type(payload)}")
