@@ -10,7 +10,7 @@ import click
 import yaml
 from tabulate import tabulate
 
-from fedcloudclient.exception import ConfigError
+#from fedcloudclient.exception import ConfigError
 
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {
@@ -137,6 +137,7 @@ def create(config_file: str):
     envvar="FEDCLOUD_CONFIG_FILE",
     show_default=True,
 )
+
 @click.option(
     "--output-format",
     "-f",
@@ -144,6 +145,7 @@ def create(config_file: str):
     help="Output format",
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
 )
+
 def show(config_file: str, output_format: str):
     """Show actual client configuration """
     saved_config = load_config(config_file)
