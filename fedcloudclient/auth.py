@@ -1,19 +1,18 @@
 """
 Class for managing tokens
 """
-import os
+
 import re
 import time
 from datetime import datetime
 import jwt
 import liboidcagent as agent
 import requests
-from pathlib import Path
 
-from fedcloudclient.conf import CONF as CONF
+from fedcloudclient.conf import CONF
 from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import log_and_raise
-from fedcloudclient.conf import save_config, load_config, DEFAULT_CONFIG_LOCATION
+from fedcloudclient.conf import save_config, DEFAULT_CONFIG_LOCATION
 
 
 class Token:
@@ -69,7 +68,7 @@ class OIDCToken(Token):
         if payload is None:
             return None
         return payload["sub"]
-    
+
     def get_user_id(self) -> str:
         """
         Return use ID
@@ -130,10 +129,10 @@ class OIDCToken(Token):
                     req = requests.post(
                     mytoken_server + "/api/v0/token/access",
                     json=data,)
-                    
+
                     self.CONF["mytoken"]=str(mytoken)
                     save_config(DEFAULT_CONFIG_LOCATION,self.CONF)
-                    
+
                 except requests.exceptions.Timeout as err:
                     error_msg = f"Timeout for requests in mytoken: {err}"
                     log_and_raise(error_msg, err)
@@ -255,4 +254,4 @@ class OIDCToken(Token):
             request.raise_for_status()
 
         return sorted(vos)
-    
+
