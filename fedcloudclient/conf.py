@@ -10,7 +10,7 @@ import click
 import yaml
 from tabulate import tabulate
 
-#from fedcloudclient.exception import ConfigError
+from fedcloudclient.exception import ConfigError
 
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {

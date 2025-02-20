@@ -2,11 +2,10 @@
 Class for managing tokens
 """
 
+import re
 import jwt
 import liboidcagent as agent
 import requests
-import os
-import re
 
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.exception import TokenError
@@ -18,14 +17,6 @@ class Token:
     """
     Abstract object for managing tokens
     """
-
-    def get_token(self):
-        ...
-
-    def get_token_type(self):
-        ...
-
-
 
 class OIDCToken(Token):
     """
@@ -39,19 +30,22 @@ class OIDCToken(Token):
         self.oidc_agent_account = None
         self.mytoken = None
         self.user_id = None
-        self._VO_PATTERN = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
+        self._vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
+        self.request_json=None
 
+    """
     def get_token(self):
-        """
+        "
         Return access token or raise error
         :return:
-        """
+        "
         if self.access_token:
             return self.access_token
         else:
             error_msg = "Token is not initialized"
             log_and_raise(error_msg, TokenError)
-
+            return None
+    """
     def decode_token(self) -> dict:
         """
         Decoding access token to payload
@@ -75,6 +69,7 @@ class OIDCToken(Token):
 
         if not self.payload:
             self.decode_token()
+            return None
         return self.user_id
 
     def get_token_from_oidc_agent(self, oidc_agent_account: str) -> str:
@@ -93,16 +88,16 @@ class OIDCToken(Token):
                 )
                 self.access_token = access_token
                 self.oidc_agent_account = oidc_agent_account
-
-
                 return access_token
+
             except agent.OidcAgentError as exception:
                 error_msg = f"Error getting access token from oidc-agent: {exception}"
                 log_and_raise(error_msg, TokenError)
-
+                return None
         else:
-            error_msg = f"Error getting access token from oidc-agent: account name is {oidc_agent_account}"
+            error_msg = f"Error getting access token from oidc-agent: {oidc_agent_account}"
             log_and_raise(error_msg, TokenError)
+            return None
 
     def get_token_from_mytoken(self, mytoken: str, mytoken_server: str = None) -> str:
         """
@@ -133,10 +128,11 @@ class OIDCToken(Token):
             except requests.exceptions.HTTPError as exception:
                 error_msg = f"Error getting access token from mytoken server: {exception}"
                 log_and_raise(error_msg, TokenError)
-
+                return None
         else:
             error_msg = f"Error getting access token from mytoken server: mytoken is {mytoken}"
             log_and_raise(error_msg, TokenError)
+            return None
 
     def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str):
         """
@@ -148,9 +144,6 @@ class OIDCToken(Token):
         """
         if mytoken:
             try:
-
-                """need to implement from mytoken and check"""
-
                 self.get_token_from_mytoken(mytoken)
                 return
             except TokenError:
@@ -165,7 +158,7 @@ class OIDCToken(Token):
             self.access_token = access_token
             return
         log_and_raise("Cannot get access token", TokenError)
-        
+
     def oidc_discover(self) -> dict:
         """
         :param oidc_url: CheckIn URL get from payload
@@ -184,9 +177,7 @@ class OIDCToken(Token):
         """
 
         oidc_ep  = self.request_json
-        z_user_info=oidc_ep["userinfo_endpoint"]
-        z_head={"Authorization": f"Bearer {self.access_token}"}
-        
+
         request = requests.get(
             oidc_ep["userinfo_endpoint"],
             headers={"Authorization": f"Bearer {self.access_token}"},
@@ -194,13 +185,11 @@ class OIDCToken(Token):
 
         request.raise_for_status()
         vos = set()
-        pattern = re.compile(self._VO_PATTERN)
+        pattern = re.compile(self._vo_pattern)
         for claim in request.json().get("eduperson_entitlement", []):
-            vo = pattern.match(claim)
+            vo = pattern.match(claim) # pylint: disable=invalid-name
             if vo:
                 vos.add(vo.groups()[0])
             request.raise_for_status()
 
         return sorted(vos)
-
-
