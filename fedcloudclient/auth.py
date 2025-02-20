@@ -134,7 +134,7 @@ class OIDCToken(Token):
             log_and_raise(error_msg, TokenError)
             return None
 
-    def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str):
+    def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str, mytoken_server = None) -> str:
         """
         Select valid token from multiple options
         :param access_token:
@@ -154,6 +154,9 @@ class OIDCToken(Token):
                 return
             except TokenError:
                 pass
+        if mytoken_server:
+            pass
+
         if access_token:
             self.access_token = access_token
             return
