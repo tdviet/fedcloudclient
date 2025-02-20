@@ -4,6 +4,7 @@ access tokens
 """
 
 import click
+from tabulate import tabulate
 from fedcloudclient.auth import OIDCToken
 from fedcloudclient.decorators import oidc_params
 
@@ -20,7 +21,7 @@ def check(access_token):
     """
     Check validity of access token
     """
-    token=OIDCToken(access_token)
+    token=OIDCToken()
     token.check_token(access_token, verbose=True)
 
 
@@ -42,3 +43,20 @@ def issue(access_token):
     print access token (from mytoken or oidc-agent)
     """
     print(access_token)
+
+@token.command()
+@oidc_params
+def conf(access_token):
+    """
+    print config values
+    """
+    token=OIDCToken(access_token)
+    list_conf=list()
+    for item in token.CONF:
+        list_conf.append([str(item), str(token.CONF[item])])
+
+    print(
+        tabulate(
+            list_conf, headers=["Key", "Value"])
+        )
+

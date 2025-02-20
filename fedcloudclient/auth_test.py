@@ -55,7 +55,7 @@ def verify_pyload(access_token:str) -> dict:
     user_id=token.get_user_id()
     payload=token.payload
     request_json=token.oidc_discover()
-    list_vos=token.token_list_vos()
+    list_vos=token.token_list_vos(access_token)
     return payload,request_json,list_vos
     #except:
     #    print("No user_id!")

@@ -1,19 +1,19 @@
 """
 Class for managing tokens
 """
-
+import os
 import re
 import time
 from datetime import datetime
 import jwt
 import liboidcagent as agent
 import requests
-
+from pathlib import Path
 
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import log_and_raise
-
+from fedcloudclient.conf import save_config, load_config, DEFAULT_CONFIG_LOCATION
 
 
 class Token:
@@ -36,6 +36,7 @@ class OIDCToken(Token):
         self._vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
         self.request_json=None
         self._MIN_ACCESS_TOKEN_TIME=CONF["_MIN_ACCESS_TOKEN_TIME"]
+        self.CONF=CONF
         if access_token is not None:
             self.decode_token()
             self.oidc_discover()
@@ -96,6 +97,8 @@ class OIDCToken(Token):
                 )
                 self.access_token = access_token
                 self.oidc_agent_account = oidc_agent_account
+                self.CONF["oidc_agent_account"]=str(oidc_agent_account)
+                save_config(DEFAULT_CONFIG_LOCATION,self.CONF)
                 return access_token
 
             except agent.OidcAgentError as exception:
@@ -126,8 +129,11 @@ class OIDCToken(Token):
                 try:
                     req = requests.post(
                     mytoken_server + "/api/v0/token/access",
-                    json=data,
-                    )
+                    json=data,)
+                    
+                    self.CONF["mytoken"]=str(mytoken)
+                    save_config(DEFAULT_CONFIG_LOCATION,self.CONF)
+                    
                 except requests.exceptions.Timeout as err:
                     error_msg = f"Timeout for requests in mytoken: {err}"
                     log_and_raise(error_msg, err)

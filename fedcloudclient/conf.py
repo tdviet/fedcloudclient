@@ -12,6 +12,7 @@ from tabulate import tabulate
 
 from fedcloudclient.exception import ConfigError
 
+
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {
     "site": "IISAS-FedCloud",
@@ -99,11 +100,9 @@ def init_config() -> dict:
 
     try:
         saved_config = load_config(config_file)
-    except ConfigError as exception:
-        print(f"Error while loading config: {exception}")
+    except ConfigError as err:
         saved_config = {}
-
-    act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
+    act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     return act_config
 
 
@@ -126,7 +125,6 @@ def config():
 def create(config_file: str):
     """Create default configuration file"""
     save_config(config_file, CONF)
-    print(f"Current configuration is saved in {config_file}")
 
 
 @config.command()
@@ -151,7 +149,7 @@ def show(config_file: str, output_format: str):
     """Show actual client configuration """
     saved_config = load_config(config_file)
     env_config = load_env()
-    act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
+    act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
     elif output_format == "JSON":
