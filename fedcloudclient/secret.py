@@ -8,7 +8,7 @@ import hvac
 import requests
 from hvac.exceptions import VaultError
 
-from fedcloudclient.checkin import get_checkin_id
+from fedcloudclient.auth import OIDCToken
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.decorators import (
     oidc_params,
@@ -39,7 +39,8 @@ def secret_client(access_token, command, path, data):
     try:
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
-        checkin_id = get_checkin_id(access_token)
+        token=OIDCToken()
+        checkin_id = token.get_checkin_id(access_token)
         full_path = "users/" + checkin_id + "/" + path
         function_list = {
             "list_secrets": client.secrets.kv.v1.list_secrets,

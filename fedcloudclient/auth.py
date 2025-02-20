@@ -3,9 +3,12 @@ Class for managing tokens
 """
 
 import re
+import time
+from datetime import datetime
 import jwt
 import liboidcagent as agent
 import requests
+
 
 from fedcloudclient.conf import CONF as CONF
 from fedcloudclient.exception import TokenError
@@ -32,20 +35,11 @@ class OIDCToken(Token):
         self.user_id = None
         self._vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
         self.request_json=None
+        self._MIN_ACCESS_TOKEN_TIME=CONF["_MIN_ACCESS_TOKEN_TIME"]
+        if access_token is not None:
+            self.decode_token()
+            self.oidc_discover()
 
-    """
-    def get_token(self):
-        "
-        Return access token or raise error
-        :return:
-        "
-        if self.access_token:
-            return self.access_token
-        else:
-            error_msg = "Token is not initialized"
-            log_and_raise(error_msg, TokenError)
-            return None
-    """
     def decode_token(self) -> dict:
         """
         Decoding access token to payload
@@ -61,6 +55,20 @@ class OIDCToken(Token):
 
         return self.payload
 
+    def get_checkin_id(self,access_token):
+        """
+        Get EGI Check-in ID from access token
+
+        :param oidc_token: the token
+
+        :return: Check-in ID
+        """
+        self.access_token=access_token
+        payload = self.decode_token()
+        if payload is None:
+            return None
+        return payload["sub"]
+    
     def get_user_id(self) -> str:
         """
         Return use ID
@@ -115,10 +123,15 @@ class OIDCToken(Token):
                     "grant_type": "mytoken",
                     "mytoken": mytoken,
                 }
-                req = requests.post(
+                try:
+                    req = requests.post(
                     mytoken_server + "/api/v0/token/access",
                     json=data,
-                )
+                    )
+                except requests.exceptions.Timeout as err:
+                    error_msg = f"Timeout for requests in mytoken: {err}"
+                    log_and_raise(error_msg, err)
+                    return None
                 req.raise_for_status()
                 access_token = req.json().get("access_token")
                 self.access_token = access_token
@@ -174,12 +187,47 @@ class OIDCToken(Token):
         self.request_json=request.json()
         return self.request_json
 
-    def token_list_vos(self):
+    def check_token(self, access_token, verbose=False):
+        """
+        Check validity of access token
+
+        :param verbose:
+        :param oidc_token: the token to check
+        :return: access token, or None on error
+        """
+        self.access_token=access_token
+        payload = self.decode_token()
+        if payload is None:
+            return None
+
+        exp_timestamp = int(payload["exp"])
+        current_timestamp = int(time.time())
+        exp_time_in_sec = exp_timestamp - current_timestamp
+
+        if exp_time_in_sec < self._MIN_ACCESS_TOKEN_TIME:
+            error_msg=f"Error: Expired access token in {exp_time_in_sec}"
+            log_and_raise(error_msg,TokenError)
+            return None
+
+        if verbose:
+            exp_time_str = datetime.utcfromtimestamp(exp_timestamp).strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            print(f"Token is valid until {exp_time_str} UTC")
+            if exp_time_in_sec < 24 * 3600:
+                print(f"Token expires in {exp_time_in_sec} seconds")
+            else:
+                exp_time_in_days = exp_time_in_sec // (24 * 3600)
+                print(f"Token expires in {exp_time_in_days} days")
+
+        return access_token
+
+    def token_list_vos(self,access_token):
         """
         List VO memberships in EGI Check-in
         :return: list of VO names
         """
-
+        self.access_token=access_token
         oidc_ep  = self.request_json
         try:
             request = requests.get(
