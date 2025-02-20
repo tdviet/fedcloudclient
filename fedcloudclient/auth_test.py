@@ -2,9 +2,6 @@
 Testing unit for auth.py
 """
 import os
-from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
 
 import fedcloudclient.auth as auth
 from fedcloudclient.conf import CONF as CONF
@@ -24,7 +21,7 @@ def verify_MYTOKEN(mytoken: str) -> str:
         return print(f"No MYTOKEN")
 
     
-def verify_OIDC_AGENT(user_id:str) -> str:
+def verify_OIDC_AGENT(user_id: str) -> str:
     token = auth.OIDCToken()
     try:
         access_token_oidc=token.get_token_from_oidc_agent(user_id) 

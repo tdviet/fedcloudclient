@@ -144,14 +144,14 @@ class OIDCToken(Token):
         """
         if mytoken:
             try:
-                self.get_token_from_mytoken(mytoken)
-                return
+                access_token=self.get_token_from_mytoken(mytoken)
+                return access_token
             except TokenError:
                 pass
         if oidc_agent_account:
             try:
-                self.get_token_from_oidc_agent(oidc_agent_account)
-                return
+                access_token=self.get_token_from_oidc_agent(oidc_agent_account)
+                return access_token
             except TokenError:
                 pass
         if mytoken_server:
@@ -159,8 +159,9 @@ class OIDCToken(Token):
 
         if access_token:
             self.access_token = access_token
-            return
+            return access_token
         log_and_raise("Cannot get access token", TokenError)
+        return None
 
     def oidc_discover(self) -> dict:
         """
@@ -180,11 +181,15 @@ class OIDCToken(Token):
         """
 
         oidc_ep  = self.request_json
-
-        request = requests.get(
+        try:
+            request = requests.get(
             oidc_ep["userinfo_endpoint"],
             headers={"Authorization": f"Bearer {self.access_token}"},
-        )
+            )
+        except requests.exceptions.Timeout as err:
+            error_msg = f"Timeout for requests in list-vos: {err}"
+            log_and_raise(error_msg, err)
+            return None
 
         request.raise_for_status()
         vos = set()
