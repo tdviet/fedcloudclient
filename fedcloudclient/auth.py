@@ -231,9 +231,9 @@ class OIDCToken(Token):
         oidc_ep  = self.request_json
         try:
             request = requests.get(
-            oidc_ep["userinfo_endpoint"],
-            headers={"Authorization": f"Bearer {self.access_token}"},
-            )
+                oidc_ep["userinfo_endpoint"],
+                headers={"Authorization": f"Bearer {self.access_token}"})
+
         except requests.exceptions.Timeout as err:
             error_msg = f"Timeout for requests in list-vos: {err}"
             log_and_raise(error_msg, err)
@@ -249,3 +249,4 @@ class OIDCToken(Token):
             request.raise_for_status()
 
         return sorted(vos)
+    
