@@ -146,7 +146,7 @@ def create(config_file: str):
 )
 
 def show(config_file: str, output_format: str):
-    """Show actual client configuration """
+    """Show actual config for FEDCLOUDCLIENT """
     saved_config = load_config(config_file)
     env_config = load_env()
     act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
