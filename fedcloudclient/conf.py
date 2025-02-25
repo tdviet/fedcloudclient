@@ -43,12 +43,18 @@ DEFAULT_SETTINGS = {
 }
 
 def init_default_config():
+    """
+    Initialisation of default settings
+    
+    :return dictionary of <DEFAULT_SETTINGS>
+    """
     default_config_init=DEFAULT_SETTINGS
     return default_config_init
 
 def save_config(filename: str, config_data: dict):
     """
     Save configuration to file
+    
     :param filename: name of config file
     :param config_data: dict containing configuration
     :return: None
@@ -157,7 +163,7 @@ def create(config_file: str):
 )
 
 def show(config_file: str, output_format: str, source: str):
-    """Show actual config for FEDCLOUDCLIENT """
+    """Show config for FEDCLOUDCLIENT """
     saved_config = load_config(config_file)
     env_config = load_env()
     DEFAULT_SETTINGS=init_default_config()

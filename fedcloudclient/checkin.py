@@ -4,7 +4,6 @@ access tokens
 """
 
 import click
-from tabulate import tabulate
 from fedcloudclient.auth import OIDCToken
 from fedcloudclient.decorators import oidc_params
 
