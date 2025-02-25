@@ -44,19 +44,3 @@ def issue(access_token):
     """
     print(access_token)
 
-@token.command()
-@oidc_params
-def conf(access_token):
-    """
-    print config values
-    """
-    token=OIDCToken(access_token)
-    list_conf=list()
-    for item in token.CONF:
-        list_conf.append([str(item), str(token.CONF[item])])
-
-    print(
-        tabulate(
-            list_conf, headers=["Key", "Value"])
-        )
-

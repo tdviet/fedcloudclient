@@ -48,7 +48,7 @@ class VaultToken(OIDCToken):
                 error_msg = f"Cannot login to Vault via access token: {exception}"
                 log_and_raise(error_msg, TokenError)
         else:
-            error_msg = f"Token is not initialized"
+            error_msg = "Token is not initialized"
             log_and_raise(error_msg, TokenError)
 
     def get_vault_token(self) -> str:

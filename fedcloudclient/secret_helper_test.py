@@ -7,7 +7,6 @@ import os
 
 from secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, read_data_from_file
 
-
 def save_read_binary_files():
     """
     Test save random binary data, read it again and compare

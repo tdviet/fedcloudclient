@@ -12,6 +12,8 @@ from tabulate import tabulate
 
 from fedcloudclient.exception import ConfigError
 
+global DEFAULT_SETTINGS
+global DEFAULT_CONFIG_LOCATION
 
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {
@@ -54,7 +56,7 @@ def save_config(filename: str, config_data: dict):
             yaml.dump(config_data, file)
     except yaml.YAMLError as exception:
         error_msg = f"Error during saving configuration to {filename}: {exception}"
-        raise ConfigError(error_msg)
+        raise ConfigError(error_msg) from exception
 
 
 def load_config(filename: str) -> dict:
@@ -72,7 +74,7 @@ def load_config(filename: str) -> dict:
                 return yaml.safe_load(file)
         except yaml.YAMLError as exception:
             error_msg = f"Error during loading configuration from {filename}: {exception}"
-            raise ConfigError(error_msg)
+            raise ConfigError(error_msg) from exception
     else:
         return {}
 
@@ -100,8 +102,9 @@ def init_config() -> dict:
 
     try:
         saved_config = load_config(config_file)
-    except ConfigError as err:
+    except ConfigError:
         saved_config = {}
+
     act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     return act_config
 
@@ -145,11 +148,21 @@ def create(config_file: str):
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
 )
 
-def show(config_file: str, output_format: str):
+@click.option(
+    "--source", "-s",
+    required=False,
+    help="Source of configuration data",
+    type=click.Choice(["DEFAULT_SETTINGS", "env_config", "saved_config"], case_sensitive=False),
+)
+
+def show(config_file: str, output_format: str, source: str):
     """Show actual config for FEDCLOUDCLIENT """
     saved_config = load_config(config_file)
     env_config = load_env()
-    act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
+    if source is not None:
+       act_config = {**vars()[source]}
+    else:
+        act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
     elif output_format == "JSON":
