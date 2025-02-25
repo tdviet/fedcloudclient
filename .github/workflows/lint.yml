@@ -3,7 +3,7 @@ name: Lint
 
 on:
   push:
-    branches: [ master, devel ]
+    branches: [ 2.0-alpha-tests ]
   pull_request:
     branches: [ 2.0-alpha-tests ]
   workflow_dispatch:
