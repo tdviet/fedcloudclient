@@ -42,6 +42,9 @@ DEFAULT_SETTINGS = {
     "_MIN_ACCESS_TOKEN_TIME": 30
 }
 
+def init_default_config():
+    default_config_init=DEFAULT_SETTINGS
+    return default_config_init
 
 def save_config(filename: str, config_data: dict):
     """
@@ -108,13 +111,11 @@ def init_config() -> dict:
     act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     return act_config
 
-
 @click.group()
 def config():
     """
     Managing fedcloud configurations
     """
-
 
 @config.command()
 @click.option(
@@ -159,8 +160,9 @@ def show(config_file: str, output_format: str, source: str):
     """Show actual config for FEDCLOUDCLIENT """
     saved_config = load_config(config_file)
     env_config = load_env()
+    DEFAULT_SETTINGS=init_default_config()
     if source is not None:
-       act_config = {**vars()[source]}
+       act_config = vars()[source]
     else:
         act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     if output_format == "YAML":
