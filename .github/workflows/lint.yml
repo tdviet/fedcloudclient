@@ -1,5 +1,5 @@
 ---
-name: Lint
+name: Super-Linter
 
 on:
   push:
