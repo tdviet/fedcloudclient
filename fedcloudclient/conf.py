@@ -9,7 +9,7 @@ from pathlib import Path
 import click
 import yaml
 from tabulate import tabulate
-
+import textwrap
 from fedcloudclient.exception import ConfigError
 
 global DEFAULT_SETTINGS
@@ -176,7 +176,11 @@ def show(config_file: str, output_format: str, source: str):
     elif output_format == "JSON":
         json.dump(act_config, sys.stdout, indent=4)
     else:
-        print(tabulate(act_config.items(), headers=["parameter", "value"]))
-
+        wrapped_data = [
+        [ "\n".join(textwrap.wrap(cell, width=200)) if isinstance(cell, str) else cell for cell in row ]
+        for row in act_config.items()]
+        
+        #print(tabulate(act_config.items(), headers=["parameter", "value"]))
+        print(tabulate(wrapped_data, headers=["parameter", "value"]))
 
 CONF = init_config()

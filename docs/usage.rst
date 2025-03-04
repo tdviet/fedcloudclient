@@ -98,6 +98,16 @@ This will show a list of configuration parameters:
 |  os_identity_provider      |  egi.eu                                                                            |
 +----------------------------+------------------------------------------------------------------------------------+
 
+::
+
+    $ fedcloud config show --source env_config
+    parameter    value
+    -----------  ----------------------------------
+    tessss
+    mytoken      eyJhbG
+
+This will show configurations according to their source as: "DEFAULT_SETTINGS", "env_config", "saved_config"
+
 The *fedcloud* configuration can be saved to a file with:
 
 ::
@@ -210,11 +220,15 @@ fedcloud --help command
       --help  Show this message and exit.
 
     Commands:
-      endpoint       Endpoint command group for interaction with GOCDB and endpoints
-      openstack      Executing OpenStack commands on site and VO
+      config         Managing fedcloud configurations
+      ec3            EC3 cluster provisioning
+      endpoint       Obtain endpoint details and scoped tokens
+      openstack      Execute OpenStack commands on site and VO
       openstack-int  Interactive OpenStack client on site and VO
-      site           Site command group for manipulation with site configurations
-      token          Token command group for manipulation with tokens
+      secret         Commands for accessing secret objects
+      select         Select resources according to specification
+      site           Obtain site configurations
+      token          Get details of access token
 
 
 fedcloud token commands
@@ -240,6 +254,12 @@ fedcloud token commands
     fedcloud.egi.eu
     training.egi.eu
 
+* **"fedcloud token issue"** : Print the access_token
+
+::
+
+    $ fedcloud token issue
+    ABCD______
 
 fedcloud endpoint commands
 **************************
@@ -308,7 +328,7 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 ::
 
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
-    export OS_TOKEN="gAAAAA..."
+    export FEDCLOUD_OS_TOKEN="gAAAAA..."
 
 
 * **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print
@@ -318,11 +338,11 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 
     $ fedcloud endpoint env --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
     # environment for IFCA-LCG2
-    export OS_AUTH_URL="https://api.cloud.ifca.es:5000/v3/"
-    export OS_AUTH_TYPE="v3oidcaccesstoken"
-    export OS_IDENTITY_PROVIDER="egi.eu"
-    export OS_PROTOCOL="openid"
-    export OS_ACCESS_TOKEN="..."
+    export FEDCLOUD_OS_AUTH_URL="https://api.cloud.ifca.es:5000/v3/"
+    export FEDCLOUD_OS_AUTH_TYPE="v3oidcaccesstoken"
+    export FEDCLOUD_OS_IDENTITY_PROVIDER="egi.eu"
+    export FEDCLOUD_OS_PROTOCOL="openid"
+    export FEDCLOUD_OS_ACCESS_TOKEN="..."
 
 
 fedcloud ec3 commands
@@ -417,8 +437,8 @@ VOs and so on.
 ::
 
     $ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
-    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
-    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+    export FEDCLOUD_OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export FEDCLOUD_OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
 
 
 * **"fedcloud site env --site <SITE> --vo <VO>"**: set OpenStack environment variable for the VO on the site.
@@ -426,13 +446,13 @@ VOs and so on.
 ::
 
     $ fedcloud site env --site IISAS-FedCloud --vo eosc-synergy.eu
-    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
-    export OS_AUTH_TYPE="v3oidcaccesstoken"
-    export OS_IDENTITY_PROVIDER="egi.eu"
-    export OS_PROTOCOL="openid"
-    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+    export FEDCLOUD_OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export FEDCLOUD_OS_AUTH_TYPE="v3oidcaccesstoken"
+    export FEDCLOUD_OS_IDENTITY_PROVIDER="egi.eu"
+    export FEDCLOUD_OS_PROTOCOL="openid"
+    export FEDCLOUD_OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
     # Remember to set OS_ACCESS_TOKEN, e.g. :
-    # export OS_ACCESS_TOKEN=`oidc-token egi`
+    # export FEDCLOUD_OS_ACCESS_TOKEN=`oidc-token egi`
 
 
 The main differences between *"fedcloud endpoint env"* and *"fedcloud site env"* commands are that the second command
