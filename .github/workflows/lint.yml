@@ -3,9 +3,9 @@ name: Super-Linter
 
 on:
   push:
-    branches: [ 2.0-alpha-tests ]
+    branches: [2.0-alpha-tests]
   pull_request:
-    branches: [ 2.0-alpha-tests ]
+    branches: [2.0-alpha-tests]
   workflow_dispatch:
 
 jobs:
