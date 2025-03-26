@@ -44,7 +44,7 @@ DEFAULT_SETTINGS = {
 def init_default_config():
     """
     Initialisation of default settings
-    
+
     :return dictionary of <DEFAULT_SETTINGS>
     """
     default_config_init=DEFAULT_SETTINGS
@@ -53,7 +53,7 @@ def init_default_config():
 def save_config(filename: str, config_data: dict):
     """
     Save configuration to file
-    
+
     :param filename: name of config file
     :param config_data: dict containing configuration
     :return: None
@@ -92,7 +92,7 @@ def load_env() -> dict:
     Load configs from environment variables
     :return: config
     """
-    env_config = dict()
+    env_config = {}
     for env in os.environ:
         if env.startswith("FEDCLOUD_"):
             config_key = env[9:].lower()
@@ -165,20 +165,20 @@ def show(config_file: str, output_format: str, source: str):
     """Show config for FEDCLOUDCLIENT """
     saved_config = load_config(config_file)
     env_config = load_env()
-    DEFAULT_SETTINGS=init_default_config()
+    default_settings=init_default_config()
     if source is not None:
-       act_config = vars()[source]
+        act_config = vars()[source]
     else:
-        act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
+        act_config = {**default_settings, **env_config, **saved_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
     elif output_format == "JSON":
         json.dump(act_config, sys.stdout, indent=4)
     else:
         wrapped_data = [
-        [ "\n".join(textwrap.wrap(cell, width=200)) if isinstance(cell, str) else cell for cell in row ]
+        ["\n".join(textwrap.wrap(cell, width=200)) if isinstance(cell, str) else cell for cell in row]
         for row in act_config.items()]
-        
+
         #print(tabulate(act_config.items(), headers=["parameter", "value"]))
         print(tabulate(wrapped_data, headers=["parameter", "value"]))
 
