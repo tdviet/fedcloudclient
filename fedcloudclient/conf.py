@@ -5,15 +5,14 @@ import json
 import os
 import sys
 from pathlib import Path
+import textwrap
 
 import click
 import yaml
 from tabulate import tabulate
-import textwrap
 from fedcloudclient.exception import ConfigError
 
-global DEFAULT_SETTINGS
-global DEFAULT_CONFIG_LOCATION
+
 
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {

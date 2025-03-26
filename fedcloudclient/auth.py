@@ -34,8 +34,8 @@ class OIDCToken(Token):
         self.user_id = None
         self._vo_pattern = "urn:mace:egi.eu:group:(.+?):(.+:)*role=member#aai.egi.eu"
         self.request_json=None
-        self._MIN_ACCESS_TOKEN_TIME=CONF["_MIN_ACCESS_TOKEN_TIME"]
-        self.CONF=CONF
+        self._min_access_token_time=CONF["_MIN_ACCESS_TOKEN_TIME"]
+        self.conf=CONF
         if access_token is not None:
             self.decode_token()
             self.oidc_discover()
@@ -96,8 +96,8 @@ class OIDCToken(Token):
                 )
                 self.access_token = access_token
                 self.oidc_agent_account = oidc_agent_account
-                self.CONF["oidc_agent_account"]=str(oidc_agent_account)
-                save_config(DEFAULT_CONFIG_LOCATION,self.CONF)
+                self.conf["oidc_agent_account"]=str(oidc_agent_account)
+                save_config(DEFAULT_CONFIG_LOCATION,self.conf)
                 return access_token
 
             except agent.OidcAgentError as exception:
@@ -130,8 +130,8 @@ class OIDCToken(Token):
                     mytoken_server + "/api/v0/token/access",
                     json=data,)
 
-                    self.CONF["mytoken"]=str(mytoken)
-                    save_config(DEFAULT_CONFIG_LOCATION,self.CONF)
+                    self.conf["mytoken"]=str(mytoken)
+                    save_config(DEFAULT_CONFIG_LOCATION,self.conf)
 
                 except requests.exceptions.Timeout as err:
                     error_msg = f"Timeout for requests in mytoken: {err}"
@@ -209,7 +209,7 @@ class OIDCToken(Token):
         current_timestamp = int(time.time())
         exp_time_in_sec = exp_timestamp - current_timestamp
 
-        if exp_time_in_sec < self._MIN_ACCESS_TOKEN_TIME:
+        if exp_time_in_sec < self._min_access_token_time:
             error_msg=f"Error: Expired access token in {exp_time_in_sec}"
             log_and_raise(error_msg,TokenError)
             return None
@@ -254,4 +254,3 @@ class OIDCToken(Token):
             request.raise_for_status()
 
         return sorted(vos)
-

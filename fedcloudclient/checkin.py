@@ -20,8 +20,8 @@ def check(access_token):
     """
     Check validity of access token
     """
-    token=OIDCToken()
-    token.check_token(access_token, verbose=True)
+    token_check=OIDCToken()
+    token_check.check_token(access_token, verbose=True)
 
 
 @token.command()
@@ -30,8 +30,8 @@ def list_vos(access_token):
     """
     List VO membership(s) of access token
     """
-    token=OIDCToken(access_token)
-    vos = token.token_list_vos(access_token)
+    token_vos=OIDCToken(access_token)
+    vos = token_vos.token_list_vos(access_token)
     print("\n".join(vos))
 
 
@@ -42,4 +42,3 @@ def issue(access_token):
     print access token (from mytoken or oidc-agent)
     """
     print(access_token)
-
