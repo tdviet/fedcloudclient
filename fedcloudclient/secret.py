@@ -9,13 +9,10 @@ import requests
 from hvac.exceptions import VaultError
 
 from fedcloudclient.auth import OIDCToken
-from fedcloudclient.conf import CONF as CONF
-from fedcloudclient.decorators import (
-    oidc_params,
-    secret_output_params,
-    secret_token_params,
-)
-from fedcloudclient.logger import LOG as LOG
+from fedcloudclient.conf import CONF
+from fedcloudclient.decorators import oidc_params, secret_output_params, secret_token_params
+from fedcloudclient.logger import log_and_raise
+from fedcloudclient.logger import LOG
 from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, secret_params_to_dict
 from fedcloudclient.vault_auth import VaultToken
 
@@ -59,10 +56,10 @@ def secret_client(access_token, command, path, data):
                 mount_point=VAULT_MOUNT_POINT,
             )
         return response
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as err:
+        err_msg=f"Error: Error when accessing secrets on server. Server response: {type(err).__name__}: {err}"
+        log_and_raise(err_msg,VaultError)
+        raise SystemExit()
 
 
 def locker_client(locker_token, command, path, data):
@@ -177,7 +174,8 @@ def list_(
     except Exception as e:
         message = str(e)
         if "HTTPError: 404" in message:
-            print(f"No secrets found", file=sys.stderr)
+            file=sys.stderr
+            print(f"No secrets found: {file}")
         else:
             print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
 
