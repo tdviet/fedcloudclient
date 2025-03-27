@@ -11,10 +11,10 @@ from hvac.exceptions import VaultError
 from fedcloudclient.auth import OIDCToken
 from fedcloudclient.conf import CONF
 from fedcloudclient.decorators import oidc_params, secret_output_params, secret_token_params
-from fedcloudclient.logger import log_and_raise
-from fedcloudclient.logger import LOG
+from fedcloudclient.logger import LOG, log_and_raise
 from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, secret_params_to_dict
 from fedcloudclient.vault_auth import VaultToken
+from fedcloudclient.exception import ServiceError
 
 VAULT_ADDR = CONF.get("vault_endpoint")
 VAULT_ROLE = CONF.get("vault_role")
@@ -58,8 +58,8 @@ def secret_client(access_token, command, path, data):
         return response
     except VaultError as err:
         err_msg=f"Error: Error when accessing secrets on server. Server response: {type(err).__name__}: {err}"
-        log_and_raise(err_msg,VaultError)
-        raise SystemExit()
+        log_and_raise(err_msg, err)
+        raise SystemExit(err_msg) from err
 
 
 def locker_client(locker_token, command, path, data):
@@ -89,12 +89,11 @@ def locker_client(locker_token, command, path, data):
         if command in ["list_secrets", "read_secret"]:
             response_json = response.json()
             return dict(response_json)
-        else:
-            return None
+        return None
     except requests.exceptions.HTTPError as exception:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
-        )
+        err_msg=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(err_msg, exception)
+        raise SystemExit(err_msg) from exception
 
 
 @click.group()
@@ -154,9 +153,10 @@ def get(
                 print_value(output_file, binary_file, response["data"][key])
             else:
                 raise SystemExit(f"Error: {key} not found in {short_path}")
-    except Exception as e:
-        print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
-
+    except Exception as exception:
+        msg_err=f"An unexpected error occurred: {str(exception)}" #, file=sys.stderr
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise ServiceError(msg_err) from exception
 
 @secret.command("list")
 @secret_token_params
@@ -171,13 +171,17 @@ def list_(
     try:
         response = token.vault_command(command="list", path=short_path, data={})
         print("\n".join(map(str, response["data"]["keys"])))
-    except Exception as e:
-        message = str(e)
+    except Exception as exception:
+        message = str(exception)
         if "HTTPError: 404" in message:
             file=sys.stderr
-            print(f"No secrets found: {file}")
-        else:
-            print(f"An unexpected error occurred: {str(e)}", file=sys.stderr)
+            msg_err=f"No secrets found: {file}"
+            log_and_raise(msg_err, ServiceError(msg_err))
+            raise ServiceError(msg_err) from exception
+
+        msg_err=f"An unexpected error occurred: {str(exception)}"#, file=sys.stderr
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise ServiceError(msg_err) from exception
 
 
 @secret.command()
@@ -255,10 +259,10 @@ def create(access_token, ttl, num_uses, output_format, verbose):
             print(locker_token["auth"]["client_token"])
         else:
             print_secrets("", output_format, locker_token["auth"])
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
 
 
 @locker.command()
@@ -276,10 +280,10 @@ def check(locker_token, output_format):
         client.token = locker_token
         locker_info = client.auth.token.lookup_self()
         print_secrets("", output_format, locker_info["data"])
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
 
 
 @locker.command()
@@ -294,7 +298,7 @@ def revoke(locker_token):
         client = hvac.Client(url=VAULT_ADDR)
         client.token = locker_token
         client.auth.token.revoke_self()
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
