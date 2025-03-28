@@ -101,7 +101,7 @@ def refresh(
     """
     # Get the right endpoint from GOCDB
     auth_file_contents = []
-    with open(auth_file, "r") as file:
+    with open(auth_file, "r", encoding="utf-8") as file:
         for raw_line in file.readlines():
             line = raw_line.strip()
             if "OpenStack" in line:
@@ -126,7 +126,7 @@ def refresh(
             elif line:
                 auth_file_contents.append(line)
 
-    with open(auth_file, "w+") as file:
+    with open(auth_file, "w+", encoding="utf-8") as file:
         file.write("\n".join(auth_file_contents))
 
 
@@ -176,20 +176,20 @@ def init(
     auth_file_contents = [";".join(site_auth)]
 
     if os.path.exists(auth_file):
-        with open(auth_file, "r") as file:
+        with open(auth_file, "r", encoding="utf-8") as file:
             for line in file.readlines():
                 if "OpenStack" in line:
                     continue
                 auth_file_contents.append(line)
 
-    with open(auth_file, "w+") as file:
+    with open(auth_file, "w+", encoding="utf-8") as file:
         file.write("\n".join(auth_file_contents))
 
     if not os.path.exists(template_dir):
         os.mkdir(template_dir)
 
     # FIXME: this should not be used at all!
-    with open(os.path.join(template_dir, "refresh.radl"), "w+") as file:
+    with open(os.path.join(template_dir, "refresh.radl"), "w+", encoding="utf-8") as file:
         token = dict(  # nosec
             client_id="ADD_CLIENT_ID_HERE",
             client_secret="ADD_CLIENT_SECRET_HERE",
