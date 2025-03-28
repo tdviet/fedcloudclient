@@ -5,7 +5,7 @@ import base64
 import json
 import os
 
-from secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, read_data_from_file
+from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, read_data_from_file
 
 def save_read_binary_files():
     """
@@ -59,9 +59,8 @@ def encrypt_decrypt():
 
 
 if __name__ == "__main__":
-    """
-    Test help function
-    """
+
+    print("Test help function")
 
     save_read_binary_files()
     save_read_dict()

@@ -14,12 +14,15 @@ from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import log_and_raise
 from fedcloudclient.conf import save_config, DEFAULT_CONFIG_LOCATION
 
-
+# pylint: disable=too-few-public-methods
 class Token:
     """
     Abstract object for managing tokens
     """
+    def __init__(self):
+        pass
 
+# pylint: disable=too-few-public-methods
 class OIDCToken(Token):
     """
     OIDC tokens. Managing access tokens, oidc-agent account and mytoken
