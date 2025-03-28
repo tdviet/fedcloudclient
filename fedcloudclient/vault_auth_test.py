@@ -41,27 +41,25 @@ def test_get_personal_secret(vault_token: str):
     assert response["data"]["test"] == "test"
 
 
-def test_get_vo_secret(vault_token: str, vo: str):
+def test_get_vo_secret(vault_token: str, vo_secret: str):
     """
     Test getting VO-shared secrets
     """
     token = vault.VaultToken(vault_token=vault_token)
-    response = token.vault_command(command="get", path="test", data={}, vo=vo)
+    response = token.vault_command(command="get", path="test", data={}, vo=vo_secret)
     assert response["data"]["test"] == "test"
 
 
 if __name__ == "__main__":
-    """
-    Before testing, setup testing environment with
-    export  FEDCLOUD_MYTOKEN=<mytoken>
-    export  FEDCLOUD_ID=<your Checkin ID>
-    export  FEDCLOUD_VAULT_TOKEN=<Vault token exported from GUI>
-    
-    """
-    mytoken = os.environ["FEDCLOUD_MYTOKEN"]
-    user_id = os.environ["FEDCLOUD_ID"]
+    #Before testing, setup testing environment with
+    #export  FEDCLOUD_MYTOKEN=<mytoken>
+    #export  FEDCLOUD_ID=<your Checkin ID>
+    #export  FEDCLOUD_VAULT_TOKEN=<Vault token exported from GUI>
+
+    os_mytoken = os.environ["FEDCLOUD_MYTOKEN"]
+    os_user_id = os.environ["FEDCLOUD_ID"]
     oidc_vault_token = os.environ["FEDCLOUD_VAULT_TOKEN"]
-    test_vault_login(mytoken)
-    test_user_id_from_vault_token(oidc_vault_token, user_id)
+    test_vault_login(os_mytoken)
+    test_user_id_from_vault_token(oidc_vault_token, os_user_id)
     test_get_personal_secret(oidc_vault_token)
     test_get_vo_secret(oidc_vault_token, "vo.access.egi.eu")

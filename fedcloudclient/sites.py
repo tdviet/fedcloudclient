@@ -104,7 +104,7 @@ def safe_read_yaml_from_url(url, max_length):
             data = yaml.safe_load(yaml_file)
     except Exception as exception:
         print(f"Error during reading data from {url}")
-        raise SystemExit(f"Exception: {exception}")
+        raise SystemExit(f"Exception: {exception}") from exception
     return data
 
 
@@ -132,7 +132,7 @@ def read_default_site_config():
             validate(instance=site_info, schema=schema)
         except Exception as exception:
             print(f"Site config in file {filename} is in wrong format")
-            raise SystemExit(f"Exception: {exception}")
+            raise SystemExit(f"Exception: {exception}") from exception
 
         __site_config_data.append(site_info)
 
@@ -156,7 +156,7 @@ def read_local_site_config(config_dir):
             __site_config_data.append(site_info)
         except Exception as exception:
             print(f"Error during reading site config from {file}")
-            raise SystemExit(f"Exception: {exception}")
+            raise SystemExit(f"Exception: {exception}") from exception
 
 
 def save_site_config(config_dir):
@@ -276,40 +276,40 @@ def site():
 
 @site.command()
 @all_site_params
-def show(site, all_sites):
+def show(site_local, all_sites):
     """
     Print configuration of specified site(s)
     """
-    if site in ALL_SITES_KEYWORDS or all_sites:
+    if site_local in ALL_SITES_KEYWORDS or all_sites:
         read_site_config()
         for site_info in __site_config_data:
             site_info_str = yaml.dump(site_info, sort_keys=True)
             print(site_info_str)
 
     else:
-        site_info = find_site_data(site)
+        site_info = find_site_data(site_local)
         if site_info:
             print(yaml.dump(site_info, sort_keys=True))
         else:
-            raise SystemExit(f"Site {site} not found")
+            raise SystemExit(f"Site {site_local} not found")
 
 
 @site.command()
 @site_vo_params
-def show_project_id(site, vo):
+def show_project_id(site_local, vo):
     """
     Print Keystone endpoint and project ID
     """
-    if site in ALL_SITES_KEYWORDS:
+    if site_local in ALL_SITES_KEYWORDS:
         print("Cannot get project ID for ALL_SITES")
         raise click.Abort()
 
-    endpoint, project_id, _ = find_endpoint_and_project_id(site, vo)
+    endpoint, project_id, _ = find_endpoint_and_project_id(site_local, vo)
     if endpoint:
         print_set_env_command("OS_AUTH_URL", endpoint)
         print_set_env_command("OS_PROJECT_ID", project_id)
     else:
-        raise SystemExit(f"VO {vo} not found on site {site}")
+        raise SystemExit(f"VO {vo} not found on site {site_local}")
 
 
 @site.command()
@@ -332,15 +332,15 @@ def list_(vo=None):
     List all sites. If "--vo <name>" is provided, list only sites
     supporting a Virtual Organization.
     """
-    for site in list_sites(vo):
-        print(site)
+    for site_local in list_sites(vo):
+        print(site_local)
 
 
 @site.command()
 @site_vo_params
 @oidc_params
 def env(
-    site,
+    site_local,
     vo,
     access_token,
 ):
@@ -349,11 +349,11 @@ def env(
     May set also environment variable OS_ACCESS_TOKEN,
     if access token is provided, otherwise print notification
     """
-    if site in ALL_SITES_KEYWORDS:
+    if site_local in ALL_SITES_KEYWORDS:
         print("Cannot generate environment variables for ALL_SITES")
         raise click.Abort()
 
-    endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
+    endpoint, project_id, protocol = find_endpoint_and_project_id(site_local, vo)
     if endpoint:
         if protocol is None:
             protocol = DEFAULT_PROTOCOL
@@ -364,5 +364,5 @@ def env(
         print_set_env_command("OS_PROJECT_ID", project_id)
         print_set_env_command("OS_ACCESS_TOKEN", access_token)
     else:
-        print(f"VO {vo} not found to have access to site {site}")
+        print(f"VO {vo} not found to have access to site {site_local}")
     return 1

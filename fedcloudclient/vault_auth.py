@@ -5,7 +5,7 @@ import hvac
 from hvac.exceptions import VaultError
 
 from fedcloudclient.auth import OIDCToken
-from fedcloudclient.conf import CONF as CONF
+from fedcloudclient.conf import CONF
 from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import LOG, log_and_raise
 
@@ -38,7 +38,7 @@ class VaultToken(OIDCToken):
             client.token = self.vault_token
             self.vault_client = client
             return client
-        elif self.access_token:
+        if self.access_token:
             try:
                 client.auth.jwt.jwt_login(role=CONF.get("vault_role"), jwt=self.access_token)
                 self.vault_token = client.token
@@ -47,9 +47,10 @@ class VaultToken(OIDCToken):
             except VaultError as exception:
                 error_msg = f"Cannot login to Vault via access token: {exception}"
                 log_and_raise(error_msg, TokenError)
-        else:
-            error_msg = "Token is not initialized"
-            log_and_raise(error_msg, TokenError)
+
+        error_msg = "Token is not initialized"
+        log_and_raise(error_msg, TokenError)
+        return None
 
     def get_vault_token(self) -> str:
         """
@@ -57,21 +58,20 @@ class VaultToken(OIDCToken):
         """
         if self.vault_token:
             return self.vault_token
-        elif self.access_token:
+        if self.access_token:
             self.get_vault_client()
             return self.vault_token
-        else:
-            error_msg = "Vault token is not initialized"
-            log_and_raise(error_msg, TokenError)
 
+        error_msg = "Vault token is not initialized"
+        log_and_raise(error_msg, TokenError)
+        return None
     def get_user_id(self) -> str:
         """
         Get user ID (from access token or vault token)
         """
         if self.access_token:
             return super().get_user_id()
-        else:
-            return self.get_vault_user_id()
+        return self.get_vault_user_id()
 
     def get_vault_user_id(self) -> str:
         """
@@ -86,7 +86,8 @@ class VaultToken(OIDCToken):
             log_and_raise(error_msg, TokenError)
 
         display_name = response["data"]["display_name"]
-        LOG.debug(f"Vault token display_name: {display_name}")
+        msg_debug=f"Vault token display_name: {display_name}"
+        LOG.debug(msg_debug)
         self.auth_method, self.user_id = display_name.split("-")
         return self.user_id
 
@@ -96,9 +97,9 @@ class VaultToken(OIDCToken):
         """
         if self.auth_method:
             return self.auth_method
-        else:
-            self.get_vault_user_id()
-            return self.auth_method
+
+        self.get_vault_user_id()
+        return self.auth_method
 
     def vault_command(self, command: str, path: str, data: dict, vo: str = None) -> dict:
         """
@@ -112,10 +113,7 @@ class VaultToken(OIDCToken):
             if self.get_vault_auth_method() == "oidc":
                 full_path = "vos/" + vo + "/" + path
             else:
-                log_and_raise(
-                    "VO-shared folders are accessible only for token created by OIDC method via GUI",
-                    TokenError,
-                )
+                log_and_raise("VO-shared folders are accessible only for token created by OIDC method via GUI",TokenError)
         else:
             full_path = "users/" + self.get_user_id() + "/" + path
 
@@ -139,6 +137,7 @@ class VaultToken(OIDCToken):
                 )
             return response
 
-        except VaultError as e:
-            error_msg = f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
+        except VaultError as exception:
+            error_msg = f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
             log_and_raise(error_msg, TokenError)
+            return None

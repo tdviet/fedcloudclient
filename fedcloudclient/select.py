@@ -20,6 +20,7 @@ from fedcloudclient.decorators import (
 )
 from fedcloudclient.openstack import fedcloud_openstack
 from fedcloudclient.sites import find_endpoint_and_project_id
+from fedcloudclient.logger import log_and_raise
 
 FILTER_TEMPLATE = "$[?( {specs} )]"
 GET_FLAVOR_COMMAND = ("flavor", "list", "--long")
@@ -109,11 +110,12 @@ def get_parser(filter_string):
     try:
         parser = parse(filter_string)
     except JSONPathError as exception:
-        raise SystemExit(
-            "Error during constructing filter\n"
+        msg_err="""Error during constructing filter\n"
             f"Filter string: {filter_string}\n"
-            f"{exception}"
-        )
+            f"{exception}"""
+        log_and_raise(msg_err, JSONPathError)
+        raise SystemExit(msg_err) from exception
+
     return parser
 
 
@@ -129,11 +131,11 @@ def do_filter(parser, input_list):
     try:
         matched = [match.value for match in parser.find(input_list)]
     except TypeError as exception:
-        raise SystemExit(
-            "TypeError during filtering result\n"
+        msg_err="""TypeError during filtering result\n"
             "Probably string value for numeric property in filter\n"
-            f"{exception}"
-        )
+            f"{exception}"""
+        log_and_raise(msg_err, TypeError)
+        raise SystemExit(msg_err) from exception
     return matched
 
 
