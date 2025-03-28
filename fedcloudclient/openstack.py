@@ -9,9 +9,9 @@ import os
 import subprocess  # nosec Subprocess is required for invoking openstack client
 import sys
 from distutils.spawn import find_executable
-
 import click
 
+from fedcloudclient.logger import log_and_raise
 from fedcloudclient.conf import CONF
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
@@ -108,7 +108,7 @@ def fedcloud_openstack_full(
         (__OPENSTACK_CLIENT,) + openstack_command + options,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env=my_env,
+        env=my_env, check=True
     )
 
     error_code = completed.returncode
@@ -288,8 +288,10 @@ def openstack(
             exc_msg = None
             try:
                 error_code, result = future.result()
-            except Exception as exc:
-                exc_msg = exc
+            except Exception as exception:
+                msg_err=f"Can not get result in OpenStack: {exception}"
+                log_and_raise(msg_err, exception)
+                raise Exception(msg_err) from exception
 
             # Print result
             print_result(
@@ -346,4 +348,4 @@ def openstack_int(
 
     # Calling OpenStack client as subprocess
     # Ignore bandit warning
-    subprocess.run(__OPENSTACK_CLIENT, env=my_env)  # nosec
+    subprocess.run(__OPENSTACK_CLIENT, env=my_env, check=True)  # nosec
