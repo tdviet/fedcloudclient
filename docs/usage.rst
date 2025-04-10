@@ -345,30 +345,6 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
     export FEDCLOUD_OS_ACCESS_TOKEN="..."
 
 
-fedcloud ec3 commands
-**************************
-
-**"fedcloud ec3"** commands are helper commands for deploying EC3 (Elastic Cloud Compute Cluster) in Cloud
-via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.
-
-* **"fedcloud ec3 init --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat --template-dir
-  ./templates"** : Generate authorization file (by default *auth.dat*) and template file (by default
-  *./templates/refresh.radl*) for EC3 client.
-
-::
-
-    $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
-
-
-* **"fedcloud ec3 refresh --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat"** :
-  Refresh the access token stored in authorization file (by default *auth.dat*).
-
-::
-
-    $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
-
-
-
 fedcloud site commands
 **********************
 
