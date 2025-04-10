@@ -27,7 +27,7 @@ def verify_oidc_agent(user_id: str) -> str:
         access_token_oidc=token.get_token_from_oidc_agent(user_id)
         return access_token_oidc
     except TokenError:
-        err_msg="No OIDC_AGENT_ACCOUNT"
+        err_msg="No FEDCLOUD_OIDC_AGENT_ACCOUNTT"
         return log_and_raise(err_msg,TokenError)
 
 
@@ -77,15 +77,16 @@ def printing_dict(var_dict: dict) -> None:
 if __name__ == "__main__":
     print("Start of verifying auth.py")
 
-    access_token1= os.environ.get("ACCESS_TOKEN","")
-    access_token_check=verify_access_token(access_token1)
+    access_token1= os.environ.get("FEDCLOUD_ACCESS_TOKEN","")
+    #access_token_check=verify_access_token(access_token1)
 
-    payload1,request_json1,list_vos1=verify_pyload(access_token_check)
+    #payload1,request_json1,list_vos1=verify_pyload(access_token_check)
 
     mytoken1=os.environ.get("FEDCLOUD_MYTOKEN","")
-    access_token_mytok=verify_mytoken(mytoken1)
+    #access_token_mytok=verify_mytoken(mytoken1)
 
-    oidc_agent_name=os.environ.get("OIDC_AGENT_ACCOUNT","")
+    oidc_agent_name=os.environ.get("FEDCLOUD_OIDC_AGENT_ACCOUNT","")
+    print(f"OIDC_AGENT name: {oidc_agent_name}")
     access_token_oidc1=verify_oidc_agent(oidc_agent_name)
 
     user_id1=verify_user_id(access_token_oidc1)
