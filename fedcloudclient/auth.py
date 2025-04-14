@@ -94,9 +94,9 @@ class OIDCToken(Token):
             try:
                 access_token = agent.get_access_token(
                     oidc_agent_account,
-                    min_valid_period=CONF.get("min_access_token_time"),
+                    min_valid_period=CONF.get("_MIN_ACCESS_TOKEN_TIME"),
                     application_hint="fedcloudclient",
-                )
+                    )
                 self.access_token = access_token
                 self.oidc_agent_account = oidc_agent_account
                 self.conf["oidc_agent_account"]=str(oidc_agent_account)
@@ -104,7 +104,7 @@ class OIDCToken(Token):
                 return access_token
 
             except agent.OidcAgentError as exception:
-                error_msg = f"Error getting access token from oidc-agent: {exception}"
+                error_msg = f"Error getting access token from oidc-agent in -def get_token_from_oidc_agent()-: {exception}"
                 log_and_raise(error_msg, TokenError)
                 return None
         else:

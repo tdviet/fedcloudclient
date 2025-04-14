@@ -221,7 +221,6 @@ fedcloud --help command
 
     Commands:
       config         Managing fedcloud configurations
-      ec3            EC3 cluster provisioning
       endpoint       Obtain endpoint details and scoped tokens
       openstack      Execute OpenStack commands on site and VO
       openstack-int  Interactive OpenStack client on site and VO
@@ -531,6 +530,13 @@ If the site is *ALL_SITES*, the OpenStack command will be executed on all sites 
     | df25f80f-ed19-4e0b-805e-d34620ba0334 | m1.medium |  4096 |   40 |         0 |     2 | True      |
     ...
     (openstack)
+
+
+fedcloud config commands
+***************************
+* **"fedcloud config --config-file create"** : Create default configuration file in default location for configuration file
+
+
 
 fedcloud secret commands
 ***************************
