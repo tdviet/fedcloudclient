@@ -233,8 +233,8 @@ fedcloud --help command
 fedcloud token commands
 ***********************
 
-* **"fedcloud token check --oidc-access-token <ACCESS_TOKEN>"**: Check the expiration time of access token, so users can know whether
-  they need to refresh it. As mentioned before, access token may be given via environment variable *OIDC_ACCESS_TOKEN*,
+* **"fedcloud token check"**: Check the expiration time of configured access token, so users can know whether
+  they need to refresh it. As mentioned before, access token may be given via environment variable *FEDCLOUD_OIDC_ACCESS_TOKEN*,
   so the option *--oidc-access-token* is not shown in all examples bellows, even if the option is required.
 
 ::
@@ -244,7 +244,7 @@ fedcloud token commands
     Access token expires in 3571 seconds
 
 
-* **"fedcloud token list-vos --oidc-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to EGI Check-in
+* **"fedcloud token list-vos"** : Print the list of VO memberships according to EGI Check-in
 
 ::
 
@@ -254,6 +254,14 @@ fedcloud token commands
     training.egi.eu
 
 * **"fedcloud token issue"** : Print the access_token
+
+**Optional** possibilities are in access via:
+* **OIDC agent:** --oidc-agent-account, for istance check token validity: **"fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>"**
+* **access token:** --oidc-access-token: **Implement? - need to resolve**
+* **Mytoken:** --mytoken,  for istance check token validity: **"fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>"**, possible get from Mytoken: https://mytoken.data.kit.edu/
+* **Mytoken server:** --mytoken-server
+
+--oidc-access-token <ACCESS_TOKEN> 
 
 ::
 
