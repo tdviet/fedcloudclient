@@ -52,9 +52,9 @@ exclude_patterns: List[str] = []
 
 html_context = {
     "display_github": True,
-    "github_user": "tdviet",
+    "github_user": "jaro221",
     "github_repo": "fedcloudclient",
-    "github_version": "master/docs/",
+    "github_version": "2.0-alpha-tests/docs/",
 }
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -64,7 +64,6 @@ html_theme = "sphinx_rtd_theme"
 html_logo = "fedcloudclient-logo-non-transparent-small.png"
 html_theme_options = {
     "logo_only": True,
-    "display_version": False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
