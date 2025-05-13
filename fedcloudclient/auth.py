@@ -18,6 +18,7 @@ from fedcloudclient.conf import save_config, DEFAULT_CONFIG_LOCATION
 class Token:
     """
     Abstract object for managing tokens
+    
     """
     def __init__(self):
         pass
@@ -26,6 +27,7 @@ class Token:
 class OIDCToken(Token):
     """
     OIDC tokens. Managing access tokens, oidc-agent account and mytoken
+    
     """
 
     def __init__(self, access_token=None):
@@ -47,6 +49,7 @@ class OIDCToken(Token):
         """
         Decoding access token to payload
         :return:
+        
         """
         if not self.payload:
             try:
@@ -65,6 +68,7 @@ class OIDCToken(Token):
         :param oidc_token: the token
 
         :return: Check-in ID
+        
         """
         self.access_token=access_token
         payload = self.decode_token()
@@ -76,6 +80,7 @@ class OIDCToken(Token):
         """
         Return use ID
         :return:
+        
         """
 
         if not self.payload:
@@ -118,6 +123,7 @@ class OIDCToken(Token):
         :param mytoken:
         :param mytoken_server:
         :return: access token, or None on error
+        
         """
         if not mytoken_server:
             mytoken_server = CONF.get("mytoken_server")
@@ -162,6 +168,7 @@ class OIDCToken(Token):
         :param oidc_agent_account:
         :param mytoken:
         :return:
+        
         """
         if mytoken:
             try:
@@ -188,6 +195,7 @@ class OIDCToken(Token):
         """
         :param oidc_url: CheckIn URL get from payload
         :return: JSON object of OIDC configuration
+        
         """
         oidc_url=self.payload["iss"]
         request = requests.get(oidc_url + "/.well-known/openid-configuration")
@@ -202,6 +210,7 @@ class OIDCToken(Token):
         :param verbose:
         :param oidc_token: the token to check
         :return: access token, or None on error
+        
         """
         self.access_token=access_token
         payload = self.decode_token()
@@ -234,6 +243,7 @@ class OIDCToken(Token):
         """
         List VO memberships in EGI Check-in
         :return: list of VO names
+        
         """
         self.access_token=access_token
         oidc_ep  = self.request_json
