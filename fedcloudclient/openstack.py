@@ -68,6 +68,7 @@ def fedcloud_openstack_full(
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
+    
     """
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
@@ -149,6 +150,7 @@ def fedcloud_openstack(
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
+    
     """
 
     return fedcloud_openstack_full(
@@ -197,6 +199,7 @@ def print_result(
     :param ignore_missing_vo:
     :param first:
     :return:
+    
     """
 
     command = " ".join(command)
@@ -327,6 +330,7 @@ def openstack_int(
 ):
     """
     Interactive OpenStack client on site and VO
+    
     """
 
     if not check_openstack_client_installation():
