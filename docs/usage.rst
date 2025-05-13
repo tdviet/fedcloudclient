@@ -257,7 +257,7 @@ fedcloud token commands
 
 **Optional** possibilities are in access via:
 * **OIDC agent:** --oidc-agent-account, for istance check token validity: **"fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>"**
-* **access token:** --oidc-access-token: **Implement? - need to resolve**
+* **access token:** --oidc-access-token: get "access token" from default access token stored as environment variable **FEDCLOUD_OIDC_ACCESS_TOKEN** or call with directly with access token **"fedcloud token check --oidc-access-token <ACCESS_TOKEN>"** or 
 * **Mytoken:** --mytoken,  for istance check token validity: **"fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>"**, possible get from Mytoken: https://mytoken.data.kit.edu/
 * **Mytoken server:** --mytoken-server
 

@@ -1,6 +1,7 @@
 """
 Decorators for command-line parameters
 """
+import os
 from functools import wraps
 
 import click
@@ -138,7 +139,7 @@ def oidc_params(func):
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        default=CONF.get("oidc_access_token"),
+        default=os.getenv("FEDCLOUD_OIDC_ACCESS_TOKEN"),
         metavar="token",
     )
     @optgroup.option(
