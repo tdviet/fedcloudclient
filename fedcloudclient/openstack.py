@@ -252,6 +252,7 @@ def openstack(
 ):
     """
     Execute OpenStack commands on site and VO
+    
     """
 
     if not check_openstack_client_installation():
@@ -327,10 +328,12 @@ def openstack_int(
     os_protocol,
     os_auth_type,
     os_identity_provider,
-):
+    ):
     """
     Interactive OpenStack client on site and VO
     
+    :return: None
+
     """
 
     if not check_openstack_client_installation():
@@ -353,3 +356,4 @@ def openstack_int(
     # Calling OpenStack client as subprocess
     # Ignore bandit warning
     subprocess.run(__OPENSTACK_CLIENT, env=my_env, check=True)  # nosec
+    return None

@@ -1,17 +1,29 @@
-.. fedcloudclient_test documentation master file, created by
-   sphinx-quickstart on Fri Mar 28 09:14:02 2025.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to FedCloud client's documentation!
+===========================================
 
-fedcloudclient_test documentation
-=================================
-
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
-
+.. image:: https://zenodo.org/badge/336671726.svg
+   :target: https://zenodo.org/badge/latestdoi/336671726
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+
+   intro
+   quickstart
+   install
+   usage
+   development
+   scripts
+   fedcloudclient
+   FAQ
+   cheat
+
+
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
 
