@@ -14,13 +14,13 @@ import os
 import sys
 from typing import List
 
-sys.path.insert(0, os.path.abspath("../"))
+sys.path.insert(0, os.path.abspath("../cd"))
 
 # -- Project information -----------------------------------------------------
 
 project = "fedcloudclient"
 copyright = "2022, Viet Tran"
-author = "Viet Tran"
+author = "Viet Tran, Jaromir Klarak"
 
 # The full version, including alpha/beta/rc tags
 # release = '0.0.2-dev15'
@@ -69,4 +69,4 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ["static"]
+html_static_path = ["_static"]

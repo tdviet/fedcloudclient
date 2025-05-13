@@ -1,9 +1,3 @@
-.. fedcloudclient documentation master file, created by
-   sphinx-quickstart on Sun Dec 27 22:25:01 2020.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-
 Welcome to FedCloud client's documentation!
 ===========================================
 
@@ -23,6 +17,7 @@ Welcome to FedCloud client's documentation!
    fedcloudclient
    FAQ
    cheat
+   modules
 
 
 
@@ -32,3 +27,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
