@@ -47,6 +47,9 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#authentication">Authentication</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#authentication-options">Authentication Options</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shell-completion">Shell completion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-help-command">fedcloud –help command</a></li>
@@ -107,20 +110,27 @@
 </ul>
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading"></a></h2>
-<p>Many <strong>fedcloud</strong> commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option <em>“–oidc-access-token”</em>), via <a class="reference external" href="https://indigo-dc.gitbooks.io/oidc-agent/">oidc-agent</a>
-(via option <em>“–oidc-agent-account”</em>), or via <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> (via option <em>“–mytoken”</em>).</p>
-<p>Users of EGI Check-in can get all information needed for obtaining access tokens from <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token
-Portal</a>. For providing access token via <em>oidc-agent</em>, follow the instructions from
-<a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent</a> for registering a client, then
-give the client name (account name in <em>oidc-agent</em>) to <em>FedCloud client</em> via option <em>“–oidc-agent-account”</em>.
-On the other hand visit the <a class="reference external" href="https://mytoken.data.kit.edu/">mytoken</a> website to configure a <em>mytoken</em>,
-remember to check <em>“Allows obtaining OpenID Connect Access Tokens”</em>, and use the option <em>“–mytoken”</em>
-to pass it to <em>FedCloud client”</em>. Environment variables can be use instead of the command-line options,
-as explained in the table below.</p>
-<p>The default protocol is <em>“openid”</em>. Users can change default protocol via option <em>“–os-protocol”</em>. However,
-sites may have protocol fixedly defined in site configuration, e.g. <em>“oidc”</em> for INFN-CLOUD-BARI.</p>
 </section>
+</section>
+<section id="authentication-options">
+<h1>Authentication Options<a class="headerlink" href="#authentication-options" title="Link to this heading"></a></h1>
+<p><strong>FedCloud</strong> commands require access tokens for authentication. Users have multiple options for providing these tokens:</p>
+<ul>
+<li><p><strong>Direct access token</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-access-token</span></code> option to provide an access token directly. You can retrieve this token from the environment variable <code class="docutils literal notranslate"><span class="pre">FEDCLOUD_OIDC_ACCESS_TOKEN</span></code>, or pass it explicitly, e.g.:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-access-token</span> <span class="pre">&lt;ACCESS_TOKEN&gt;</span></code></p>
+</li>
+<li><p><strong>OIDC agent</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-agent-account</span></code> option to integrate with <a class="reference external" href="https://indigo-dc.gitbooks.io/oidc-agent/">oidc-agent</a>. For example, check token validity with:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-agent-account</span> <span class="pre">&lt;NAME_OF_USER_FOR_OIDC_AGENT&gt;</span></code></p>
+<p>To use this method, follow the instructions at <a class="reference external" href="https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/">oidc-agent for EGI</a> to register a client, then pass the client (account) name to the FedCloud client.</p>
+</li>
+<li><p><strong>Mytoken</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--mytoken</span></code> option to authenticate with a token from the <a class="reference external" href="https://mytoken.data.kit.edu/">Mytoken service</a>. To check token validity:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--mytoken</span> <span class="pre">&lt;TOKEN_FOR_MYTOKEN&gt;</span></code></p>
+<p>When creating a Mytoken, ensure you select <strong>“Allows obtaining OpenID Connect Access Tokens”</strong>. You may also use the <code class="docutils literal notranslate"><span class="pre">--mytoken-server</span></code> option to authenticate with a specific Mytoken server.</p>
+</li>
+</ul>
+<p>Alternatively, you can obtain tokens using the <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token Portal</a>, which provides all necessary information for EGI Check-in users.</p>
+<p>In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).</p>
+<p>By default, the protocol used is <code class="docutils literal notranslate"><span class="pre">openid</span></code>. This can be changed using the <code class="docutils literal notranslate"><span class="pre">--os-protocol</span></code> option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., <code class="docutils literal notranslate"><span class="pre">oidc</span></code> for INFN-CLOUD-BARI).</p>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
 <p>Display the current configuration of <em>fedcloud</em> with:</p>
@@ -339,21 +349,6 @@ training.egi.eu
 <ul class="simple">
 <li><p><strong>“fedcloud token issue”</strong> : Print the access_token</p></li>
 </ul>
-<p>Optional access methods for authentication include:</p>
-<ul>
-<li><p><strong>OIDC agent</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-agent-account</span></code> option. For example, to check token validity:</p>
-<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-agent-account</span> <span class="pre">&lt;NAME_OF_USER_FOR_OIDC_AGENT&gt;</span></code></p>
-</li>
-<li><p><strong>Access token</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-access-token</span></code> option. You can either use the default access token stored in the environment variable <code class="docutils literal notranslate"><span class="pre">FEDCLOUD_OIDC_ACCESS_TOKEN</span></code>, or pass the token directly. Example:</p>
-<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-access-token</span> <span class="pre">&lt;ACCESS_TOKEN&gt;</span></code></p>
-</li>
-<li><p><strong>Mytoken</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--mytoken</span></code> option. To check token validity, run:</p>
-<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--mytoken</span> <span class="pre">&lt;TOKEN_FOR_MYTOKEN&gt;</span></code></p>
-<p>You can obtain tokens from the <a class="reference external" href="https://mytoken.data.kit.edu/">Mytoken service</a>.</p>
-</li>
-<li><p><strong>Mytoken server</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--mytoken-server</span></code> option for authentication using a Mytoken server.</p></li>
-</ul>
-<p>–oidc-access-token &lt;ACCESS_TOKEN&gt;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token issue
 ABCD______
 </pre></div>

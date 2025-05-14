@@ -22,21 +22,32 @@ Usage
 Authentication
 **************
 
-Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option *"--oidc-access-token"*), via `oidc-agent <https://indigo-dc.gitbooks.io/oidc-agent/>`_
-(via option *"--oidc-agent-account"*), or via `mytoken <https://mytoken.data.kit.edu/>`_ (via option *"--mytoken"*).
+Authentication Options
+======================
 
-Users of EGI Check-in can get all information needed for obtaining access tokens from `EGI Check-in Token
-Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
-`oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
-give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
-On the other hand visit the `mytoken <https://mytoken.data.kit.edu/>`_ website to configure a *mytoken*,
-remember to check *"Allows obtaining OpenID Connect Access Tokens"*, and use the option *"--mytoken"*
-to pass it to *FedCloud client"*. Environment variables can be use instead of the command-line options,
-as explained in the table below.
+**FedCloud** commands require access tokens for authentication. Users have multiple options for providing these tokens:
 
-The default protocol is *"openid"*. Users can change default protocol via option *"--os-protocol"*. However,
-sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
+- **Direct access token**: Use the ``--oidc-access-token`` option to provide an access token directly. You can retrieve this token from the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``, or pass it explicitly, e.g.:
+
+  ``fedcloud token check --oidc-access-token <ACCESS_TOKEN>``
+
+- **OIDC agent**: Use the ``--oidc-agent-account`` option to integrate with `oidc-agent <https://indigo-dc.gitbooks.io/oidc-agent/>`_. For example, check token validity with:
+
+  ``fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>``
+
+  To use this method, follow the instructions at `oidc-agent for EGI <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ to register a client, then pass the client (account) name to the FedCloud client.
+
+- **Mytoken**: Use the ``--mytoken`` option to authenticate with a token from the `Mytoken service <https://mytoken.data.kit.edu/>`_. To check token validity:
+
+  ``fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>``
+
+  When creating a Mytoken, ensure you select **"Allows obtaining OpenID Connect Access Tokens"**. You may also use the ``--mytoken-server`` option to authenticate with a specific Mytoken server.
+
+Alternatively, you can obtain tokens using the `EGI Check-in Token Portal <https://aai.egi.eu/token>`_, which provides all necessary information for EGI Check-in users.
+
+In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).
+
+By default, the protocol used is ``openid``. This can be changed using the ``--os-protocol`` option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., ``oidc`` for INFN-CLOUD-BARI).
 
 
 Configuration
@@ -254,27 +265,6 @@ fedcloud token commands
     training.egi.eu
 
 * **"fedcloud token issue"** : Print the access_token
-
-Optional access methods for authentication include:
-
-- **OIDC agent**: Use the ``--oidc-agent-account`` option. For example, to check token validity:
-  
-  ``fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>``
-
-- **Access token**: Use the ``--oidc-access-token`` option. You can either use the default access token stored in the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``, or pass the token directly. Example:
-
-  ``fedcloud token check --oidc-access-token <ACCESS_TOKEN>``
-
-- **Mytoken**: Use the ``--mytoken`` option. To check token validity, run:
-
-  ``fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>``
-
-  You can obtain tokens from the `Mytoken service <https://mytoken.data.kit.edu/>`_.
-
-- **Mytoken server**: Use the ``--mytoken-server`` option for authentication using a Mytoken server.
-
-
---oidc-access-token <ACCESS_TOKEN> 
 
 ::
 
