@@ -48,7 +48,7 @@ Alternatively, you can obtain tokens using the `EGI Check-in Token Portal <https
 In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).
 
 By default, the protocol used is ``openid``. This can be changed using the ``--os-protocol`` option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., ``oidc`` for INFN-CLOUD-BARI).
-
+-------
 
 Configuration
 *************
