@@ -255,11 +255,24 @@ fedcloud token commands
 
 * **"fedcloud token issue"** : Print the access_token
 
-**Optional** possibilities are in access via:
-* **OIDC agent:** --oidc-agent-account, for istance check token validity: **"fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>"**
-* **access token:** --oidc-access-token: get "access token" from default access token stored as environment variable **FEDCLOUD_OIDC_ACCESS_TOKEN** or call with directly with access token **"fedcloud token check --oidc-access-token <ACCESS_TOKEN>"** or 
-* **Mytoken:** --mytoken,  for istance check token validity: **"fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>"**, possible get from Mytoken: https://mytoken.data.kit.edu/
-* **Mytoken server:** --mytoken-server
+Optional access methods for authentication include:
+
+- **OIDC agent**: Use the ``--oidc-agent-account`` option. For example, to check token validity:
+  
+  ``fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>``
+
+- **Access token**: Use the ``--oidc-access-token`` option. You can either use the default access token stored in the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``, or pass the token directly. Example:
+
+  ``fedcloud token check --oidc-access-token <ACCESS_TOKEN>``
+
+- **Mytoken**: Use the ``--mytoken`` option. To check token validity, run:
+
+  ``fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>``
+
+  You can obtain tokens from the `Mytoken service <https://mytoken.data.kit.edu/>`_.
+
+- **Mytoken server**: Use the ``--mytoken-server`` option for authentication using a Mytoken server.
+
 
 --oidc-access-token <ACCESS_TOKEN> 
 

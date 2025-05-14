@@ -339,11 +339,20 @@ training.egi.eu
 <ul class="simple">
 <li><p><strong>“fedcloud token issue”</strong> : Print the access_token</p></li>
 </ul>
-<p><strong>Optional</strong> possibilities are in access via:
-* <strong>OIDC agent:</strong> –oidc-agent-account, for istance check token validity: <strong>“fedcloud token check –oidc-agent-account &lt;NAME_OF_USER_FOR_OIDC_AGENT&gt;”</strong>
-* <strong>access token:</strong> –oidc-access-token: get “access token” from default access token stored as environment variable <strong>FEDCLOUD_OIDC_ACCESS_TOKEN</strong> or call with directly with access token <strong>“fedcloud token check –oidc-access-token &lt;ACCESS_TOKEN&gt;”</strong> or
-* <strong>Mytoken:</strong> –mytoken,  for istance check token validity: <strong>“fedcloud token check –mytoken &lt;TOKEN_FOR_MYTOKEN&gt;”</strong>, possible get from Mytoken: <a class="reference external" href="https://mytoken.data.kit.edu/">https://mytoken.data.kit.edu/</a>
-* <strong>Mytoken server:</strong> –mytoken-server</p>
+<p>Optional access methods for authentication include:</p>
+<ul>
+<li><p><strong>OIDC agent</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-agent-account</span></code> option. For example, to check token validity:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-agent-account</span> <span class="pre">&lt;NAME_OF_USER_FOR_OIDC_AGENT&gt;</span></code></p>
+</li>
+<li><p><strong>Access token</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-access-token</span></code> option. You can either use the default access token stored in the environment variable <code class="docutils literal notranslate"><span class="pre">FEDCLOUD_OIDC_ACCESS_TOKEN</span></code>, or pass the token directly. Example:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--oidc-access-token</span> <span class="pre">&lt;ACCESS_TOKEN&gt;</span></code></p>
+</li>
+<li><p><strong>Mytoken</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--mytoken</span></code> option. To check token validity, run:</p>
+<p><code class="docutils literal notranslate"><span class="pre">fedcloud</span> <span class="pre">token</span> <span class="pre">check</span> <span class="pre">--mytoken</span> <span class="pre">&lt;TOKEN_FOR_MYTOKEN&gt;</span></code></p>
+<p>You can obtain tokens from the <a class="reference external" href="https://mytoken.data.kit.edu/">Mytoken service</a>.</p>
+</li>
+<li><p><strong>Mytoken server</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--mytoken-server</span></code> option for authentication using a Mytoken server.</p></li>
+</ul>
 <p>–oidc-access-token &lt;ACCESS_TOKEN&gt;</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token issue
 ABCD______
