@@ -121,10 +121,15 @@ For example, to print the environment configuration, use the following command::
 
 This command shows, for instance, the following output:
 
-::
-    parameter           value
-    ------------------  -------
-    oidc_agent_account  jaro221
+
+  +----------------------------+-------------------------------------------------------------------+
+  |  Parameter                  |  Default value                                                   |
+  +============================+===================================================================+
+  |  oidc_agent_account         |  <NAME_OF_USER>                                                  |
+  +-----------------------------+------------------------------------------------------------------+
+  |  ...                        |  ...                                                             |
+  +-----------------------------+------------------------------------------------------------------+
+      
 
 
 The *fedcloud* configuration can be saved to a file using the following command
