@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'fedcloudclient'
+project = 'fedlcoudclient'
 copyright = '2025, jaro221'
 author = 'jaro221'
 
