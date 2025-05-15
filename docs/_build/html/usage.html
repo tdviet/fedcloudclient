@@ -242,7 +242,7 @@ Example: <code class="docutils literal notranslate"><span class="pre">FEDCLOUD_S
 <li><p><strong>Configuration file</strong> – typically stored as <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code>.
 Example: the <code class="docutils literal notranslate"><span class="pre">site</span></code> setting in <code class="docutils literal notranslate"><span class="pre">config.yaml</span></code></p></li>
 <li><p><strong>Default configuration</strong> – hardcoded defaults (lowest priority).
-See the <a class="reference external" href="../fedcloudclient/conf.py#L16">source code</a> for details.</p></li>
+See the <a class="reference external" href="https://github.com/jaro221/fedcloudclient">source code</a> for details.</p></li>
 </ol>
 <p>The priority order is important:
 default values are overridden by the configuration file,
@@ -324,7 +324,7 @@ This simplifies the usage of <em>fedcloud</em> commands by avoiding the need to 
 <p>The command above may affect responsiveness of the shell. For long work, it is recommended to copy the
 <a class="reference external" href="https://github.com/tdviet/fedcloudclient/blob/master/examples/fedcloud_bash_completion.sh">fedcloud_bash_completion.sh script</a> to a local file, and
 source it from ~/.bashrc. Refer <a class="reference external" href="https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion">Click documentation</a> for a long explanation.</p>
-<p>After enabling shell completion, press &lt;TAB&gt; twice for shell completion</p>
+<p>After enabling shell completion, press &lt;TAB&gt; twice for shell completion:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site &lt;TAB&gt;&lt;TAB&gt;
 env              list             save-config      show             show-project-id
 </pre></div>
@@ -366,7 +366,7 @@ For this reason, the <code class="docutils literal notranslate"><span class="pre
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token check
 </pre></div>
 </div>
-<p>Output is shown as</p>
+<p>Output is shown as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Access</span> <span class="n">token</span> <span class="ow">is</span> <span class="n">valid</span> <span class="n">to</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span> <span class="mi">01</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">39</span> <span class="n">UTC</span>
 <span class="n">Access</span> <span class="n">token</span> <span class="n">expires</span> <span class="ow">in</span> <span class="mi">3571</span> <span class="n">seconds</span>
 </pre></div>
@@ -377,13 +377,12 @@ For this reason, the <code class="docutils literal notranslate"><span class="pre
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token list-vos
 </pre></div>
 </div>
-<p>Sample output</p>
-<dl class="simple">
-<dt>::</dt><dd><p>eosc-synergy.eu
-fedcloud.egi.eu
-training.egi.eu</p>
-</dd>
-</dl>
+<p>Sample output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eosc</span><span class="o">-</span><span class="n">synergy</span><span class="o">.</span><span class="n">eu</span>
+<span class="n">fedcloud</span><span class="o">.</span><span class="n">egi</span><span class="o">.</span><span class="n">eu</span>
+<span class="n">training</span><span class="o">.</span><span class="n">egi</span><span class="o">.</span><span class="n">eu</span>
+</pre></div>
+</div>
 <ul class="simple">
 <li><p><strong>“fedcloud token issue”</strong> : Print the access_token</p></li>
 </ul>
@@ -460,7 +459,7 @@ vo.access.egi.eu     4cab325ca8c2495bf2d4e8f230bcd51a  VO:vo.access.egi.eu  True
 OpenStack keystone scoped token on the site for the project ID.</p></li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
-export FEDCLOUD_OS_TOKEN=&quot;gAAAAA...&quot;
+export FEDCLOUD_OS_TOKEN=&quot;eayeghjtjtj...&quot;
 </pre></div>
 </div>
 <ul class="simple">

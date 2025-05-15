@@ -158,7 +158,7 @@ The *fedcloud* client supports configuration from multiple sources, in the follo
    Example: the ``site`` setting in ``config.yaml``
 
 #. **Default configuration** – hardcoded defaults (lowest priority).  
-   See the `source code <../fedcloudclient/conf.py#L16>`_ for details.
+   See the `source code <https://github.com/jaro221/fedcloudclient>`_ for details.
 
 The priority order is important:  
 default values are overridden by the configuration file,  
@@ -246,7 +246,7 @@ The command above may affect responsiveness of the shell. For long work, it is r
 source it from ~/.bashrc. Refer `Click documentation
 <https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion>`_ for a long explanation.
 
-After enabling shell completion, press <TAB> twice for shell completion
+After enabling shell completion, press <TAB> twice for shell completion:
 
 ::
 
@@ -294,7 +294,7 @@ For this reason, the ``--oidc-access-token`` option is not shown in all examples
 
     $ fedcloud token check
 
-Output is shown as
+Output is shown as:
 ::
     Access token is valid to 2021-01-02 01:25:39 UTC
     Access token expires in 3571 seconds
@@ -306,8 +306,7 @@ Output is shown as
 
     $ fedcloud token list-vos
 
-Sample output
-
+Sample output:
 ::
     eosc-synergy.eu
     fedcloud.egi.eu
@@ -394,7 +393,7 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 ::
 
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
-    export FEDCLOUD_OS_TOKEN="gAAAAA..."
+    export FEDCLOUD_OS_TOKEN="eayeghjtjtj..."
 
 
 * **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print

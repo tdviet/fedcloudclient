@@ -46,7 +46,7 @@ Alternatively, you can obtain tokens using the `EGI Check-in Token Portal <https
 In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).
 
 By default, the protocol used is ``openid``. This can be changed using the ``--os-protocol`` option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., ``oidc`` for INFN-CLOUD-BARI).
--------
+
 
 Configuration
 *************
@@ -158,7 +158,7 @@ The *fedcloud* client supports configuration from multiple sources, in the follo
    Example: the ``site`` setting in ``config.yaml``
 
 #. **Default configuration** – hardcoded defaults (lowest priority).  
-   See the `source code <../fedcloudclient/conf.py#L16>`_ for details.
+   See the `source code <https://github.com/jaro221/fedcloudclient>`_ for details.
 
 The priority order is important:  
 default values are overridden by the configuration file,  
@@ -393,7 +393,7 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 ::
 
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
-    export FEDCLOUD_OS_TOKEN="gAAAAA..."
+    export FEDCLOUD_OS_TOKEN="eayeghjtjtj..."
 
 
 * **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print
