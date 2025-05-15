@@ -246,7 +246,7 @@ The command above may affect responsiveness of the shell. For long work, it is r
 source it from ~/.bashrc. Refer `Click documentation
 <https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion>`_ for a long explanation.
 
-After enabling shell completion, press <TAB> twice for shell completion:
+After enabling shell completion, press <TAB> twice for shell completion
 
 ::
 
@@ -294,7 +294,7 @@ For this reason, the ``--oidc-access-token`` option is not shown in all examples
 
     $ fedcloud token check
 
-Output is shown as:
+Output is shown as
 ::
     Access token is valid to 2021-01-02 01:25:39 UTC
     Access token expires in 3571 seconds
@@ -306,7 +306,8 @@ Output is shown as:
 
     $ fedcloud token list-vos
 
-Sample output:
+Sample output
+
 ::
     eosc-synergy.eu
     fedcloud.egi.eu
