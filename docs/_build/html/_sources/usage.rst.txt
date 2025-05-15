@@ -119,8 +119,8 @@ For example, to print the environment configuration, use the following command::
     $ fedcloud config show --source env_config
   
 
+**Testing new version.....**
 This command shows, for instance, the following output:
-
 
 +----------------------------+-------------------------------------------------------------------+
 |  Parameter                  |  Default value                                                   |
