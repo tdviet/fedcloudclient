@@ -28,7 +28,7 @@ or use Docker container:
 
 ::
 
-    $ export OIDC_ACCESS_TOKEN=<ACCESS_TOKEN>
+    $ export FEDCLOUD_OIDC_ACCESS_TOKEN=<ACCESS_TOKEN>
 
 Basic usages
 ************

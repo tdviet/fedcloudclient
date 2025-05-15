@@ -1,34 +1,26 @@
 """
 Implementation of "fedcloud secret" commands for accessing secret management service
 """
-import base64
-import json
-import os
 import sys
 
 import click
 import hvac
 import requests
-import yaml
-from cryptography.fernet import Fernet, InvalidToken
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from hvac.exceptions import VaultError
-from tabulate import tabulate
-from yaml import YAMLError
 
-from fedcloudclient.checkin import get_checkin_id
-from fedcloudclient.decorators import (
-    oidc_params,
-    secret_output_params,
-    secret_token_params,
-)
+from fedcloudclient.auth import OIDCToken
+from fedcloudclient.conf import CONF
+from fedcloudclient.decorators import oidc_params, secret_output_params, secret_token_params
+from fedcloudclient.logger import LOG, log_and_raise
+from fedcloudclient.secret_helper import decrypt_data, encrypt_data, print_secrets, print_value, secret_params_to_dict
+from fedcloudclient.vault_auth import VaultToken
+from fedcloudclient.exception import ServiceError
 
-VAULT_ADDR = "https://vault.services.fedcloud.eu:8200"
-VAULT_ROLE = ""
-VAULT_MOUNT_POINT = "/secrets/"
-VAULT_SALT = "fedcloud_salt"
-VAULT_LOCKER_MOUNT_POINT = "/v1/cubbyhole/"
+VAULT_ADDR = CONF.get("vault_endpoint")
+VAULT_ROLE = CONF.get("vault_role")
+VAULT_MOUNT_POINT = CONF.get("vault_mount_point")
+VAULT_SALT = CONF.get("vault_salt")
+VAULT_LOCKER_MOUNT_POINT = CONF.get("vault_locker_mount_point")
 
 
 def secret_client(access_token, command, path, data):
@@ -44,7 +36,8 @@ def secret_client(access_token, command, path, data):
     try:
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
-        checkin_id = get_checkin_id(access_token)
+        token=OIDCToken()
+        checkin_id = token.get_checkin_id(access_token)
         full_path = "users/" + checkin_id + "/" + path
         function_list = {
             "list_secrets": client.secrets.kv.v1.list_secrets,
@@ -63,10 +56,10 @@ def secret_client(access_token, command, path, data):
                 mount_point=VAULT_MOUNT_POINT,
             )
         return response
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as err:
+        err_msg=f"Error: Error when accessing secrets on server. Server response: {type(err).__name__}: {err}"
+        log_and_raise(err_msg, err)
+        raise SystemExit(err_msg) from err
 
 
 def locker_client(locker_token, command, path, data):
@@ -96,183 +89,11 @@ def locker_client(locker_token, command, path, data):
         if command in ["list_secrets", "read_secret"]:
             response_json = response.json()
             return dict(response_json)
-        else:
-            return None
+        return None
     except requests.exceptions.HTTPError as exception:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
-        )
-
-
-def read_data_from_file(input_format, input_file):
-    """
-    Read data from file. Format may be text, yaml, json or auto-detect according to file extension
-    :param input_format:
-    :param input_file:
-    :return:
-    """
-
-    if input_format is None or input_format == "auto-detect":
-        if input_file.endswith(".json"):
-            input_format = "json"
-        else:
-            # default format
-            input_format = "yaml"
-
-    try:
-
-        # read text/binary files to strings
-        if input_format == "binary":
-            with open(input_file, "rb") if input_file else sys.stdin.buffer as f:
-                return base64.b64encode(f.read()).decode()
-        if input_format == "text":
-            with open(input_file, "r") if input_file else sys.stdin as f:
-                return f.read()
-
-        # reading YAML or JSON to dict
-        with open(input_file) if input_file else sys.stdin as f:
-            if input_format == "yaml":
-                data = yaml.safe_load(f)
-            elif input_format == "json":
-                data = json.load(f)
-            return dict(data)
-
-    except (ValueError, FileNotFoundError, YAMLError) as e:
-        raise SystemExit(
-            f"Error: Error when reading file {input_file}. Error message: {type(e).__name__}: {e}"
-        )
-
-
-def secret_params_to_dict(params, binary_file=False):
-    """
-    Convert secret params "key=value" to dict {"key":"value"}
-    :param binary_file: if reading files as binary
-    :param params: input string in format "key=value"
-    :return: dict {"key":"value"}
-    """
-
-    result = {}
-
-    if len(params) == 0:
-        raise SystemExit(
-            "Error: Expecting 'key=value' arguments for secrets, None provided."
-        )
-
-    for param in params:
-        if param.startswith("@") or param == "-":
-            data = read_data_from_file(None, param[1:])
-            result.update(data)
-        else:
-            try:
-                key, value = param.split("=", 1)
-            except ValueError:
-                raise SystemExit(
-                    f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
-                )
-            if value.startswith("@") or value == "-":
-                if binary_file:
-                    value = read_data_from_file("binary", value[1:])
-                else:
-                    value = read_data_from_file("text", value[1:])
-            result[key] = value
-
-    return result
-
-
-def generate_derived_key(salt, passphrase):
-    """
-    Generate derived encryption/decryption key from salted passphrase
-    :param salt:
-    :param passphrase:
-    :return: derived key
-    """
-
-    kdf = PBKDF2HMAC(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=salt,
-        iterations=390000,
-    )
-    return base64.b64encode(kdf.derive(passphrase.encode()))
-
-
-def encrypt_data(encrypt_key, secrets):
-    """
-    Encrypt values in secrets using key
-    :param encrypt_key: encryption key
-    :param secrets: dict containing secrets
-    :return: dict with encrypted values
-    """
-    salt = os.urandom(16)
-    derived_key = generate_derived_key(salt, encrypt_key)
-    fernet = Fernet(derived_key)
-    for key in secrets:
-        secrets[key] = fernet.encrypt(secrets[key].encode())
-    secrets[VAULT_SALT] = base64.b64encode(salt)
-
-
-def decrypt_data(decrypt_key, secrets):
-    """
-    Decrypt values in secrets using key
-    :param decrypt_key: decryption key
-    :param secrets: dict containing encrypted secrets
-    :return: dict with decrypted values
-    """
-    try:
-        salt = base64.b64decode(secrets.pop(VAULT_SALT))
-        derived_key = generate_derived_key(salt, decrypt_key)
-        fernet = Fernet(derived_key)
-        for key in secrets:
-            secrets[key] = fernet.decrypt(secrets[key].encode()).decode()
-    except InvalidToken as e:
-        raise SystemExit(f"Error: Error during decryption. {e}")
-
-
-def print_secrets(output_file, output_format, secrets):
-    """
-    Print secrets in different formats
-    :param output_file:
-    :param output_format:
-    :param secrets:
-    :return:
-    """
-
-    try:
-        with open(output_file, "wt") if output_file else sys.stdout as f:
-            if output_format == "JSON":
-                json.dump(secrets, f, indent=4)
-            elif output_format == "YAML":
-                yaml.dump(secrets, f, sort_keys=False)
-            else:
-                print(tabulate(secrets.items(), headers=["key", "value"]), file=f)
-
-    except (ValueError, FileNotFoundError, YAMLError) as e:
-        raise SystemExit(
-            f"Error: Error when writing file {output_file}. Error message: {type(e).__name__}: {e}"
-        )
-
-
-def print_value(output_file, binary_file, value):
-    """
-    Print secrets in different formats
-    :param output_file:
-    :param binary_file:
-    :param value:
-    :return:
-    """
-
-    try:
-        if binary_file:
-            with open(output_file, "wb") if output_file else sys.stdout.buffer as f:
-                f.write(base64.b64decode(value.encode()))
-        else:
-            with open(output_file, "wt") if output_file else sys.stdout as f:
-                f.write(value)
-
-    except (ValueError, FileNotFoundError, TypeError) as e:
-        raise SystemExit(
-            f"Error: Error when writing file {output_file}. Error message: {type(e).__name__}: {e}"
-        )
+        err_msg=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(err_msg, exception)
+        raise SystemExit(err_msg) from exception
 
 
 @click.group()
@@ -285,12 +106,12 @@ def secret():
 @secret.command()
 @secret_token_params
 @secret_output_params
-@click.argument("short_path", metavar="[secret path]")
+@click.argument("short_path", metavar="[secret_path]")
 @click.argument("key", metavar="[key]", required=False)
 @click.option(
     "--decrypt-key",
     "-d",
-    metavar="[key]",
+    metavar="passphrase",
     required=False,
     help="Decryption key or passphrase",
 )
@@ -304,54 +125,63 @@ def secret():
 @click.option(
     "--output-file",
     "-o",
-    metavar="[filename]",
+    metavar="filename",
     required=False,
     help="Name of output file",
 )
 def get(
-    access_token,
-    locker_token,
-    short_path,
-    key,
-    output_format,
-    decrypt_key,
-    binary_file,
-    output_file,
+        token: VaultToken,
+        short_path: str,
+        key: str,
+        output_format: str,
+        decrypt_key: str,
+        binary_file: bool,
+        output_file: str,
 ):
     """
     Get the secret object in the path. If a key is given, print only the value of the key
     """
-    if locker_token:
-        response = locker_client(locker_token, "read_secret", short_path, None)
-    else:
-        response = secret_client(access_token, "read_secret", short_path, None)
-    if decrypt_key:
-        decrypt_data(decrypt_key, response["data"])
-    if not key:
-        print_secrets(output_file, output_format, response["data"])
-    else:
-        if key in response["data"]:
-            print_value(output_file, binary_file, response["data"][key])
-        else:
-            raise SystemExit(f"Error: {key} not found in {short_path}")
 
+    try:
+        response = token.vault_command(command="get", path=short_path, data={})
+        if decrypt_key:
+            decrypt_data(decrypt_key, response["data"])
+        if not key:
+            print_secrets(output_file, output_format, response["data"])
+        else:
+            if key in response["data"]:
+                print_value(output_file, binary_file, response["data"][key])
+            else:
+                raise SystemExit(f"Error: {key} not found in {short_path}")
+    except Exception as exception:
+        msg_err=f"An unexpected error occurred: {str(exception)}" #, file=sys.stderr
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise ServiceError(msg_err) from exception
 
 @secret.command("list")
 @secret_token_params
 @click.argument("short_path", metavar="[secret path]", required=False, default="")
 def list_(
-    access_token,
-    locker_token,
-    short_path,
+        token: VaultToken,
+        short_path: str,
 ):
     """
     List secret objects in the path
     """
-    if locker_token:
-        response = locker_client(locker_token, "list_secrets", short_path, None)
-    else:
-        response = secret_client(access_token, "list_secrets", short_path, None)
-    print("\n".join(map(str, response["data"]["keys"])))
+    try:
+        response = token.vault_command(command="list", path=short_path, data={})
+        print("\n".join(map(str, response["data"]["keys"])))
+    except Exception as exception:
+        message = str(exception)
+        if "HTTPError: 404" in message:
+            file=sys.stderr
+            msg_err=f"No secrets found: {file}"
+            log_and_raise(msg_err, ServiceError(msg_err))
+            raise ServiceError(msg_err) from exception
+
+        msg_err=f"An unexpected error occurred: {str(exception)}"#, file=sys.stderr
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise ServiceError(msg_err) from exception
 
 
 @secret.command()
@@ -361,7 +191,7 @@ def list_(
 @click.option(
     "--encrypt-key",
     "-e",
-    metavar="[key]",
+    metavar="passphrase",
     help="Encryption key or passphrase",
 )
 @click.option(
@@ -371,12 +201,11 @@ def list_(
     help="True for reading secrets from binary files",
 )
 def put(
-    access_token,
-    locker_token,
-    short_path,
-    secrets,
-    encrypt_key,
-    binary_file,
+        token: VaultToken,
+        short_path: str,
+        secrets: list,
+        encrypt_key: str,
+        binary_file: bool,
 ):
     """
     Put a secret object to the path. Secrets are provided in form key=value
@@ -385,27 +214,20 @@ def put(
     secret_dict = secret_params_to_dict(secrets, binary_file)
     if encrypt_key:
         encrypt_data(encrypt_key, secret_dict)
-    if locker_token:
-        locker_client(locker_token, "put", short_path, secret_dict)
-    else:
-        secret_client(access_token, "put", short_path, secret_dict)
+    token.vault_command(command="put", path=short_path, data=secret_dict)
 
 
 @secret.command()
 @secret_token_params
 @click.argument("short_path", metavar="[secret path]")
 def delete(
-    access_token,
-    locker_token,
-    short_path,
+        token: VaultToken,
+        short_path,
 ):
     """
     Delete the secret object in the path
     """
-    if locker_token:
-        locker_client(locker_token, "delete_secret", short_path, None)
-    else:
-        secret_client(access_token, "delete_secret", short_path, None)
+    token.vault_command(command="delete", path=short_path, data={})
 
 
 @secret.group()
@@ -418,13 +240,14 @@ def locker():
 @locker.command()
 @oidc_params
 @secret_output_params
-@click.option("--ttl", default="24h", help="Time-to-live for the new locker")
-@click.option("--num-uses", default=10, help="Max number of uses")
+@click.option("--ttl", default="24h", help="Locker's Time-to-live", show_default=True)
+@click.option("--num-uses", default=10, help="Max number of uses", show_default=True)
 @click.option("--verbose", is_flag=True, help="Print token details")
 def create(access_token, ttl, num_uses, output_format, verbose):
     """
     Create a locker and return the locker token
     """
+    LOG.debug("Creating a new locker")
     try:
         client = hvac.Client(url=VAULT_ADDR)
         client.auth.jwt.jwt_login(role=VAULT_ROLE, jwt=access_token)
@@ -435,11 +258,11 @@ def create(access_token, ttl, num_uses, output_format, verbose):
         if not verbose:
             print(locker_token["auth"]["client_token"])
         else:
-            print_secrets(None, output_format, locker_token["auth"])
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+            print_secrets("", output_format, locker_token["auth"])
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
 
 
 @locker.command()
@@ -456,11 +279,11 @@ def check(locker_token, output_format):
         client = hvac.Client(url=VAULT_ADDR)
         client.token = locker_token
         locker_info = client.auth.token.lookup_self()
-        print_secrets(None, output_format, locker_info["data"])
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+        print_secrets("", output_format, locker_info["data"])
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
 
 
 @locker.command()
@@ -475,7 +298,7 @@ def revoke(locker_token):
         client = hvac.Client(url=VAULT_ADDR)
         client.token = locker_token
         client.auth.token.revoke_self()
-    except VaultError as e:
-        raise SystemExit(
-            f"Error: Error when accessing secrets on server. Server response: {type(e).__name__}: {e}"
-        )
+    except VaultError as exception:
+        msg_err=f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception

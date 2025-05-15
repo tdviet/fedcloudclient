@@ -1,19 +1,21 @@
 """
 Decorators for command-line parameters
 """
+import os
 from functools import wraps
 
 import click
 from click_option_group import (
     RequiredAnyOptionGroup,
-    RequiredMutuallyExclusiveOptionGroup,
-    optgroup,
+    optgroup, MutuallyExclusiveOptionGroup,
 )
 
-DEFAULT_MYTOKEN_SERVER = "https://mytoken.data.kit.edu"
-DEFAULT_PROTOCOL = "openid"
-DEFAULT_AUTH_TYPE = "v3oidcaccesstoken"
-DEFAULT_IDENTITY_PROVIDER = "egi.eu"
+from fedcloudclient.conf import CONF
+from fedcloudclient.exception import TokenError
+from fedcloudclient.locker_auth import LockerToken
+from fedcloudclient.vault_auth import VaultToken
+from fedcloudclient.auth import OIDCToken
+from fedcloudclient.logger import log_and_raise
 
 ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 
@@ -21,7 +23,7 @@ ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 oidc_access_token_params = click.option(
     "--oidc-access-token",
     help="OIDC access token",
-    envvar="OIDC_ACCESS_TOKEN",
+    default=CONF.get("oidc_access_token"),
     metavar="token",
 )
 
@@ -29,8 +31,7 @@ oidc_access_token_params = click.option(
 site_params = click.option(
     "--site",
     help="Name of the site",
-    required=True,
-    envvar="EGI_SITE",
+    default=CONF.get("site"),
     metavar="site-name",
 )
 
@@ -51,13 +52,13 @@ def all_site_params(func):
 
     @optgroup.group(
         "Site",
-        cls=RequiredMutuallyExclusiveOptionGroup,
+        cls=MutuallyExclusiveOptionGroup,
         help="Single Openstack site or all sites",
     )
     @optgroup.option(
         "--site",
         help="Name of the site or ALL_SITES",
-        envvar="EGI_SITE",
+        default=CONF.get("site"),
         metavar="site-name",
     )
     @optgroup.option(
@@ -77,8 +78,7 @@ def all_site_params(func):
 project_id_params = click.option(
     "--project-id",
     help="Project ID",
-    required=True,
-    envvar="OS_PROJECT_ID",
+    default=CONF.get("project_id"),
     metavar="project-id",
 )
 
@@ -95,8 +95,7 @@ auth_file_params = click.option(
 vo_params = click.option(
     "--vo",
     help="Name of the VO",
-    required=True,
-    envvar="EGI_VO",
+    default=CONF.get("vo"),
     metavar="vo-name",
 )
 
@@ -134,40 +133,39 @@ def oidc_params(func):
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
+        default=CONF.get("oidc_agent_account"),
         metavar="account",
     )
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
+        default=os.getenv("FEDCLOUD_OIDC_ACCESS_TOKEN"),
         metavar="token",
     )
     @optgroup.option(
         "--mytoken",
         help="Mytoken string",
-        envvar="FEDCLOUD_MYTOKEN",
+        default=CONF.get("mytoken"),
         metavar="mytoken",
     )
     @optgroup.option(
         "--mytoken-server",
         help="Mytoken sever",
-        envvar="FEDCLOUD_MYTOKEN_SERVER",
-        default=DEFAULT_MYTOKEN_SERVER,
-        show_default=True,
-        metavar="mytoken-server",
+        default=CONF.get("mytoken_server"),
+        metavar="url",
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
-        from fedcloudclient.checkin import get_access_token
 
-        access_token = get_access_token(
+        token=OIDCToken()
+        access_token = token.multiple_token(
             kwargs.pop("oidc_access_token"),
             kwargs.pop("oidc_agent_account"),
             kwargs.pop("mytoken"),
             kwargs.pop("mytoken_server"),
-        )
+        ) # pylint: disable=assignment-from-none
         kwargs["access_token"] = access_token
+
         return func(*args, **kwargs)
 
     return wrapper
@@ -183,26 +181,23 @@ def openstack_params(func):
         help="Only change default values if necessary",
     )
     @optgroup.option(
-        "--openstack-auth-protocol",
+        "--os-protocol",
         help="Authentication protocol",
-        envvar="OPENSTACK_AUTH_PROTOCOL",
-        default=DEFAULT_PROTOCOL,
+        default=CONF.get("os_protocol"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
-        "--openstack-auth-provider",
+        "--os-identity-provider",
         help="Identity provider",
-        envvar="OPENSTACK_AUTH_PROVIDER",
-        default=DEFAULT_IDENTITY_PROVIDER,
+        default=CONF.get("os_identity_provider"),
         show_default=True,
         metavar="",
     )
     @optgroup.option(
-        "--openstack-auth-type",
+        "--os-auth-type",
         help="Authentication type",
-        envvar="OPENSTACK_AUTH_TYPE",
-        default=DEFAULT_AUTH_TYPE,
+        default=CONF.get("os_auth_type"),
         show_default=True,
         metavar="",
     )
@@ -363,58 +358,57 @@ def secret_token_params(func):
     @optgroup.option(
         "--locker-token",
         help="Locker token",
-        envvar="FEDCLOUD_LOCKER_TOKEN",
+        default=CONF.get("locker_token"),
         metavar="locker_token",
+    )
+    @optgroup.option(
+        "--vault-token",
+        help="Vault token",
+        default=CONF.get("vault_token"),
+        metavar="vault_token",
     )
     @optgroup.option(
         "--oidc-agent-account",
         help="Account name in oidc-agent",
-        envvar="OIDC_AGENT_ACCOUNT",
+        default=CONF.get("oidc_agent_account"),
         metavar="account",
     )
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        envvar="OIDC_ACCESS_TOKEN",
+        default=CONF.get("oidc_access_token"),
         metavar="token",
     )
     @optgroup.option(
         "--mytoken",
         help="Mytoken string",
-        envvar="FEDCLOUD_MYTOKEN",
+        default=CONF.get("mytoken"),
         metavar="mytoken",
-    )
-    @optgroup.option(
-        "--mytoken-server",
-        help="Mytoken sever",
-        envvar="FEDCLOUD_MYTOKEN_SERVER",
-        default=DEFAULT_MYTOKEN_SERVER,
-        show_default=True,
-        metavar="mytoken-server",
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
-        from fedcloudclient.checkin import get_access_token
 
         # If locker token is given, ignore OIDC token options
         locker_token = kwargs.pop("locker_token")
-        if locker_token:
-            kwargs.pop("oidc_access_token")
-            kwargs.pop("oidc_agent_account")
-            kwargs.pop("mytoken")
-            kwargs.pop("mytoken_server")
-            kwargs["access_token"] = None
-            kwargs["locker_token"] = locker_token
-            return func(*args, **kwargs)
+        vault_token = kwargs.pop("vault_token")
+        access_token = kwargs.pop("oidc_access_token")
+        oidc_agent_account = kwargs.pop("oidc_agent_account")
+        mytoken = kwargs.pop("mytoken")
 
-        access_token = get_access_token(
-            kwargs.pop("oidc_access_token"),
-            kwargs.pop("oidc_agent_account"),
-            kwargs.pop("mytoken"),
-            kwargs.pop("mytoken_server"),
-        )
-        kwargs["access_token"] = access_token
-        kwargs["locker_token"] = None
+        if locker_token:
+            token = LockerToken(locker_token=locker_token)
+        elif vault_token:
+            token = VaultToken(vault_token=vault_token)
+        else:
+            token = VaultToken()
+            try:
+                token.multiple_token(access_token, oidc_agent_account, mytoken)
+            except TokenError:
+                error_msg=f"Can not access to the ACCESS_TOKEN: {TokenError}"
+                log_and_raise(error_msg, TokenError)
+                SystemExit(1)
+
+        kwargs["token"] = token
         return func(*args, **kwargs)
 
     return wrapper
