@@ -19,7 +19,9 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quick start" href="quickstart.html" />
+    <link rel="prev" title="fedcloudclient API references" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +32,7 @@
 
           
           
-          <a href="rename.html" class="icon icon-home">
+          <a href="index.html" class="icon icon-home">
             fedcloudclient
               <img src="_static/fedcloudclient-logo-non-transparent-small.png" class="logo" alt="Logo"/>
           </a>
@@ -42,78 +44,38 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">FedCloud client API references</a><ul>
-<li><a class="reference internal" href="#module-fedcloudclient.checkin">fedcloudclient.checkin module</a><ul>
-<li><a class="reference internal" href="#fedcloudclient.checkin.check_token"><code class="docutils literal notranslate"><span class="pre">check_token()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.decode_token"><code class="docutils literal notranslate"><span class="pre">decode_token()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.get_access_token"><code class="docutils literal notranslate"><span class="pre">get_access_token()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.get_checkin_id"><code class="docutils literal notranslate"><span class="pre">get_checkin_id()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.get_token_from_mytoken_server"><code class="docutils literal notranslate"><span class="pre">get_token_from_mytoken_server()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.get_token_from_oidc_agent"><code class="docutils literal notranslate"><span class="pre">get_token_from_oidc_agent()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.oidc_discover"><code class="docutils literal notranslate"><span class="pre">oidc_discover()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.print_error"><code class="docutils literal notranslate"><span class="pre">print_error()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.checkin.token_list_vos"><code class="docutils literal notranslate"><span class="pre">token_list_vos()</span></code></a></li>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#authentication-options">Authentication Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheat.html">Cheat sheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">fedcloudclient API references</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">FedCloud client API references</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-fedcloudclient.endpoint">fedcloudclient.endpoint module</a><ul>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.TokenException"><code class="docutils literal notranslate"><span class="pre">TokenException</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.find_endpoint"><code class="docutils literal notranslate"><span class="pre">find_endpoint()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.format_project_as_dict"><code class="docutils literal notranslate"><span class="pre">format_project_as_dict()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.format_project_as_list"><code class="docutils literal notranslate"><span class="pre">format_project_as_list()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_keystone_url"><code class="docutils literal notranslate"><span class="pre">get_keystone_url()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_projects_from_single_site"><code class="docutils literal notranslate"><span class="pre">get_projects_from_single_site()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_projects_from_sites"><code class="docutils literal notranslate"><span class="pre">get_projects_from_sites()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_projects_from_sites_as_dict"><code class="docutils literal notranslate"><span class="pre">get_projects_from_sites_as_dict()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_projects_from_sites_as_list"><code class="docutils literal notranslate"><span class="pre">get_projects_from_sites_as_list()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_projects_from_sites_with_format"><code class="docutils literal notranslate"><span class="pre">get_projects_from_sites_with_format()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_scoped_token"><code class="docutils literal notranslate"><span class="pre">get_scoped_token()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_sites"><code class="docutils literal notranslate"><span class="pre">get_sites()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.get_unscoped_token"><code class="docutils literal notranslate"><span class="pre">get_unscoped_token()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.endpoint.retrieve_unscoped_token"><code class="docutils literal notranslate"><span class="pre">retrieve_unscoped_token()</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
 </ul>
-</li>
-<li><a class="reference internal" href="#module-fedcloudclient.sites">fedcloudclient.sites module</a><ul>
-<li><a class="reference internal" href="#fedcloudclient.sites.delete_site_config"><code class="docutils literal notranslate"><span class="pre">delete_site_config()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.find_endpoint_and_project_id"><code class="docutils literal notranslate"><span class="pre">find_endpoint_and_project_id()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.find_site_data"><code class="docutils literal notranslate"><span class="pre">find_site_data()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.find_vo_from_project_id"><code class="docutils literal notranslate"><span class="pre">find_vo_from_project_id()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.list_sites"><code class="docutils literal notranslate"><span class="pre">list_sites()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.read_default_site_config"><code class="docutils literal notranslate"><span class="pre">read_default_site_config()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.read_local_site_config"><code class="docutils literal notranslate"><span class="pre">read_local_site_config()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.read_site_config"><code class="docutils literal notranslate"><span class="pre">read_site_config()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.read_site_schema"><code class="docutils literal notranslate"><span class="pre">read_site_schema()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.safe_read_yaml_from_url"><code class="docutils literal notranslate"><span class="pre">safe_read_yaml_from_url()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.sites.save_site_config"><code class="docutils literal notranslate"><span class="pre">save_site_config()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-fedcloudclient.openstack">fedcloudclient.openstack module</a><ul>
-<li><a class="reference internal" href="#fedcloudclient.openstack.check_openstack_client_installation"><code class="docutils literal notranslate"><span class="pre">check_openstack_client_installation()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.openstack.fedcloud_openstack"><code class="docutils literal notranslate"><span class="pre">fedcloud_openstack()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.openstack.fedcloud_openstack_full"><code class="docutils literal notranslate"><span class="pre">fedcloud_openstack_full()</span></code></a></li>
-<li><a class="reference internal" href="#fedcloudclient.openstack.print_result"><code class="docutils literal notranslate"><span class="pre">print_result()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-fedcloudclient.cli">fedcloudclient.cli module</a></li>
-</ul>
-</li>
-</ul>
-</div>
+
         </div>
       </div>
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="rename.html">fedcloudclient</a>
+          <a href="index.html">fedcloudclient</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="rename.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">fedcloudclient API references</a></li>
       <li class="breadcrumb-item active">FedCloud client API references</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/fedcloudclient.rst.txt" rel="nofollow"> View page source</a>
@@ -632,7 +594,10 @@ e.g. (“image”, “list”, “–long”)</p></li>
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="fedcloudclient API references" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="quickstart.html" class="btn btn-neutral float-right" title="Quick start" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 
