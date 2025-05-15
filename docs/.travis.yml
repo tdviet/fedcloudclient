@@ -1,0 +1,10 @@
+---
+language: python
+python:
+  - "3.8"
+install:
+  - gem install mdl
+  - pip install tox
+script:
+  # First syntax, linting and pre-test stages
+  - tox -e pep8,bandit

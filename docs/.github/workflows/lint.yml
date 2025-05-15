@@ -1,0 +1,30 @@
+---
+name: Super-Linter
+
+on:
+  push:
+    branches: [2.0-alpha-tests]
+  pull_request:
+    branches: [2.0-alpha-tests]
+  workflow_dispatch:
+
+jobs:
+  super-lint:
+    name: Lint with Super-Linter
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out a copy of your repository on the ubuntu-latest machine
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Runs the Super-Linter action
+      - name: Run Super-Linter on new changes
+        uses: github/super-linter@v4
+        env:
+          DEFAULT_BRANCH: master
+          VALIDATE_PYTHON_ISORT: false
+          VALIDATE_PYTHON_MYPY: false
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Fail on errors
+          DISABLE_ERRORS: false

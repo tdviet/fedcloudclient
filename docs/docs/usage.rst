@@ -19,8 +19,6 @@ Usage
 * **"fedcloud ec3"** as helper commands for deploying EC3.
 
 
-Authentication
-**************
 
 Authentication Options
 ======================
@@ -109,49 +107,70 @@ This will show a list of configuration parameters:
 |  os_identity_provider      |  egi.eu                                                                            |
 +----------------------------+------------------------------------------------------------------------------------+
 
-::
+
+The **FedCloud client** supports multiple types of configuration:
+
+- **Default settings** – accessible using **``DEFAULT_SETTINGS``**, these are the built-in default values.
+- **Local environment settings** – custom configuration values defined in the environment and loaded via **``env_config``**.
+- **Saved configuration settings** – user-defined settings stored in a JSON file, accessible via **``saved_config``**.
+
+For example, to print the environment configuration, use the following command::
 
     $ fedcloud config show --source env_config
-    parameter    value
-    -----------  ----------------------------------
-    tessss
-    mytoken      eyJhbG
+  
 
-This will show configurations according to their source as: "DEFAULT_SETTINGS", "env_config", "saved_config"
-
-The *fedcloud* configuration can be saved to a file with:
+This command shows, for instance, the following output:
 
 ::
+    parameter           value
+    ------------------  -------
+    oidc_agent_account  jaro221
 
+
+The *fedcloud* configuration can be saved to a file using the following command
+
+::
     $ fedcloud config create
 
-By default the configuration file is saved to **${HOME}/.config/fedcloud/config.yaml**
-but this can be changed:
+By default, the configuration file is saved to **${HOME}/.config/fedcloud/config.yaml**,  
+but this location can be changed using the ``--config`` option. For example:
 
 ::
 
     $ fedcloud config create --config-file /path/to/file.yaml
 
-It is also possible to use the *FEDCLOUD_CONFIG_FILE* environment variable instead
-of the *--config-file* option in the command line. This way users may save and load
-multiple configuration files, one per project, with its own configuraion.
 
-*fedcloud* parameters can be configured using:
+Using Environment Variables and Configuration Priorities
+--------------------------------------------------------
 
-#. comand-line options (highest priority); e.g.: *--site*
+It is also possible to use the *FEDCLOUD_CONFIG_FILE* environment variable instead of the ``--config`` option in the command line.  
+This allows users to manage and switch between multiple configuration files—one per project—each with its own settings.
 
-#. environment variables starting with the prefix *FEDCLOUD_*;
-   e.g.: *FEDCLOUD_SITE*.
+The *fedcloud* client supports configuration from multiple sources, in the following order of priority (highest to lowest):
 
-#. configuration file; e.g. *site* in *config.yaml*
+#. **Command-line options** – override all other settings.  
+   Example: ``--site IISAS-FedCloud``
 
-#. default configuration (lowest priority), `harcoded <../fedcloudclient/conf.py#L16>`_.
+#. **Environment variables** – must begin with the prefix ``FEDCLOUD_``.  
+   Example: ``FEDCLOUD_SITE=IISAS-FedCloud``
 
-The order is important: the default configuration is overwritten by the
-configuration file, and this is overwritten by values stored in environment
-variables, and this is overwritten by values in the command-line. For example,
-the default configuration comes with *site = IISAS-FedCloud* and
-*vo = vo.access.egi.eu*. This can be changed with:
+#. **Configuration file** – typically stored as ``config.yaml``.  
+   Example: the ``site`` setting in ``config.yaml``
+
+#. **Default configuration** – hardcoded defaults (lowest priority).  
+   See the `source code <../fedcloudclient/conf.py#L16>`_ for details.
+
+The priority order is important:  
+default values are overridden by the configuration file,  
+which is overridden by environment variables,  
+which are in turn overridden by command-line options.
+
+For example, the default configuration includes:
+
+- ``site = IISAS-FedCloud``
+- ``vo = vo.access.egi.eu``
+
+These values can be changed using any of the higher-priority methods. For example:
 
 ::
 
@@ -165,31 +184,51 @@ or
     $ export FEDCLOUD_SITE=IFCA-LCG2
     $ fedcloud openstack server list
 
-Note the nomenclature referring to the same parameter:
 
-* *--oidc-agent-account* in the command-line
+Consistent Parameter Naming
+---------------------------
 
-* *FEDCLOUD_OIDC_AGENT_ACCOUNT* as environment variable
+Note the consistent naming convention for configuration parameters across different sources. For example, the same parameter is represented as:
 
-* *oidc_agent_account* in the configuration file
+* ``--oidc-agent-account`` in the **command-line**
+* ``FEDCLOUD_OIDC_AGENT_ACCOUNT`` as an **environment variable**
+* ``oidc_agent_account`` in the **configuration file**
 
-They all refer to the same. All configuration parameters follow this
-consistent approach.
+All configuration parameters follow this consistent mapping across command-line options, environment variables, and configuration files.
 
-Additional parameters can also be configured:
+Additional Configurable Parameters
+----------------------------------
 
-+------------------------------+-----------------------+
-|  Environment variable        |  Command-line option  |
-+==============================+=======================+
-|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token  |
-+------------------------------+-----------------------+
-|  FEDCLOUD_MYTOKEN            |  --mytoken            |
-+------------------------------+-----------------------+
-|  FEDCLOUD_LOCKER_TOKEN       |  --locker-token       |
-+------------------------------+-----------------------+
+In addition to ``oidc_agent_account``, the following parameters can also be configured in the same way:
 
-For convenience, always set transient parameters like tokens via
-environment variables, as it simplifies the call to *fedcloud*.
+* ``site`` – the OpenStack site to target
+* ``vo`` – the Virtual Organisation (VO)
+* ``check_in_url`` – the EGI Check-in OIDC endpoint
+* ``client_id`` – the OIDC client ID
+* ``scopes`` – requested OIDC scopes
+* ``access_token`` – manually provided access token
+* ``output_format`` – format of output, e.g., ``table``, ``json``, or ``yaml``
+
+These parameters can be specified via:
+
+- command-line options (e.g., ``--site``, ``--vo``),
+- environment variables (e.g., ``FEDCLOUD_SITE``, ``FEDCLOUD_VO``), or
+- configuration files (e.g., ``site: IISAS-FedCloud`` in ``config.yaml``).
+
+This design allows flexible and convenient configuration for various usage scenarios.
+
++------------------------------+-------------------------+
+|  Environment variable        |  Command-line option    |
++==============================+=========================+
+|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |
++------------------------------+-------------------------+
+|  FEDCLOUD_MYTOKEN            |  --mytoken              |
++------------------------------+-------------------------+
+|  FEDCLOUD_OIDC_AGENT_ACCOUNT |  --oidc-agent-account   |
++------------------------------+-------------------------+
+
+For convenience, it is recommended to set transient parameters—such as access tokens—via **environment variables**.  
+This simplifies the usage of *fedcloud* commands by avoiding the need to specify these parameters on the command line each time.
 
 
 Shell completion
@@ -244,13 +283,19 @@ fedcloud --help command
 fedcloud token commands
 ***********************
 
-* **"fedcloud token check"**: Check the expiration time of configured access token, so users can know whether
-  they need to refresh it. As mentioned before, access token may be given via environment variable *FEDCLOUD_OIDC_ACCESS_TOKEN*,
-  so the option *--oidc-access-token* is not shown in all examples bellows, even if the option is required.
+* **``fedcloud token check``** – Checks the expiration time of the configured access token,  
+  allowing users to determine whether it needs to be refreshed.
+
+As mentioned earlier, the access token can be provided via the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``.  
+For this reason, the ``--oidc-access-token`` option is not shown in all examples below, even though it may be required if the token is not set via environment variables.
+
 
 ::
 
     $ fedcloud token check
+
+Output is shown as:
+::
     Access token is valid to 2021-01-02 01:25:39 UTC
     Access token expires in 3571 seconds
 
@@ -260,6 +305,9 @@ fedcloud token commands
 ::
 
     $ fedcloud token list-vos
+
+Sample output:
+::
     eosc-synergy.eu
     fedcloud.egi.eu
     training.egi.eu
@@ -269,7 +317,10 @@ fedcloud token commands
 ::
 
     $ fedcloud token issue
-    ABCD______
+    
+Sample output:
+::
+  egwergwregrwegreg...
 
 fedcloud endpoint commands
 **************************
@@ -283,6 +334,10 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
 ::
 
     $ fedcloud endpoint list
+
+Sample output:
+
+::
     Site                type                URL
     ------------------  ------------------  ------------------------------------------------
     IFCA-LCG2           org.openstack.nova  https://api.cloud.ifca.es:5000/v3/
