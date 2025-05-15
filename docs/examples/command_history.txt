@@ -1,8 +1,0 @@
-fedcloud --help
-fedcloud openstack server list --site ALL_SITES --vo eosc-synergy.eu --json-output
-fedcloud openstack image list --site CYFRONET-CLOUD --vo fedcloud.egi.eu
-fedcloud openstack server list -c ID -c Name --site IFCA-LCG2 --vo eosc-synergy.eu
-fedcloud openstack flavor list --long --site IISAS-FedCloud --vo eosc-synergy.eu -f yaml
-fedcloud site list
-fedcloud token list-vos
-eval `oidc-keychain --accounts egi` && export OIDC_AGENT_ACCOUNT=egi
