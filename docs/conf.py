@@ -30,3 +30,17 @@ root_doc = 'rename'
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_logo = "fedcloudclient-logo-non-transparent-small.png"
+
+# Add custom CSS (optional)
+html_css_files = [
+    'custom.css',
+]
+
+# Make sure sidebar and index content renders
+html_theme_options = {
+    'logo_only': False,        # Show logo and project title
+    'display_version': True,
+    'navigation_depth': 4,     # Show deeper headings
+}
+
