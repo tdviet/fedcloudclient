@@ -44,13 +44,12 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Usage</a></li>
 <li><a class="reference internal" href="#authentication-options">Authentication Options</a><ul>
-<li><a class="reference internal" href="#by-default-the-protocol-used-is-openid-this-can-be-changed-using-the-os-protocol-option-note-that-some-sites-may-have-a-fixed-protocol-defined-in-their-site-configuration-e-g-oidc-for-infn-cloud-bari">By default, the protocol used is <code class="docutils literal notranslate"><span class="pre">openid</span></code>. This can be changed using the <code class="docutils literal notranslate"><span class="pre">--os-protocol</span></code> option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., <code class="docutils literal notranslate"><span class="pre">oidc</span></code> for INFN-CLOUD-BARI).</a><ul>
-<li><a class="reference internal" href="#configuration">Configuration</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#configuration">Configuration</a><ul>
 <li><a class="reference internal" href="#using-environment-variables-and-configuration-priorities">Using Environment Variables and Configuration Priorities</a></li>
 <li><a class="reference internal" href="#consistent-parameter-naming">Consistent Parameter Naming</a></li>
-<li><a class="reference internal" href="#additional-configurable-parameters">Additional Configurable Parameters</a><ul>
+<li><a class="reference internal" href="#additional-configurable-parameters">Additional Configurable Parameters</a></li>
+</ul>
+</li>
 <li><a class="reference internal" href="#shell-completion">Shell completion</a></li>
 <li><a class="reference internal" href="#fedcloud-help-command">fedcloud –help command</a></li>
 <li><a class="reference internal" href="#fedcloud-token-commands">fedcloud token commands</a></li>
@@ -60,8 +59,6 @@
 <li><a class="reference internal" href="#fedcloud-openstack-commands">fedcloud openstack commands</a></li>
 <li><a class="reference internal" href="#fedcloud-config-commands">fedcloud config commands</a></li>
 <li><a class="reference internal" href="#fedcloud-secret-commands">fedcloud secret commands</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -122,10 +119,9 @@
 </ul>
 <p>Alternatively, you can obtain tokens using the <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token Portal</a>, which provides all necessary information for EGI Check-in users.</p>
 <p>In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).</p>
-<section id="by-default-the-protocol-used-is-openid-this-can-be-changed-using-the-os-protocol-option-note-that-some-sites-may-have-a-fixed-protocol-defined-in-their-site-configuration-e-g-oidc-for-infn-cloud-bari">
-<h2>By default, the protocol used is <code class="docutils literal notranslate"><span class="pre">openid</span></code>. This can be changed using the <code class="docutils literal notranslate"><span class="pre">--os-protocol</span></code> option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., <code class="docutils literal notranslate"><span class="pre">oidc</span></code> for INFN-CLOUD-BARI).<a class="headerlink" href="#by-default-the-protocol-used-is-openid-this-can-be-changed-using-the-os-protocol-option-note-that-some-sites-may-have-a-fixed-protocol-defined-in-their-site-configuration-e-g-oidc-for-infn-cloud-bari" title="Link to this heading"></a></h2>
+<p>By default, the protocol used is <code class="docutils literal notranslate"><span class="pre">openid</span></code>. This can be changed using the <code class="docutils literal notranslate"><span class="pre">--os-protocol</span></code> option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., <code class="docutils literal notranslate"><span class="pre">oidc</span></code> for INFN-CLOUD-BARI).</p>
 <section id="configuration">
-<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
+<h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
 <p>Display the current configuration of <em>fedcloud</em> with:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud config show
 </pre></div>
@@ -233,10 +229,8 @@ but this location can be changed using the <code class="docutils literal notrans
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud config create --config-file /path/to/file.yaml
 </pre></div>
 </div>
-</section>
-</section>
 <section id="using-environment-variables-and-configuration-priorities">
-<h2>Using Environment Variables and Configuration Priorities<a class="headerlink" href="#using-environment-variables-and-configuration-priorities" title="Link to this heading"></a></h2>
+<h3>Using Environment Variables and Configuration Priorities<a class="headerlink" href="#using-environment-variables-and-configuration-priorities" title="Link to this heading"></a></h3>
 <p>It is also possible to use the <em>FEDCLOUD_CONFIG_FILE</em> environment variable instead of the <code class="docutils literal notranslate"><span class="pre">--config</span></code> option in the command line.
 This allows users to manage and switch between multiple configuration files—one per project—each with its own settings.</p>
 <p>The <em>fedcloud</em> client supports configuration from multiple sources, in the following order of priority (highest to lowest):</p>
@@ -271,7 +265,7 @@ $ fedcloud openstack server list
 </div>
 </section>
 <section id="consistent-parameter-naming">
-<h2>Consistent Parameter Naming<a class="headerlink" href="#consistent-parameter-naming" title="Link to this heading"></a></h2>
+<h3>Consistent Parameter Naming<a class="headerlink" href="#consistent-parameter-naming" title="Link to this heading"></a></h3>
 <p>Note the consistent naming convention for configuration parameters across different sources. For example, the same parameter is represented as:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">--oidc-agent-account</span></code> in the <strong>command-line</strong></p></li>
@@ -281,7 +275,7 @@ $ fedcloud openstack server list
 <p>All configuration parameters follow this consistent mapping across command-line options, environment variables, and configuration files.</p>
 </section>
 <section id="additional-configurable-parameters">
-<h2>Additional Configurable Parameters<a class="headerlink" href="#additional-configurable-parameters" title="Link to this heading"></a></h2>
+<h3>Additional Configurable Parameters<a class="headerlink" href="#additional-configurable-parameters" title="Link to this heading"></a></h3>
 <p>In addition to <code class="docutils literal notranslate"><span class="pre">oidc_agent_account</span></code>, the following parameters can also be configured in the same way:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">site</span></code> – the OpenStack site to target</p></li>
@@ -319,8 +313,10 @@ $ fedcloud openstack server list
 </table>
 <p>For convenience, it is recommended to set transient parameters—such as access tokens—via <strong>environment variables</strong>.
 This simplifies the usage of <em>fedcloud</em> commands by avoiding the need to specify these parameters on the command line each time.</p>
+</section>
+</section>
 <section id="shell-completion">
-<h3>Shell completion<a class="headerlink" href="#shell-completion" title="Link to this heading"></a></h3>
+<h2>Shell completion<a class="headerlink" href="#shell-completion" title="Link to this heading"></a></h2>
 <p>Shell completion for <em>fedcloud</em> command in <em>bash</em> can be activated by executing the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ eval &quot;$(_FEDCLOUD_COMPLETE=bash_source fedcloud)&quot;
 </pre></div>
@@ -328,14 +324,14 @@ This simplifies the usage of <em>fedcloud</em> commands by avoiding the need to 
 <p>The command above may affect responsiveness of the shell. For long work, it is recommended to copy the
 <a class="reference external" href="https://github.com/tdviet/fedcloudclient/blob/master/examples/fedcloud_bash_completion.sh">fedcloud_bash_completion.sh script</a> to a local file, and
 source it from ~/.bashrc. Refer <a class="reference external" href="https://click.palletsprojects.com/en/8.0.x/shell-completion/#enabling-completion">Click documentation</a> for a long explanation.</p>
-<p>After enabling shell completion, press &lt;TAB&gt; twice for shell completion:</p>
+<p>After enabling shell completion, press &lt;TAB&gt; twice for shell completion</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud site &lt;TAB&gt;&lt;TAB&gt;
 env              list             save-config      show             show-project-id
 </pre></div>
 </div>
 </section>
 <section id="fedcloud-help-command">
-<h3>fedcloud –help command<a class="headerlink" href="#fedcloud-help-command" title="Link to this heading"></a></h3>
+<h2>fedcloud –help command<a class="headerlink" href="#fedcloud-help-command" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>“fedcloud –help”</strong> command will print help message. When using it in combination with other
 commands, e.g. <strong>“fedcloud token –help”</strong>, <strong>“fedcloud token check –hep”</strong>, it will print list of options for the
@@ -360,7 +356,7 @@ Commands:
 </div>
 </section>
 <section id="fedcloud-token-commands">
-<h3>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud token commands<a class="headerlink" href="#fedcloud-token-commands" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>``fedcloud token check``</strong> – Checks the expiration time of the configured access token,
 allowing users to determine whether it needs to be refreshed.</p></li>
@@ -370,7 +366,7 @@ For this reason, the <code class="docutils literal notranslate"><span class="pre
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token check
 </pre></div>
 </div>
-<p>Output is shown as:</p>
+<p>Output is shown as</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Access</span> <span class="n">token</span> <span class="ow">is</span> <span class="n">valid</span> <span class="n">to</span> <span class="mi">2021</span><span class="o">-</span><span class="mi">01</span><span class="o">-</span><span class="mi">02</span> <span class="mi">01</span><span class="p">:</span><span class="mi">25</span><span class="p">:</span><span class="mi">39</span> <span class="n">UTC</span>
 <span class="n">Access</span> <span class="n">token</span> <span class="n">expires</span> <span class="ow">in</span> <span class="mi">3571</span> <span class="n">seconds</span>
 </pre></div>
@@ -381,12 +377,13 @@ For this reason, the <code class="docutils literal notranslate"><span class="pre
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ fedcloud token list-vos
 </pre></div>
 </div>
-<p>Sample output:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">eosc</span><span class="o">-</span><span class="n">synergy</span><span class="o">.</span><span class="n">eu</span>
-<span class="n">fedcloud</span><span class="o">.</span><span class="n">egi</span><span class="o">.</span><span class="n">eu</span>
-<span class="n">training</span><span class="o">.</span><span class="n">egi</span><span class="o">.</span><span class="n">eu</span>
-</pre></div>
-</div>
+<p>Sample output</p>
+<dl class="simple">
+<dt>::</dt><dd><p>eosc-synergy.eu
+fedcloud.egi.eu
+training.egi.eu</p>
+</dd>
+</dl>
 <ul class="simple">
 <li><p><strong>“fedcloud token issue”</strong> : Print the access_token</p></li>
 </ul>
@@ -399,7 +396,7 @@ For this reason, the <code class="docutils literal notranslate"><span class="pre
 </div>
 </section>
 <section id="fedcloud-endpoint-commands">
-<h3>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud endpoint commands<a class="headerlink" href="#fedcloud-endpoint-commands" title="Link to this heading"></a></h2>
 <p><strong>“fedcloud endpoint”</strong> commands are complementary part of the <strong>“fedcloud site”</strong> commands. Instead of using site
 configurations defined in files saved in GitHub repository or local disk, the commands try to get site information
 directly from GOCDB (Grid Operations Configuration Management Database) <a class="reference external" href="https://goc.egi.eu/">https://goc.egi.eu/</a> or make probe test on sites</p>
@@ -481,7 +478,7 @@ export FEDCLOUD_OS_ACCESS_TOKEN=&quot;...&quot;
 </div>
 </section>
 <section id="fedcloud-site-commands">
-<h3>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud site commands<a class="headerlink" href="#fedcloud-site-commands" title="Link to this heading"></a></h2>
 <p><strong>“fedcloud site”</strong> commands will read site configurations and manipulate with them. If the local site configurations
 exist at <em>~/.config/fedcloud/site-config/</em>, <strong>fedcloud</strong> will read them from there, otherwise the commands will read
 from <a class="reference external" href="https://github.com/EGI-Foundation/fedcloud-catchall-operations/tree/master/sites">GitHub repository</a>.</p>
@@ -561,7 +558,7 @@ needs VO name as input parameter instead of project ID. The command may set also
 if access token is provided, otherwise it will print notification.</p>
 </section>
 <section id="fedcloud-select-commands">
-<h3>fedcloud select commands<a class="headerlink" href="#fedcloud-select-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud select commands<a class="headerlink" href="#fedcloud-select-commands" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>“fedcloud select flavor –site &lt;SITE&gt; –vo &lt;VO&gt; –oidc-access-token &lt;ACCESS_TOKEN&gt; –flavor-specs &lt;flavor-specs&gt;”</strong> :
 Select flavor according to the specification in <em>flavor-specs</em>. The specifications may be repeated,
@@ -608,7 +605,7 @@ private-network
 </div>
 </section>
 <section id="fedcloud-openstack-commands">
-<h3>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud openstack commands<a class="headerlink" href="#fedcloud-openstack-commands" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>“fedcloud openstack –site &lt;SITE&gt; –vo &lt;VO&gt; –oidc-access-token &lt;ACCESS_TOKEN&gt; &lt;OPENSTACK_COMMAND&gt;”</strong> : Execute an
 OpenStack command on the site and VO. Examples of OpenStack commands are <em>“image list”</em>, <em>“server list”</em> and can be used
@@ -652,16 +649,15 @@ be used for successive commands without authentication via CheckIn again.</p></l
 </div>
 </section>
 <section id="fedcloud-config-commands">
-<h3>fedcloud config commands<a class="headerlink" href="#fedcloud-config-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud config commands<a class="headerlink" href="#fedcloud-config-commands" title="Link to this heading"></a></h2>
 <ul class="simple">
 <li><p><strong>“fedcloud config –config-file create”</strong> : Create default configuration file in default location for configuration file</p></li>
 </ul>
 </section>
 <section id="fedcloud-secret-commands">
-<h3>fedcloud secret commands<a class="headerlink" href="#fedcloud-secret-commands" title="Link to this heading"></a></h3>
+<h2>fedcloud secret commands<a class="headerlink" href="#fedcloud-secret-commands" title="Link to this heading"></a></h2>
 <p>The <strong>“fedcloud secret”</strong> commands are described in details in the documentation of the
 <a class="reference external" href="https://vault.docs.fedcloud.eu/usage.html">Secret management service</a>.</p>
-</section>
 </section>
 </section>
 
