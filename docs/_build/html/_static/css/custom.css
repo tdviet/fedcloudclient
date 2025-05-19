@@ -1,21 +1,12 @@
-/* docs/_static/css/custom.css */
-
-/* 1) Signature container (dt.sig) */
+/* Only style the signature line itself */
 dt.sig {
   background-color: #e8f0fe !important;
 }
 
-/* 2) The detail block under it (dd immediately after dt.sig) */
-dt.sig + dd {
-  background-color: #e8f0fe !important;
-}
-
-/* 3) The name text in every signature */
-dt.sig span.sig-name {
-  color: #1a73e8 !important;
-}
-
-/* 4) The return‐type hint (the “→ dict” etc.) */
+/* Colour the module path prefix, name, and return hint inside that line */
+dt.sig span.sig-prename,
+dt.sig span.descclassname,
+dt.sig span.sig-name,
 dt.sig span.sig-return-typehint {
   color: #1a73e8 !important;
 }
