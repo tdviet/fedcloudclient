@@ -19,7 +19,7 @@ class Token:
     """
     Abstract base class for token management.
     """
-    
+
     def __init__(self):
         pass
 
@@ -32,7 +32,7 @@ class OIDCToken(Token):
     Mytoken server), decodes them, and exposes user and VO membership
     information.
 
-    :param access_token:  
+    :param access_token:
         Optional initial access token to decode and discover metadata from.
     :type access_token: str, optional
 
@@ -51,7 +51,7 @@ class OIDCToken(Token):
         """
         Initialize the OIDC token handler.
 
-        :param access_token:  
+        :param access_token:
             A JWT or opaque token string. If provided, the token is immediately
             decoded and OIDC discovery is performed.
         :type access_token: str, optional
@@ -78,11 +78,11 @@ class OIDCToken(Token):
         signature (i.e. `verify_signature=False`), extract the `sub` claim
         into `self.user_id`, and cache the payload in `self.payload`.
 
-        :return:  
+        :return:
             The decoded JWT payload as a dictionary.
         :rtype: dict
 
-        :raises TokenError:  
+        :raises TokenError:
             If `self.access_token` is missing or invalid.
         """
         if not self.payload:
@@ -102,7 +102,7 @@ class OIDCToken(Token):
         If the payload hasn’t been decoded yet, this will trigger a decode
         (via `self.decode_token()`) and may still return `None` if decoding fails.
 
-        :return:  
+        :return:
             The `user_id` string extracted from the token payload, or `None` if
             no payload is available.
         :rtype: str or None
@@ -116,9 +116,9 @@ class OIDCToken(Token):
     def get_user_id(self) -> str:
         """
         Return use ID
-        
+
         :return: user_id
-        
+
         """
 
         if not self.payload:
@@ -130,15 +130,15 @@ class OIDCToken(Token):
         """
         Obtain an access token from a local OIDC agent.
 
-        :param oidc_agent_account:  
+        :param oidc_agent_account:
             The name of the account registered with your local `oidc-agent`.
         :type oidc_agent_account: str
 
-        :return:  
-            The retrieved access token string.  
+        :return:
+            The retrieved access token string.
         :rtype: str
 
-        :raises TokenError:  
+        :raises TokenError:
             If `oidc_agent_account` is not provided or if the agent fails to return a token.
         """
 
@@ -168,25 +168,25 @@ class OIDCToken(Token):
         """
         Obtain an access token by exchanging a Mytoken identifier.
 
-        :param mytoken:  
+        :param mytoken:
             The Mytoken identifier (a one-time code or token name) to exchange for an access token.
         :type mytoken: str
 
-        :param mytoken_server:  
-            Optional base URL of the Mytoken server.  
+        :param mytoken_server:
+            Optional base URL of the Mytoken server.
             If not provided, defaults to `CONF["mytoken_server"]`.
         :type mytoken_server: str, optional
 
-        :return:  
+        :return:
             The access token string retrieved from the Mytoken server, or `None` if an error occurred.
         :rtype: str or None
 
-        :raises TokenError:  
+        :raises TokenError:
             If no `mytoken` is provided, or if the server returns an HTTP error.
-        :raises requests.exceptions.Timeout:  
+        :raises requests.exceptions.Timeout:
             If the HTTP request to the Mytoken server times out.
         """
-        
+
         if not mytoken_server:
             mytoken_server = CONF.get("mytoken_server")
 
@@ -227,28 +227,28 @@ class OIDCToken(Token):
         """
         Select a valid token from multiple sources.
 
-        :param access_token:  
+        :param access_token:
             An existing access token to try first. If it’s valid, it will be returned.
         :type access_token: str
 
-        :param oidc_agent_account:  
-            The account name for your local OIDC agent.  
+        :param oidc_agent_account:
+            The account name for your local OIDC agent.
             If provided, we’ll ask the agent for a token.
         :type oidc_agent_account: str
 
-        :param mytoken:  
+        :param mytoken:
             A Mytoken identifier (e.g. a token name) to exchange for an access token.
         :type mytoken: str
 
-        :param mytoken_server:  
+        :param mytoken_server:
             Optional URL of the Mytoken server to contact (defaults to your configured server).
         :type mytoken_server: str, optional
 
-        :returns:  
+        :returns:
             A valid access token string.
         :rtype: str
 
-        :raises TokenError:  
+        :raises TokenError:
             If none of the methods yields a valid token.
         """
         if mytoken:
@@ -294,20 +294,20 @@ class OIDCToken(Token):
         """
         Check validity of an access token.
 
-        :param access_token:  
+        :param access_token:
             The JWT or opaque token string to validate.
         :type access_token: str
 
-        :param verbose:  
-            If `True`, print human‐readable expiration information.  
+        :param verbose:
+            If `True`, print human‐readable expiration information.
             Defaults to `False`.
         :type verbose: bool
 
-        :return:  
+        :return:
             The same `access_token` if it’s still valid, otherwise `None`.
         :rtype: str or None
 
-        :raises TokenError:  
+        :raises TokenError:
             If the token is expired (or fails other validation checks).
         """
         self.access_token=access_token
@@ -341,17 +341,17 @@ class OIDCToken(Token):
         """
         List VO memberships in EGI Check-in.
 
-        :param access_token:  
-            A valid access token (JWT or opaque string) to authenticate the request.  
+        :param access_token:
+            A valid access token (JWT or opaque string) to authenticate the request.
         :type access_token: str
 
-        :return:  
-            A sorted list of VO names parsed from the `eduperson_entitlement` claims.  
+        :return:
+            A sorted list of VO names parsed from the `eduperson_entitlement` claims.
         :rtype: list[str]
 
-        :raises requests.exceptions.Timeout:  
+        :raises requests.exceptions.Timeout:
             If the HTTP request to the userinfo endpoint times out.
-        :raises requests.HTTPError:  
+        :raises requests.HTTPError:
             If the HTTP response status code indicates an error.
         """
         self.access_token=access_token
