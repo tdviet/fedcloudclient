@@ -39,9 +39,6 @@ html_logo = "fedcloudclient-logo-non-transparent-small.png"
 
 # Add custom CSS (optional)
 html_css_files = [
-    'custom.css',
-]
-html_css_files = [
     "css/custom.css",
 ]
 # Make sure sidebar and index content renders

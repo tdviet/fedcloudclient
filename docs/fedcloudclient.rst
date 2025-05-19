@@ -51,7 +51,7 @@ fedcloudclient.openstack module
    :show-inheritance:
 
 fedcloudclient.logger module
--------------------------
+----------------------------
 
 .. automodule:: fedcloudclient.logger
    :members:
@@ -59,7 +59,7 @@ fedcloudclient.logger module
    :show-inheritance:
 
 fedcloudclient.locker_auth module
--------------------------
+---------------------------------
 
 .. automodule:: fedcloudclient.locker_auth
    :members:
