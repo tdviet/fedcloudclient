@@ -105,14 +105,14 @@ access tokens</p>
 <span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.check_token" title="Link to this definition"></a></dt>
 <dd><p>Check validity of access token</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong></p></li>
-<li><p><strong>oidc_token</strong> – the token to check</p></li>
-</ul>
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>verbose (default as False)</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>access token, or None on error</p>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>oidc_token</strong> – the token to check</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>access token, or None on error</p>
 </dd>
 </dl>
 </dd></dl>
@@ -177,13 +177,17 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.multiple_token">
 <span class="sig-name descname"><span class="pre">multiple_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.multiple_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.multiple_token" title="Link to this definition"></a></dt>
-<dd><p>Select valid token from multiple options
-:param access_token:
-:param oidc_agent_account:
-:param mytoken:</p>
+<dd><p>Select valid token from multiple options</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>access_token or None</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>access_token</strong></p></li>
+<li><p><strong>oidc_agent_account</strong></p></li>
+<li><p><strong>mytoken</strong></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>access_token or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -191,7 +195,8 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.oidc_discover">
 <span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.oidc_discover" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
+<dd><p>OIDC discover</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>oidc_url</strong> – CheckIn URL get from payload</p>
 </dd>
@@ -224,8 +229,12 @@ access tokens</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.conf.init_config">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">init_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#init_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.init_config" title="Link to this definition"></a></dt>
-<dd><p>Init config moduls
-:return: actual config</p>
+<dd><p>Init config moduls</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>actual config</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -238,16 +247,26 @@ access tokens</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.conf.load_config">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.load_config" title="Link to this definition"></a></dt>
-<dd><p>Load configuration file
-:param filename:
-:return: configuration data</p>
+<dd><p>Load configuration file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param<span class="colon">:</span></dt>
+<dd class="field-odd"><p>filename as string</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>configuration data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.conf.load_env">
 <span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">load_env</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#load_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.load_env" title="Link to this definition"></a></dt>
-<dd><p>Load configs from environment variables
-:return: config</p>
+<dd><p>Load configs from environment variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>config</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

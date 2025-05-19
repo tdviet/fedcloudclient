@@ -167,6 +167,7 @@ class OIDCToken(Token):
     def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str, mytoken_server = None) -> str:
         """
         Select valid token from multiple options
+        
         :param access_token:
         :param oidc_agent_account:
         :param mytoken:
@@ -197,10 +198,11 @@ class OIDCToken(Token):
 
     def oidc_discover(self) -> dict:
         """
+        OIDC discover 
+        
         :param oidc_url: CheckIn URL get from payload
         
         :return: JSON object of OIDC configuration
-        
         """
         oidc_url=self.payload["iss"]
         request = requests.get(oidc_url + "/.well-known/openid-configuration")
@@ -212,10 +214,10 @@ class OIDCToken(Token):
         """
         Check validity of access token
 
-        :param verbose:
+        :param: verbose (default as False)
         :param oidc_token: the token to check
-        :return: access token, or None on error
         
+        :return: access token, or None on error
         """
         self.access_token=access_token
         payload = self.decode_token()

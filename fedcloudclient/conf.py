@@ -56,6 +56,7 @@ def save_config(filename: str, config_data: dict):
 
     :param filename: name of config file
     :param config_data: dict containing configuration
+    
     :return: None
     """
     config_file = Path(filename).resolve()
@@ -70,7 +71,9 @@ def save_config(filename: str, config_data: dict):
 def load_config(filename: str) -> dict:
     """
     Load configuration file
-    :param filename:
+    
+    :param: filename as string
+    
     :return: configuration data
     """
 
@@ -90,6 +93,7 @@ def load_config(filename: str) -> dict:
 def load_env() -> dict:
     """
     Load configs from environment variables
+    
     :return: config
     """
     env_config = {}
@@ -103,6 +107,7 @@ def load_env() -> dict:
 def init_config() -> dict:
     """
     Init config moduls
+    
     :return: actual config
     """
     env_config = load_env()
