@@ -19,9 +19,9 @@ author = 'jaro221'
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autodoc',    # for automodule, autoclass, etc.
+    #'sphinx.ext.autodoc',    # for automodule, autoclass, etc.
     'sphinx.ext.napoleon',   # if you use Google/NumPy-style docstrings
-    'sphinx.ext.viewcode',   # optional: add links to highlighted source
+    #'sphinx.ext.viewcode',   # optional: add links to highlighted source
     # any other extensions you need…
 ]
 
