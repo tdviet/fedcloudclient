@@ -43,21 +43,29 @@ DEFAULT_SETTINGS = {
 
 def init_default_config():
     """
-    Initialisation of default settings
+    Initialize the default configuration settings.
 
-    :return dictionary of <DEFAULT_SETTINGS>
+    :return:  
+        A dictionary containing the default settings as defined by `DEFAULT_SETTINGS`.
+    :rtype: dict
     """
     default_config_init=DEFAULT_SETTINGS
     return default_config_init
 
 def save_config(filename: str, config_data: dict):
     """
-    Save configuration to file
+    Save a configuration dictionary to a YAML file.
 
-    :param filename: name of config file
-    :param config_data: dict containing configuration
-    
-    :return: None
+    :param filename:  
+        Path to the configuration file to write.
+    :type filename: str
+
+    :param config_data:  
+        A mapping of configuration keys to values to be serialized.
+    :type config_data: dict
+
+    :raises ConfigError:  
+        If writing the YAML fails (wraps `yaml.YAMLError`).
     """
     config_file = Path(filename).resolve()
     try:
@@ -70,11 +78,19 @@ def save_config(filename: str, config_data: dict):
 
 def load_config(filename: str) -> dict:
     """
-    Load configuration file
-    
-    :param: filename as string
-    
-    :return: configuration data
+    Load configuration data from a YAML file.
+
+    :param filename:  
+        Path to the configuration file to read.
+    :type filename: str
+
+    :return:  
+        A dictionary of configuration values parsed from the file.  
+        Returns an empty dict if the file does not exist.
+    :rtype: dict
+
+    :raises ConfigError:  
+        If the file exists but cannot be parsed as valid YAML.
     """
 
     config_file = Path(filename).resolve()
@@ -92,9 +108,16 @@ def load_config(filename: str) -> dict:
 
 def load_env() -> dict:
     """
-    Load configs from environment variables
-    
-    :return: config
+    Load FedCloud client configuration from environment variables.
+
+    Scans the current process environment for variables prefixed with
+    `FEDCLOUD_`, strips that prefix, converts the remainder to lowercase,
+    and returns them as configuration entries.
+
+    :return:  
+        A dictionary mapping config keys (lowercased, prefix removed) to
+        their string values from the environment.
+    :rtype: dict[str, str]
     """
     env_config = {}
     for env in os.environ:
@@ -106,9 +129,18 @@ def load_env() -> dict:
 
 def init_config() -> dict:
     """
-    Init config moduls
+    Initialize the FedCloud client configuration.
+
+    This function merges three sources of configuration, in order of precedence:
     
-    :return: actual config
+    1. `DEFAULT_SETTINGS` (hard-coded defaults).  
+    2. Environment variables prefixed with `FEDCLOUD_` (stripped of the prefix and lower-cased).  
+    3. Values loaded from a YAML config file (path can be overridden via `FEDCLOUD_CONFIG_FILE`).
+
+    :return:  
+        A dict containing the merged configuration settings.  
+        Later sources override earlier ones.
+    :rtype: dict[str, Any]
     """
     env_config = load_env()
     config_file = env_config.get("config_file", DEFAULT_CONFIG_LOCATION)
@@ -167,7 +199,35 @@ def create(config_file: str):
 )
 
 def show(config_file: str, output_format: str, source: str):
-    """Show config for FEDCLOUDCLIENT """
+    """
+    Display the FedCloud client configuration.
+
+    Merges three layers of configuration—defaults, environment, and on-disk—
+    then prints one of:
+
+      - the defaults only  
+      - the env-vars only  
+      - the saved file only  
+      - the full merged config
+
+    :param config_file:  
+        Path to the YAML config file on disk.
+    :type config_file: str
+
+    :param output_format:  
+        One of `"text"`, `"YAML"`, or `"JSON"` (case-insensitive) for the
+        desired output format.
+    :type output_format: str
+
+    :param source:  
+        If provided, limits display to one of `"DEFAULT_SETTINGS"`,  
+        `"env_config"`, or `"saved_config"`.  Otherwise shows the full merge.
+    :type source: Optional[str]
+
+    :return:  
+        None
+    :rtype: None
+    """
     saved_config = load_config(config_file)
     env_config = load_env()
     default_settings=init_default_config()
