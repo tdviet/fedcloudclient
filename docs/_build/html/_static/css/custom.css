@@ -1,8 +1,15 @@
-/* Only style class signatures (leave functions alone) */
+/* Class signatures: blue background, black text */
 dt.sig.sig-class {
-  background-color: #e8f0fe !important;    /* blue banner */
+  background-color: #e8f0fe !important; /* light‐blue bg */
+}
+dt.sig.sig-class .sig-name {
+  color: #000 !important;               /* black text */
 }
 
-dt.sig.sig-class span.sig-name {
-  color: #1a73e8 !important;               /* blue text for the class name */
+/* Function signatures: gray background, black text */
+dt.sig.sig-function {
+  background-color: #f5f5f5 !important; /* light‐gray bg */
+}
+dt.sig.sig-function .sig-name {
+  color: #000 !important;               /* black text */
 }
