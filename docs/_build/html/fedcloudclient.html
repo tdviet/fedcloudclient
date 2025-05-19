@@ -92,6 +92,116 @@
 <p>Implementation of “fedcloud token” commands for interactions with EGI Check-in and
 access tokens</p>
 </section>
+<section id="module-fedcloudclient.auth">
+<span id="fedcloudclient-auth-module"></span><h2>fedcloudclient.auth module<a class="headerlink" href="#module-fedcloudclient.auth" title="Link to this heading"></a></h2>
+<p>Class for managing tokens</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.auth.</span></span><span class="sig-name descname"><span class="pre">OIDCToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#fedcloudclient.auth.Token" title="fedcloudclient.auth.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
+<p>OIDC tokens. Managing access tokens, oidc-agent account and mytoken</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.check_token">
+<span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.check_token" title="Link to this definition"></a></dt>
+<dd><p>Check validity of access token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>verbose</strong></p></li>
+<li><p><strong>oidc_token</strong> – the token to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>access token, or None on error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.decode_token">
+<span class="sig-name descname"><span class="pre">decode_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.decode_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.decode_token" title="Link to this definition"></a></dt>
+<dd><p>Decoding access token to payload
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_checkin_id">
+<span class="sig-name descname"><span class="pre">get_checkin_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_checkin_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_checkin_id" title="Link to this definition"></a></dt>
+<dd><p>Get EGI Check-in ID from access token</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>oidc_token</strong> – the token</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Check-in ID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_token_from_mytoken">
+<span class="sig-name descname"><span class="pre">get_token_from_mytoken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_mytoken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_mytoken" title="Link to this definition"></a></dt>
+<dd><p>Get access token from mytoken server
+:param mytoken:
+:param mytoken_server:
+:return: access token, or None on error</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent">
+<span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent" title="Link to this definition"></a></dt>
+<dd><p>Get access token from oidc-agent
+:param oidc_agent_account: account name in oidc-agent
+:return: access token, and set internal token, raise TokenError on None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_user_id">
+<span class="sig-name descname"><span class="pre">get_user_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_user_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_user_id" title="Link to this definition"></a></dt>
+<dd><p>Return use ID
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.multiple_token">
+<span class="sig-name descname"><span class="pre">multiple_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.multiple_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.multiple_token" title="Link to this definition"></a></dt>
+<dd><p>Select valid token from multiple options
+:param access_token:
+:param oidc_agent_account:
+:param mytoken:
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.oidc_discover">
+<span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.oidc_discover" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>oidc_url</strong> – CheckIn URL get from payload</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>JSON object of OIDC configuration</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.token_list_vos">
+<span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.token_list_vos" title="Link to this definition"></a></dt>
+<dd><p>List VO memberships in EGI Check-in
+:return: list of VO names</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="fedcloudclient.auth.Token">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.auth.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#Token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.Token" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Abstract object for managing tokens</p>
+</dd></dl>
+
+</section>
 <section id="module-fedcloudclient.endpoint">
 <span id="fedcloudclient-endpoint-module"></span><h2>fedcloudclient.endpoint module<a class="headerlink" href="#module-fedcloudclient.endpoint" title="Link to this heading"></a></h2>
 <p>“fedcloud endpoint” commands are complementary part of the “fedcloud site” commands.</p>
