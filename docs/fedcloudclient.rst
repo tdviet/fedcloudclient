@@ -9,6 +9,14 @@ fedcloudclient.checkin module
    :undoc-members:
    :show-inheritance:
 
+fedcloudclient.auth module
+-----------------------------
+
+.. automodule:: fedcloudclient.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 fedcloudclient.endpoint module
 ------------------------------
 

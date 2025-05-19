@@ -2,6 +2,6 @@ fedcloudclient API references
 =============================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 1
 
-   fedcloudclient
+   fedcloudclient/
