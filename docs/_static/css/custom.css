@@ -1,16 +1,21 @@
 /* docs/_static/css/custom.css */
 
-/* 1) Style the signature line (the <dt>) */
+/* 1) Signature container (dt.sig) */
 dt.sig {
   background-color: #e8f0fe !important;
 }
 
-/* 2) Style the description block right after it (<dd> following a dt.sig) */
+/* 2) The detail block under it (dd immediately after dt.sig) */
 dt.sig + dd {
   background-color: #e8f0fe !important;
 }
 
-/* 3) Make the name text in all signatures the same blue */
+/* 3) The name text in every signature */
 dt.sig span.sig-name {
+  color: #1a73e8 !important;
+}
+
+/* 4) The return‐type hint (the “→ dict” etc.) */
+dt.sig span.sig-return-typehint {
   color: #1a73e8 !important;
 }
