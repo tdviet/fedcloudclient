@@ -1,12 +1,8 @@
-/* Only style the signature line itself */
-dt.sig {
-  background-color: #e8f0fe !important;
+/* Only style class signatures (leave functions alone) */
+dt.sig.sig-class {
+  background-color: #e8f0fe !important;    /* blue banner */
 }
 
-/* Colour the module path prefix, name, and return hint inside that line */
-dt.sig span.sig-prename,
-dt.sig span.descclassname,
-dt.sig span.sig-name,
-dt.sig span.sig-return-typehint {
-  color: #1a73e8 !important;
+dt.sig.sig-class span.sig-name {
+  color: #1a73e8 !important;               /* blue text for the class name */
 }
