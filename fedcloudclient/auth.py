@@ -166,14 +166,31 @@ class OIDCToken(Token):
 
     def multiple_token(self, access_token: str, oidc_agent_account: str, mytoken: str, mytoken_server = None) -> str:
         """
-        Select valid token from multiple options
-        
-        :param access_token:
-        :param oidc_agent_account:
-        :param mytoken:
-        
-        :return: access_token or None
-        
+        Select a valid token from multiple sources.
+
+        :param access_token:  
+            An existing access token to try first. If it’s valid, it will be returned.
+        :type access_token: str
+
+        :param oidc_agent_account:  
+            The account name for your local OIDC agent.  
+            If provided, we’ll ask the agent for a token.
+        :type oidc_agent_account: str
+
+        :param mytoken:  
+            A Mytoken identifier (e.g. a token name) to exchange for an access token.
+        :type mytoken: str
+
+        :param mytoken_server:  
+            Optional URL of the Mytoken server to contact (defaults to your configured server).
+        :type mytoken_server: str, optional
+
+        :returns:  
+            A valid access token string.
+        :rtype: str
+
+        :raises TokenError:  
+            If none of the methods yields a valid token.
         """
         if mytoken:
             try:
@@ -249,6 +266,7 @@ class OIDCToken(Token):
     def token_list_vos(self,access_token):
         """
         List VO memberships in EGI Check-in
+        
         :return: list of VO names
         
         """

@@ -177,17 +177,25 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.multiple_token">
 <span class="sig-name descname"><span class="pre">multiple_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.multiple_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.multiple_token" title="Link to this definition"></a></dt>
-<dd><p>Select valid token from multiple options</p>
+<dd><p>Select a valid token from multiple sources.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>access_token</strong></p></li>
-<li><p><strong>oidc_agent_account</strong></p></li>
-<li><p><strong>mytoken</strong></p></li>
+<li><p><strong>access_token</strong> (<em>str</em>) – An existing access token to try first. If it’s valid, it will be returned.</p></li>
+<li><p><strong>oidc_agent_account</strong> (<em>str</em>) – The account name for your local OIDC agent.
+If provided, we’ll ask the agent for a token.</p></li>
+<li><p><strong>mytoken</strong> (<em>str</em>) – A Mytoken identifier (e.g. a token name) to exchange for an access token.</p></li>
+<li><p><strong>mytoken_server</strong> (<em>str</em><em>, </em><em>optional</em>) – Optional URL of the Mytoken server to contact (defaults to your configured server).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>access_token or None</p>
+<dd class="field-even"><p>A valid access token string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TokenError</strong> – If none of the methods yields a valid token.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -209,8 +217,12 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.token_list_vos">
 <span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.token_list_vos" title="Link to this definition"></a></dt>
-<dd><p>List VO memberships in EGI Check-in
-:return: list of VO names</p>
+<dd><p>List VO memberships in EGI Check-in</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of VO names</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
