@@ -41,7 +41,9 @@ html_logo = "fedcloudclient-logo-non-transparent-small.png"
 html_css_files = [
     'custom.css',
 ]
-
+html_css_files = [
+    "css/custom.css",
+]
 # Make sure sidebar and index content renders
 html_theme_options = {
     'logo_only': False,        # Show logo and project title

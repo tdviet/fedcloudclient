@@ -1,0 +1,9 @@
+/* docs/_static/css/custom.css */
+
+/* Unify class/function/method signature colors */
+.sig-class .sig-name,
+.sig-function .sig-name,
+.sig-method .sig-name {
+    background: #e8f0fe !important;
+    color:      #1a73e8 !important;
+}
