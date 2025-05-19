@@ -1,7 +1,14 @@
-FedCloud client API references
-==============================
+FedCloud client API references - 2.0-alpha-tests
+================================================
 
 
+fedcloudclient.checkin module
+-----------------------------
+
+.. automodule:: fedcloudclient.checkin
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 fedcloudclient.auth module
 -----------------------------
