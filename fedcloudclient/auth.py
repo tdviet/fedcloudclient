@@ -17,20 +17,45 @@ from fedcloudclient.conf import save_config, DEFAULT_CONFIG_LOCATION
 # pylint: disable=too-few-public-methods
 class Token:
     """
-    Abstract object for managing tokens
-    
+    Abstract base class for token management.
     """
+    
     def __init__(self):
         pass
 
 # pylint: disable=too-few-public-methods
 class OIDCToken(Token):
     """
-    OIDC tokens. Managing access tokens, oidc-agent account and mytoken
-    
+    OIDC token handler.
+
+    This class manages access tokens from various sources (OIDC agent,
+    Mytoken server), decodes them, and exposes user and VO membership
+    information.
+
+    :param access_token:  
+        Optional initial access token to decode and discover metadata from.
+    :type access_token: str, optional
+
+    :ivar str access_token: The raw access token string.
+    :ivar dict payload: The decoded JWT payload.
+    :ivar str oidc_agent_account: The account name used with oidc-agent.
+    :ivar str mytoken: The Mytoken identifier used to fetch a token.
+    :ivar str user_id: The `sub` claim extracted from the token payload.
+    :ivar str _vo_pattern: Regex pattern for extracting VO names.
+    :ivar dict request_json: OIDC discovery metadata.
+    :ivar int _min_access_token_time: Minimum required lifetime for a token.
+    :ivar dict conf: Reference to global CONF dict for defaults.
     """
 
     def __init__(self, access_token=None):
+        """
+        Initialize the OIDC token handler.
+
+        :param access_token:  
+            A JWT or opaque token string. If provided, the token is immediately
+            decoded and OIDC discovery is performed.
+        :type access_token: str, optional
+        """
         super().__init__()
         self.access_token = access_token
         self.payload = None
@@ -47,9 +72,18 @@ class OIDCToken(Token):
 
     def decode_token(self) -> dict:
         """
-        Decoding access token to payload
-        :return:
-        
+        Decode the stored access token into its JWT payload.
+
+        This method will decode `self.access_token` without verifying the
+        signature (i.e. `verify_signature=False`), extract the `sub` claim
+        into `self.user_id`, and cache the payload in `self.payload`.
+
+        :return:  
+            The decoded JWT payload as a dictionary.
+        :rtype: dict
+
+        :raises TokenError:  
+            If `self.access_token` is missing or invalid.
         """
         if not self.payload:
             try:
@@ -63,12 +97,15 @@ class OIDCToken(Token):
 
     def get_checkin_id(self,access_token):
         """
-        Get EGI Check-in ID from access token
+        Retrieve the user ID from the decoded token payload.
 
-        :param oidc_token: the token
+        If the payload hasn’t been decoded yet, this will trigger a decode
+        (via `self.decode_token()`) and may still return `None` if decoding fails.
 
-        :return: Check-in ID
-        
+        :return:  
+            The `user_id` string extracted from the token payload, or `None` if
+            no payload is available.
+        :rtype: str or None
         """
         self.access_token=access_token
         payload = self.decode_token()
@@ -91,10 +128,18 @@ class OIDCToken(Token):
 
     def get_token_from_oidc_agent(self, oidc_agent_account: str) -> str:
         """
-        Get access token from oidc-agent
-        :param oidc_agent_account: account name in oidc-agent
-        
-        :return: access token, and set internal token, raise TokenError on None
+        Obtain an access token from a local OIDC agent.
+
+        :param oidc_agent_account:  
+            The name of the account registered with your local `oidc-agent`.
+        :type oidc_agent_account: str
+
+        :return:  
+            The retrieved access token string.  
+        :rtype: str
+
+        :raises TokenError:  
+            If `oidc_agent_account` is not provided or if the agent fails to return a token.
         """
 
         if oidc_agent_account:
@@ -121,13 +166,27 @@ class OIDCToken(Token):
 
     def get_token_from_mytoken(self, mytoken: str, mytoken_server: str = None) -> str:
         """
-        Get access token from mytoken server
-        :param mytoken:
-        :param mytoken_server:
-        
-        :return: access token, or None on error
-        
+        Obtain an access token by exchanging a Mytoken identifier.
+
+        :param mytoken:  
+            The Mytoken identifier (a one-time code or token name) to exchange for an access token.
+        :type mytoken: str
+
+        :param mytoken_server:  
+            Optional base URL of the Mytoken server.  
+            If not provided, defaults to `CONF["mytoken_server"]`.
+        :type mytoken_server: str, optional
+
+        :return:  
+            The access token string retrieved from the Mytoken server, or `None` if an error occurred.
+        :rtype: str or None
+
+        :raises TokenError:  
+            If no `mytoken` is provided, or if the server returns an HTTP error.
+        :raises requests.exceptions.Timeout:  
+            If the HTTP request to the Mytoken server times out.
         """
+        
         if not mytoken_server:
             mytoken_server = CONF.get("mytoken_server")
 
@@ -187,7 +246,7 @@ class OIDCToken(Token):
 
         :returns:  
             A valid access token string.
-            :rtype: str
+        :rtype: str
 
         :raises TokenError:  
             If none of the methods yields a valid token.
@@ -214,12 +273,16 @@ class OIDCToken(Token):
         return None
 
     def oidc_discover(self) -> dict:
-        """
-        OIDC discover 
-        
-        :param oidc_url: CheckIn URL get from payload
-        
-        :return: JSON object of OIDC configuration
+        """Perform OpenID Connect discovery.
+
+        Reads the issuer URL from `self.payload["iss"]` and fetches the
+        provider metadata from `<issuer>/.well-known/openid-configuration`.
+
+        Returns:
+            dict: OIDC provider metadata as a JSON-like dict.
+
+        Raises:
+            requests.HTTPError: If fetching the discovery document fails.
         """
         oidc_url=self.payload["iss"]
         request = requests.get(oidc_url + "/.well-known/openid-configuration")
@@ -229,12 +292,23 @@ class OIDCToken(Token):
 
     def check_token(self, access_token, verbose=False):
         """
-        Check validity of access token
+        Check validity of an access token.
 
-        :param: verbose (default as False)
-        :param oidc_token: the token to check
-        
-        :return: access token, or None on error
+        :param access_token:  
+            The JWT or opaque token string to validate.
+        :type access_token: str
+
+        :param verbose:  
+            If `True`, print human‐readable expiration information.  
+            Defaults to `False`.
+        :type verbose: bool
+
+        :return:  
+            The same `access_token` if it’s still valid, otherwise `None`.
+        :rtype: str or None
+
+        :raises TokenError:  
+            If the token is expired (or fails other validation checks).
         """
         self.access_token=access_token
         payload = self.decode_token()
@@ -265,10 +339,20 @@ class OIDCToken(Token):
 
     def token_list_vos(self,access_token):
         """
-        List VO memberships in EGI Check-in
-        
-        :return: list of VO names
-        
+        List VO memberships in EGI Check-in.
+
+        :param access_token:  
+            A valid access token (JWT or opaque string) to authenticate the request.  
+        :type access_token: str
+
+        :return:  
+            A sorted list of VO names parsed from the `eduperson_entitlement` claims.  
+        :rtype: list[str]
+
+        :raises requests.exceptions.Timeout:  
+            If the HTTP request to the userinfo endpoint times out.
+        :raises requests.HTTPError:  
+            If the HTTP response status code indicates an error.
         """
         self.access_token=access_token
         oidc_ep  = self.request_json

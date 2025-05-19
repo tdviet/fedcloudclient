@@ -99,20 +99,48 @@ access tokens</p>
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.auth.</span></span><span class="sig-name descname"><span class="pre">OIDCToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken" title="Link to this definition"></a></dt>
 <dd><p>Bases: <a class="reference internal" href="#fedcloudclient.auth.Token" title="fedcloudclient.auth.Token"><code class="xref py py-class docutils literal notranslate"><span class="pre">Token</span></code></a></p>
-<p>OIDC tokens. Managing access tokens, oidc-agent account and mytoken</p>
+<p>OIDC token handler.</p>
+<p>This class manages access tokens from various sources (OIDC agent,
+Mytoken server), decodes them, and exposes user and VO membership
+information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>access_token</strong> (<em>str</em><em>, </em><em>optional</em>) – Optional initial access token to decode and discover metadata from.</p>
+</dd>
+<dt class="field-even">Variables<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>access_token</strong> (<em>str</em>) – The raw access token string.</p></li>
+<li><p><strong>payload</strong> (<em>dict</em>) – The decoded JWT payload.</p></li>
+<li><p><strong>oidc_agent_account</strong> (<em>str</em>) – The account name used with oidc-agent.</p></li>
+<li><p><strong>mytoken</strong> (<em>str</em>) – The Mytoken identifier used to fetch a token.</p></li>
+<li><p><strong>user_id</strong> (<em>str</em>) – The <cite>sub</cite> claim extracted from the token payload.</p></li>
+<li><p><strong>_vo_pattern</strong> (<em>str</em>) – Regex pattern for extracting VO names.</p></li>
+<li><p><strong>request_json</strong> (<em>dict</em>) – OIDC discovery metadata.</p></li>
+<li><p><strong>_min_access_token_time</strong> (<em>int</em>) – Minimum required lifetime for a token.</p></li>
+<li><p><strong>conf</strong> (<em>dict</em>) – Reference to global CONF dict for defaults.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.check_token">
 <span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.check_token" title="Link to this definition"></a></dt>
-<dd><p>Check validity of access token</p>
+<dd><p>Check validity of an access token.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Param<span class="colon">:</span></dt>
-<dd class="field-odd"><p>verbose (default as False)</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>access_token</strong> (<em>str</em>) – The JWT or opaque token string to validate.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – If <cite>True</cite>, print human‐readable expiration information.
+Defaults to <cite>False</cite>.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Parameters<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>oidc_token</strong> – the token to check</p>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The same <cite>access_token</cite> if it’s still valid, otherwise <cite>None</cite>.</p>
 </dd>
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>access token, or None on error</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TokenError</strong> – If the token is expired (or fails other validation checks).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -120,20 +148,36 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.decode_token">
 <span class="sig-name descname"><span class="pre">decode_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.decode_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.decode_token" title="Link to this definition"></a></dt>
-<dd><p>Decoding access token to payload
-:return:</p>
+<dd><p>Decode the stored access token into its JWT payload.</p>
+<p>This method will decode <cite>self.access_token</cite> without verifying the
+signature (i.e. <cite>verify_signature=False</cite>), extract the <cite>sub</cite> claim
+into <cite>self.user_id</cite>, and cache the payload in <cite>self.payload</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The decoded JWT payload as a dictionary.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>TokenError</strong> – If <cite>self.access_token</cite> is missing or invalid.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_checkin_id">
 <span class="sig-name descname"><span class="pre">get_checkin_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_checkin_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_checkin_id" title="Link to this definition"></a></dt>
-<dd><p>Get EGI Check-in ID from access token</p>
+<dd><p>Retrieve the user ID from the decoded token payload.</p>
+<p>If the payload hasn’t been decoded yet, this will trigger a decode
+(via <cite>self.decode_token()</cite>) and may still return <cite>None</cite> if decoding fails.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>oidc_token</strong> – the token</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The <cite>user_id</cite> string extracted from the token payload, or <cite>None</cite> if
+no payload is available.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Check-in ID</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str or None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -141,12 +185,26 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_token_from_mytoken">
 <span class="sig-name descname"><span class="pre">get_token_from_mytoken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_mytoken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_mytoken" title="Link to this definition"></a></dt>
-<dd><p>Get access token from mytoken server
-:param mytoken:
-:param mytoken_server:</p>
+<dd><p>Obtain an access token by exchanging a Mytoken identifier.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>access token, or None on error</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mytoken</strong> (<em>str</em>) – The Mytoken identifier (a one-time code or token name) to exchange for an access token.</p></li>
+<li><p><strong>mytoken_server</strong> (<em>str</em><em>, </em><em>optional</em>) – Optional base URL of the Mytoken server.
+If not provided, defaults to <cite>CONF[“mytoken_server”]</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The access token string retrieved from the Mytoken server, or <cite>None</cite> if an error occurred.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str or None</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>TokenError</strong> – If no <cite>mytoken</cite> is provided, or if the server returns an HTTP error.</p></li>
+<li><p><strong>requests.exceptions.Timeout</strong> – If the HTTP request to the Mytoken server times out.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -154,11 +212,19 @@ access tokens</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent">
 <span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent" title="Link to this definition"></a></dt>
-<dd><p>Get access token from oidc-agent
-:param oidc_agent_account: account name in oidc-agent</p>
+<dd><p>Obtain an access token from a local OIDC agent.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>access token, and set internal token, raise TokenError on None</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>oidc_agent_account</strong> (<em>str</em>) – The name of the account registered with your local <cite>oidc-agent</cite>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The retrieved access token string.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TokenError</strong> – If <cite>oidc_agent_account</cite> is not provided or if the agent fails to return a token.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -189,11 +255,13 @@ If provided, we’ll ask the agent for a token.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A valid access token string.
-:rtype: str</p>
+<dd class="field-even"><p>A valid access token string.</p>
 </dd>
-<dt class="field-odd">Raises<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>TokenError</strong> – If none of the methods yields a valid token.</p>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>TokenError</strong> – If none of the methods yields a valid token.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -201,13 +269,18 @@ If provided, we’ll ask the agent for a token.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.oidc_discover">
 <span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.oidc_discover" title="Link to this definition"></a></dt>
-<dd><p>OIDC discover</p>
+<dd><p>Perform OpenID Connect discovery.</p>
+<p>Reads the issuer URL from <cite>self.payload[“iss”]</cite> and fetches the
+provider metadata from <cite>&lt;issuer&gt;/.well-known/openid-configuration</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>oidc_url</strong> – CheckIn URL get from payload</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>OIDC provider metadata as a JSON-like dict.</p>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>JSON object of OIDC configuration</p>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>requests.HTTPError</strong> – If fetching the discovery document fails.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -215,10 +288,22 @@ If provided, we’ll ask the agent for a token.</p></li>
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.token_list_vos">
 <span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.token_list_vos" title="Link to this definition"></a></dt>
-<dd><p>List VO memberships in EGI Check-in</p>
+<dd><p>List VO memberships in EGI Check-in.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of VO names</p>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>access_token</strong> (<em>str</em>) – A valid access token (JWT or opaque string) to authenticate the request.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A sorted list of VO names parsed from the <cite>eduperson_entitlement</cite> claims.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[str]</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>requests.exceptions.Timeout</strong> – If the HTTP request to the userinfo endpoint times out.</p></li>
+<li><p><strong>requests.HTTPError</strong> – If the HTTP response status code indicates an error.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -229,7 +314,7 @@ If provided, we’ll ask the agent for a token.</p></li>
 <dt class="sig sig-object py" id="fedcloudclient.auth.Token">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.auth.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#Token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.Token" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Abstract object for managing tokens</p>
+<p>Abstract base class for token management.</p>
 </dd></dl>
 
 </section>

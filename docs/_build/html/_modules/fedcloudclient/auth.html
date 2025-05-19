@@ -100,9 +100,9 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.Token">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">Token</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Abstract object for managing tokens</span>
-<span class="sd">    </span>
+<span class="sd">    Abstract base class for token management.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span></div>
 
@@ -112,11 +112,36 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">OIDCToken</span><span class="p">(</span><span class="n">Token</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    OIDC tokens. Managing access tokens, oidc-agent account and mytoken</span>
-<span class="sd">    </span>
+<span class="sd">    OIDC token handler.</span>
+
+<span class="sd">    This class manages access tokens from various sources (OIDC agent,</span>
+<span class="sd">    Mytoken server), decodes them, and exposes user and VO membership</span>
+<span class="sd">    information.</span>
+
+<span class="sd">    :param access_token:  </span>
+<span class="sd">        Optional initial access token to decode and discover metadata from.</span>
+<span class="sd">    :type access_token: str, optional</span>
+
+<span class="sd">    :ivar str access_token: The raw access token string.</span>
+<span class="sd">    :ivar dict payload: The decoded JWT payload.</span>
+<span class="sd">    :ivar str oidc_agent_account: The account name used with oidc-agent.</span>
+<span class="sd">    :ivar str mytoken: The Mytoken identifier used to fetch a token.</span>
+<span class="sd">    :ivar str user_id: The `sub` claim extracted from the token payload.</span>
+<span class="sd">    :ivar str _vo_pattern: Regex pattern for extracting VO names.</span>
+<span class="sd">    :ivar dict request_json: OIDC discovery metadata.</span>
+<span class="sd">    :ivar int _min_access_token_time: Minimum required lifetime for a token.</span>
+<span class="sd">    :ivar dict conf: Reference to global CONF dict for defaults.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the OIDC token handler.</span>
+
+<span class="sd">        :param access_token:  </span>
+<span class="sd">            A JWT or opaque token string. If provided, the token is immediately</span>
+<span class="sd">            decoded and OIDC discovery is performed.</span>
+<span class="sd">        :type access_token: str, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span> <span class="o">=</span> <span class="n">access_token</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">payload</span> <span class="o">=</span> <span class="kc">None</span>
@@ -135,9 +160,18 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.decode_token">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">decode_token</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Decoding access token to payload</span>
-<span class="sd">        :return:</span>
-<span class="sd">        </span>
+<span class="sd">        Decode the stored access token into its JWT payload.</span>
+
+<span class="sd">        This method will decode `self.access_token` without verifying the</span>
+<span class="sd">        signature (i.e. `verify_signature=False`), extract the `sub` claim</span>
+<span class="sd">        into `self.user_id`, and cache the payload in `self.payload`.</span>
+
+<span class="sd">        :return:  </span>
+<span class="sd">            The decoded JWT payload as a dictionary.</span>
+<span class="sd">        :rtype: dict</span>
+
+<span class="sd">        :raises TokenError:  </span>
+<span class="sd">            If `self.access_token` is missing or invalid.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -154,12 +188,15 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.get_checkin_id">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_checkin_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">access_token</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get EGI Check-in ID from access token</span>
+<span class="sd">        Retrieve the user ID from the decoded token payload.</span>
 
-<span class="sd">        :param oidc_token: the token</span>
+<span class="sd">        If the payload hasn’t been decoded yet, this will trigger a decode</span>
+<span class="sd">        (via `self.decode_token()`) and may still return `None` if decoding fails.</span>
 
-<span class="sd">        :return: Check-in ID</span>
-<span class="sd">        </span>
+<span class="sd">        :return:  </span>
+<span class="sd">            The `user_id` string extracted from the token payload, or `None` if</span>
+<span class="sd">            no payload is available.</span>
+<span class="sd">        :rtype: str or None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="o">=</span><span class="n">access_token</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode_token</span><span class="p">()</span>
@@ -188,10 +225,18 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_token_from_oidc_agent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">oidc_agent_account</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get access token from oidc-agent</span>
-<span class="sd">        :param oidc_agent_account: account name in oidc-agent</span>
-<span class="sd">        </span>
-<span class="sd">        :return: access token, and set internal token, raise TokenError on None</span>
+<span class="sd">        Obtain an access token from a local OIDC agent.</span>
+
+<span class="sd">        :param oidc_agent_account:  </span>
+<span class="sd">            The name of the account registered with your local `oidc-agent`.</span>
+<span class="sd">        :type oidc_agent_account: str</span>
+
+<span class="sd">        :return:  </span>
+<span class="sd">            The retrieved access token string.  </span>
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        :raises TokenError:  </span>
+<span class="sd">            If `oidc_agent_account` is not provided or if the agent fails to return a token.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">oidc_agent_account</span><span class="p">:</span>
@@ -221,13 +266,27 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.get_token_from_mytoken">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_token_from_mytoken</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mytoken</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mytoken_server</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Get access token from mytoken server</span>
-<span class="sd">        :param mytoken:</span>
-<span class="sd">        :param mytoken_server:</span>
-<span class="sd">        </span>
-<span class="sd">        :return: access token, or None on error</span>
-<span class="sd">        </span>
+<span class="sd">        Obtain an access token by exchanging a Mytoken identifier.</span>
+
+<span class="sd">        :param mytoken:  </span>
+<span class="sd">            The Mytoken identifier (a one-time code or token name) to exchange for an access token.</span>
+<span class="sd">        :type mytoken: str</span>
+
+<span class="sd">        :param mytoken_server:  </span>
+<span class="sd">            Optional base URL of the Mytoken server.  </span>
+<span class="sd">            If not provided, defaults to `CONF[&quot;mytoken_server&quot;]`.</span>
+<span class="sd">        :type mytoken_server: str, optional</span>
+
+<span class="sd">        :return:  </span>
+<span class="sd">            The access token string retrieved from the Mytoken server, or `None` if an error occurred.</span>
+<span class="sd">        :rtype: str or None</span>
+
+<span class="sd">        :raises TokenError:  </span>
+<span class="sd">            If no `mytoken` is provided, or if the server returns an HTTP error.</span>
+<span class="sd">        :raises requests.exceptions.Timeout:  </span>
+<span class="sd">            If the HTTP request to the Mytoken server times out.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mytoken_server</span><span class="p">:</span>
             <span class="n">mytoken_server</span> <span class="o">=</span> <span class="n">CONF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mytoken_server&quot;</span><span class="p">)</span>
 
@@ -290,7 +349,7 @@
 
 <span class="sd">        :returns:  </span>
 <span class="sd">            A valid access token string.</span>
-<span class="sd">            :rtype: str</span>
+<span class="sd">        :rtype: str</span>
 
 <span class="sd">        :raises TokenError:  </span>
 <span class="sd">            If none of the methods yields a valid token.</span>
@@ -320,12 +379,16 @@
 <div class="viewcode-block" id="OIDCToken.oidc_discover">
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.oidc_discover">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">oidc_discover</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        OIDC discover </span>
-<span class="sd">        </span>
-<span class="sd">        :param oidc_url: CheckIn URL get from payload</span>
-<span class="sd">        </span>
-<span class="sd">        :return: JSON object of OIDC configuration</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Perform OpenID Connect discovery.</span>
+
+<span class="sd">        Reads the issuer URL from `self.payload[&quot;iss&quot;]` and fetches the</span>
+<span class="sd">        provider metadata from `&lt;issuer&gt;/.well-known/openid-configuration`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            dict: OIDC provider metadata as a JSON-like dict.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            requests.HTTPError: If fetching the discovery document fails.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">oidc_url</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">payload</span><span class="p">[</span><span class="s2">&quot;iss&quot;</span><span class="p">]</span>
         <span class="n">request</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">oidc_url</span> <span class="o">+</span> <span class="s2">&quot;/.well-known/openid-configuration&quot;</span><span class="p">)</span>
@@ -338,12 +401,23 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.check_token">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">check_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">access_token</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Check validity of access token</span>
+<span class="sd">        Check validity of an access token.</span>
 
-<span class="sd">        :param: verbose (default as False)</span>
-<span class="sd">        :param oidc_token: the token to check</span>
-<span class="sd">        </span>
-<span class="sd">        :return: access token, or None on error</span>
+<span class="sd">        :param access_token:  </span>
+<span class="sd">            The JWT or opaque token string to validate.</span>
+<span class="sd">        :type access_token: str</span>
+
+<span class="sd">        :param verbose:  </span>
+<span class="sd">            If `True`, print human‐readable expiration information.  </span>
+<span class="sd">            Defaults to `False`.</span>
+<span class="sd">        :type verbose: bool</span>
+
+<span class="sd">        :return:  </span>
+<span class="sd">            The same `access_token` if it’s still valid, otherwise `None`.</span>
+<span class="sd">        :rtype: str or None</span>
+
+<span class="sd">        :raises TokenError:  </span>
+<span class="sd">            If the token is expired (or fails other validation checks).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="o">=</span><span class="n">access_token</span>
         <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decode_token</span><span class="p">()</span>
@@ -377,10 +451,20 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.auth.OIDCToken.token_list_vos">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">token_list_vos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">access_token</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        List VO memberships in EGI Check-in</span>
-<span class="sd">        </span>
-<span class="sd">        :return: list of VO names</span>
-<span class="sd">        </span>
+<span class="sd">        List VO memberships in EGI Check-in.</span>
+
+<span class="sd">        :param access_token:  </span>
+<span class="sd">            A valid access token (JWT or opaque string) to authenticate the request.  </span>
+<span class="sd">        :type access_token: str</span>
+
+<span class="sd">        :return:  </span>
+<span class="sd">            A sorted list of VO names parsed from the `eduperson_entitlement` claims.  </span>
+<span class="sd">        :rtype: list[str]</span>
+
+<span class="sd">        :raises requests.exceptions.Timeout:  </span>
+<span class="sd">            If the HTTP request to the userinfo endpoint times out.</span>
+<span class="sd">        :raises requests.HTTPError:  </span>
+<span class="sd">            If the HTTP response status code indicates an error.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">access_token</span><span class="o">=</span><span class="n">access_token</span>
         <span class="n">oidc_ep</span>  <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request_json</span>
