@@ -187,7 +187,7 @@ class OIDCToken(Token):
 
         :returns:  
             A valid access token string.
-        :rtype: str
+            :rtype: str
 
         :raises TokenError:  
             If none of the methods yields a valid token.
