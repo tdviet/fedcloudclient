@@ -406,9 +406,9 @@
 
     <span class="n">project_list</span><span class="p">,</span> <span class="n">project_error_list</span> <span class="o">=</span> <span class="n">get_projects_from_sites</span><span class="p">(</span><span class="n">access_token</span><span class="p">,</span> <span class="n">site</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">project_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">project_list</span><span class="p">:</span>
-            <span class="n">vo</span> <span class="o">=</span> <span class="n">find_vo_from_project_id</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">project</span> <span class="ow">in</span> <span class="n">project_list</span><span class="p">:</span>
+            <span class="n">vo</span> <span class="o">=</span> <span class="n">find_vo_from_project_id</span><span class="p">(</span><span class="n">project</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">project</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span>
             <span class="n">tabulate</span><span class="p">(</span>
                 <span class="n">project_list</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;VO&quot;</span><span class="p">,</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;Project name&quot;</span><span class="p">,</span> <span class="s2">&quot;enabled&quot;</span><span class="p">,</span> <span class="s2">&quot;site&quot;</span><span class="p">]</span>

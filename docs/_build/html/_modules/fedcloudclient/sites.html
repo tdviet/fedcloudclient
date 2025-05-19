@@ -103,15 +103,17 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">jsonschema</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONF</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ALL_SITES_KEYWORDS</span><span class="p">,</span>
-    <span class="n">DEFAULT_PROTOCOL</span><span class="p">,</span>
     <span class="n">all_site_params</span><span class="p">,</span>
     <span class="n">oidc_params</span><span class="p">,</span>
     <span class="n">site_vo_params</span><span class="p">,</span>
     <span class="n">vo_params_optional</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.shell</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_set_env_command</span>
+
+<span class="n">DEFAULT_PROTOCOL</span> <span class="o">=</span> <span class="n">CONF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;os_protocol&quot;</span><span class="p">)</span>
 
 <span class="n">__REMOTE_CONFIG_FILE</span> <span class="o">=</span> <span class="p">(</span>
     <span class="s2">&quot;https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml&quot;</span>
@@ -191,7 +193,7 @@
             <span class="n">data</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">yaml_file</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during reading data from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span>
     <span class="k">return</span> <span class="n">data</span></div>
 
 
@@ -222,7 +224,7 @@
             <span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">site_info</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Site config in file </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> is in wrong format&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span>
 
         <span class="n">__site_config_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_info</span><span class="p">)</span></div>
 
@@ -249,7 +251,7 @@
             <span class="n">__site_config_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">site_info</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error during reading site config from </span><span class="si">{</span><span class="n">file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exception: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span></div>
 
 
 
@@ -388,40 +390,40 @@
 
 <span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@all_site_params</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">all_sites</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="n">site_local</span><span class="p">,</span> <span class="n">all_sites</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Print configuration of specified site(s)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span> <span class="ow">or</span> <span class="n">all_sites</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">site_local</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span> <span class="ow">or</span> <span class="n">all_sites</span><span class="p">:</span>
         <span class="n">read_site_config</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">site_info</span> <span class="ow">in</span> <span class="n">__site_config_data</span><span class="p">:</span>
             <span class="n">site_info_str</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">site_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">site_info_str</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">site_info</span> <span class="o">=</span> <span class="n">find_site_data</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+        <span class="n">site_info</span> <span class="o">=</span> <span class="n">find_site_data</span><span class="p">(</span><span class="n">site_local</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">site_info</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">site_info</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Site </span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Site </span><span class="si">{</span><span class="n">site_local</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@site_vo_params</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">show_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">show_project_id</span><span class="p">(</span><span class="n">site_local</span><span class="p">,</span> <span class="n">vo</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Print Keystone endpoint and project ID</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">site_local</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot get project ID for ALL_SITES&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">click</span><span class="o">.</span><span class="n">Abort</span><span class="p">()</span>
 
-    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site_local</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">endpoint</span><span class="p">:</span>
         <span class="n">print_set_env_command</span><span class="p">(</span><span class="s2">&quot;OS_AUTH_URL&quot;</span><span class="p">,</span> <span class="n">endpoint</span><span class="p">)</span>
         <span class="n">print_set_env_command</span><span class="p">(</span><span class="s2">&quot;OS_PROJECT_ID&quot;</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found on site </span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found on site </span><span class="si">{</span><span class="n">site_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 
 <span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
@@ -444,15 +446,15 @@
 <span class="sd">    List all sites. If &quot;--vo &lt;name&gt;&quot; is provided, list only sites</span>
 <span class="sd">    supporting a Virtual Organization.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">list_sites</span><span class="p">(</span><span class="n">vo</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">site</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">site_local</span> <span class="ow">in</span> <span class="n">list_sites</span><span class="p">(</span><span class="n">vo</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">site_local</span><span class="p">)</span>
 
 
 <span class="nd">@site</span><span class="o">.</span><span class="n">command</span><span class="p">()</span>
 <span class="nd">@site_vo_params</span>
 <span class="nd">@oidc_params</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">env</span><span class="p">(</span>
-    <span class="n">site</span><span class="p">,</span>
+    <span class="n">site_local</span><span class="p">,</span>
     <span class="n">vo</span><span class="p">,</span>
     <span class="n">access_token</span><span class="p">,</span>
 <span class="p">):</span>
@@ -461,11 +463,11 @@
 <span class="sd">    May set also environment variable OS_ACCESS_TOKEN,</span>
 <span class="sd">    if access token is provided, otherwise print notification</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">site</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">site_local</span> <span class="ow">in</span> <span class="n">ALL_SITES_KEYWORDS</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Cannot generate environment variables for ALL_SITES&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">click</span><span class="o">.</span><span class="n">Abort</span><span class="p">()</span>
 
-    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
+    <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site_local</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">endpoint</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">protocol</span> <span class="o">=</span> <span class="n">DEFAULT_PROTOCOL</span>
@@ -476,7 +478,7 @@
         <span class="n">print_set_env_command</span><span class="p">(</span><span class="s2">&quot;OS_PROJECT_ID&quot;</span><span class="p">,</span> <span class="n">project_id</span><span class="p">)</span>
         <span class="n">print_set_env_command</span><span class="p">(</span><span class="s2">&quot;OS_ACCESS_TOKEN&quot;</span><span class="p">,</span> <span class="n">access_token</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found to have access to site </span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found to have access to site </span><span class="si">{</span><span class="n">site_local</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="mi">1</span>
 </pre></div>
 

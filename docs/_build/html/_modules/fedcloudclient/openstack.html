@@ -90,14 +90,12 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>  <span class="c1"># nosec Subprocess is required for invoking openstack client</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">distutils.spawn</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_executable</span>
-
 <span class="kn">import</span><span class="w"> </span><span class="nn">click</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">log_and_raise</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.conf</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONF</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fedcloudclient.decorators</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
     <span class="n">ALL_SITES_KEYWORDS</span><span class="p">,</span>
-    <span class="n">DEFAULT_AUTH_TYPE</span><span class="p">,</span>
-    <span class="n">DEFAULT_IDENTITY_PROVIDER</span><span class="p">,</span>
-    <span class="n">DEFAULT_PROTOCOL</span><span class="p">,</span>
     <span class="n">all_site_params</span><span class="p">,</span>
     <span class="n">oidc_params</span><span class="p">,</span>
     <span class="n">openstack_output_format_params</span><span class="p">,</span>
@@ -110,6 +108,10 @@
     <span class="n">list_sites</span><span class="p">,</span>
 <span class="p">)</span>
 
+<span class="n">DEFAULT_AUTH_TYPE</span> <span class="o">=</span> <span class="n">CONF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;os_auth_type&quot;</span><span class="p">)</span>
+<span class="n">DEFAULT_IDENTITY_PROVIDER</span> <span class="o">=</span> <span class="n">CONF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;os_identity_provider&quot;</span><span class="p">)</span>
+<span class="n">DEFAULT_PROTOCOL</span> <span class="o">=</span> <span class="n">CONF</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;os_protocol&quot;</span><span class="p">)</span>
+
 <span class="n">__OPENSTACK_CLIENT</span> <span class="o">=</span> <span class="s2">&quot;openstack&quot;</span>
 <span class="n">__MAX_WORKER_THREAD</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">__MISSING_VO_ERROR_CODE</span> <span class="o">=</span> <span class="mi">11</span>
@@ -121,9 +123,9 @@
 <a class="viewcode-back" href="../../fedcloudclient.html#fedcloudclient.openstack.fedcloud_openstack_full">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">fedcloud_openstack_full</span><span class="p">(</span>
     <span class="n">oidc_access_token</span><span class="p">,</span>
-    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
-    <span class="n">openstack_auth_type</span><span class="p">,</span>
-    <span class="n">checkin_identity_provider</span><span class="p">,</span>
+    <span class="n">os_protocol</span><span class="p">,</span>
+    <span class="n">os_auth_type</span><span class="p">,</span>
+    <span class="n">os_identity_provider</span><span class="p">,</span>
     <span class="n">site</span><span class="p">,</span>
     <span class="n">vo</span><span class="p">,</span>
     <span class="n">openstack_command</span><span class="p">,</span>
@@ -135,11 +137,12 @@
 
 <span class="sd">    :param oidc_access_token: Checkin access token. Passed to openstack client</span>
 <span class="sd">           as --os-access-token</span>
-<span class="sd">    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to</span>
+<span class="sd">    :param os_protocol: Checkin protocol (openi</span>
+<span class="sd">    , oidc). Passed to</span>
 <span class="sd">           openstack client as --os-protocol</span>
-<span class="sd">    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).</span>
+<span class="sd">    :param os_auth_type: Checkin authentication type (v3oidcaccesstoken).</span>
 <span class="sd">           Passed to openstack client as --os-auth-type</span>
-<span class="sd">    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).</span>
+<span class="sd">    :param os_identity_provider: Checkin identity provider in mapping (egi.eu).</span>
 <span class="sd">           Passed to openstack client as --os-identity-provider</span>
 <span class="sd">    :param site: site ID in GOCDB</span>
 <span class="sd">    :param vo: VO name</span>
@@ -148,6 +151,7 @@
 <span class="sd">    :param json_output: if result is JSON object or string. Default:True</span>
 
 <span class="sd">    :return: error code, result or error message</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">endpoint</span><span class="p">,</span> <span class="n">project_id</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="n">find_endpoint_and_project_id</span><span class="p">(</span><span class="n">site</span><span class="p">,</span> <span class="n">vo</span><span class="p">)</span>
@@ -155,17 +159,17 @@
         <span class="k">return</span> <span class="n">__MISSING_VO_ERROR_CODE</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found on site </span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">protocol</span> <span class="o">=</span> <span class="n">openstack_auth_protocol</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">os_protocol</span>
 
     <span class="n">options</span> <span class="o">=</span> <span class="p">(</span>
         <span class="s2">&quot;--os-auth-url&quot;</span><span class="p">,</span>
         <span class="n">endpoint</span><span class="p">,</span>
         <span class="s2">&quot;--os-auth-type&quot;</span><span class="p">,</span>
-        <span class="n">openstack_auth_type</span><span class="p">,</span>
+        <span class="n">os_auth_type</span><span class="p">,</span>
         <span class="s2">&quot;--os-protocol&quot;</span><span class="p">,</span>
         <span class="n">protocol</span><span class="p">,</span>
         <span class="s2">&quot;--os-identity-provider&quot;</span><span class="p">,</span>
-        <span class="n">checkin_identity_provider</span><span class="p">,</span>
+        <span class="n">os_identity_provider</span><span class="p">,</span>
         <span class="s2">&quot;--os-access-token&quot;</span><span class="p">,</span>
         <span class="n">oidc_access_token</span><span class="p">,</span>
     <span class="p">)</span>
@@ -188,7 +192,7 @@
         <span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">,)</span> <span class="o">+</span> <span class="n">openstack_command</span> <span class="o">+</span> <span class="n">options</span><span class="p">,</span>
         <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
         <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span>
-        <span class="n">env</span><span class="o">=</span><span class="n">my_env</span><span class="p">,</span>
+        <span class="n">env</span><span class="o">=</span><span class="n">my_env</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
 
     <span class="n">error_code</span> <span class="o">=</span> <span class="n">completed</span><span class="o">.</span><span class="n">returncode</span>
@@ -232,6 +236,7 @@
 <span class="sd">    :param json_output: if result is JSON object or string. Default:True</span>
 
 <span class="sd">    :return: error code, result or error message</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">return</span> <span class="n">fedcloud_openstack_full</span><span class="p">(</span>
@@ -286,6 +291,7 @@
 <span class="sd">    :param ignore_missing_vo:</span>
 <span class="sd">    :param first:</span>
 <span class="sd">    :return:</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">command</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
@@ -331,14 +337,15 @@
     <span class="n">all_sites</span><span class="p">,</span>
     <span class="n">vo</span><span class="p">,</span>
     <span class="n">openstack_command</span><span class="p">,</span>
-    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
-    <span class="n">openstack_auth_type</span><span class="p">,</span>
-    <span class="n">openstack_auth_provider</span><span class="p">,</span>
+    <span class="n">os_protocol</span><span class="p">,</span>
+    <span class="n">os_auth_type</span><span class="p">,</span>
+    <span class="n">os_identity_provider</span><span class="p">,</span>
     <span class="n">ignore_missing_vo</span><span class="p">,</span>
     <span class="n">json_output</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Execute OpenStack commands on site and VO</span>
+<span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">check_openstack_client_installation</span><span class="p">():</span>
@@ -358,9 +365,9 @@
             <span class="n">executor</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span>
                 <span class="n">fedcloud_openstack_full</span><span class="p">,</span>
                 <span class="n">access_token</span><span class="p">,</span>
-                <span class="n">openstack_auth_protocol</span><span class="p">,</span>
-                <span class="n">openstack_auth_type</span><span class="p">,</span>
-                <span class="n">openstack_auth_provider</span><span class="p">,</span>
+                <span class="n">os_protocol</span><span class="p">,</span>
+                <span class="n">os_auth_type</span><span class="p">,</span>
+                <span class="n">os_identity_provider</span><span class="p">,</span>
                 <span class="n">site</span><span class="p">,</span>
                 <span class="n">vo</span><span class="p">,</span>
                 <span class="n">openstack_command</span><span class="p">,</span>
@@ -372,14 +379,16 @@
         <span class="c1"># Get results and print them</span>
         <span class="n">first</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="c1"># Get the result, first come first serve</span>
+        <span class="c1"># Get the result, first come, first served</span>
         <span class="k">for</span> <span class="n">future</span> <span class="ow">in</span> <span class="n">concurrent</span><span class="o">.</span><span class="n">futures</span><span class="o">.</span><span class="n">as_completed</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
             <span class="n">site</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">future</span><span class="p">]</span>
             <span class="n">exc_msg</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">error_code</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="n">future</span><span class="o">.</span><span class="n">result</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-                <span class="n">exc_msg</span> <span class="o">=</span> <span class="n">exc</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exception</span><span class="p">:</span>
+                <span class="n">msg_err</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Can not get result in OpenStack: </span><span class="si">{</span><span class="n">exception</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">log_and_raise</span><span class="p">(</span><span class="n">msg_err</span><span class="p">,</span> <span class="n">exception</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">msg_err</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exception</span>
 
             <span class="c1"># Print result</span>
             <span class="n">print_result</span><span class="p">(</span>
@@ -409,12 +418,15 @@
     <span class="n">access_token</span><span class="p">,</span>
     <span class="n">site</span><span class="p">,</span>
     <span class="n">vo</span><span class="p">,</span>
-    <span class="n">openstack_auth_protocol</span><span class="p">,</span>
-    <span class="n">openstack_auth_type</span><span class="p">,</span>
-    <span class="n">openstack_auth_provider</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">os_protocol</span><span class="p">,</span>
+    <span class="n">os_auth_type</span><span class="p">,</span>
+    <span class="n">os_identity_provider</span><span class="p">,</span>
+    <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Interactive OpenStack client on site and VO</span>
+<span class="sd">    </span>
+<span class="sd">    :return: None</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">check_openstack_client_installation</span><span class="p">():</span>
@@ -425,18 +437,19 @@
         <span class="k">raise</span> <span class="ne">SystemExit</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error: VO </span><span class="si">{</span><span class="n">vo</span><span class="si">}</span><span class="s2"> not found on site </span><span class="si">{</span><span class="n">site</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">protocol</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">protocol</span> <span class="o">=</span> <span class="n">openstack_auth_protocol</span>
+        <span class="n">protocol</span> <span class="o">=</span> <span class="n">os_protocol</span>
     <span class="n">my_env</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_AUTH_URL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">endpoint</span>
-    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_AUTH_TYPE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">openstack_auth_type</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_AUTH_TYPE&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os_auth_type</span>
     <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_PROTOCOL&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">protocol</span>
-    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_IDENTITY_PROVIDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">openstack_auth_provider</span>
+    <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_IDENTITY_PROVIDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os_identity_provider</span>
     <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_ACCESS_TOKEN&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">access_token</span>
     <span class="n">my_env</span><span class="p">[</span><span class="s2">&quot;OS_PROJECT_ID&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">project_id</span>
 
     <span class="c1"># Calling OpenStack client as subprocess</span>
     <span class="c1"># Ignore bandit warning</span>
-    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">my_env</span><span class="p">)</span>  <span class="c1"># nosec</span>
+    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">__OPENSTACK_CLIENT</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="n">my_env</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># nosec</span>
+    <span class="k">return</span> <span class="kc">None</span>
 </pre></div>
 
            </div>

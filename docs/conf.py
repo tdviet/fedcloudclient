@@ -5,6 +5,11 @@
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
+import os
+import sys
+# Adjust the path so that your top-level package folder is first
+sys.path.insert(0, os.path.abspath(".."))
+
 
 project = 'fedcloudclient'
 copyright = '2025, jaro221'

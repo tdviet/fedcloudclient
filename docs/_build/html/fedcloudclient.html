@@ -91,121 +91,6 @@
 <span id="fedcloudclient-checkin-module"></span><h2>fedcloudclient.checkin module<a class="headerlink" href="#module-fedcloudclient.checkin" title="Link to this heading"></a></h2>
 <p>Implementation of “fedcloud token” commands for interactions with EGI Check-in and
 access tokens</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.check_token">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">check_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#check_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.check_token" title="Link to this definition"></a></dt>
-<dd><p>Check validity of access token</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>verbose</strong></p></li>
-<li><p><strong>oidc_token</strong> – the token to check</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>access token, or None on error</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.decode_token">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">decode_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#decode_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.decode_token" title="Link to this definition"></a></dt>
-<dd><p>Decoding access token to a dict
-:param oidc_access_token:
-:return: dict with token info</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.get_access_token">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_access_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_access_token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_access_token" title="Link to this definition"></a></dt>
-<dd><p>Get access token
-Generates new access token from oidc-agent
-or mytoken</p>
-<p>Check expiration time of access token
-Raise error if no valid token exists</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>oidc_access_token</strong></p></li>
-<li><p><strong>oidc_agent_account</strong></p></li>
-<li><p><strong>mytoken</strong></p></li>
-<li><p><strong>mytoken_server</strong></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>access token</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.get_checkin_id">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_checkin_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_checkin_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_checkin_id" title="Link to this definition"></a></dt>
-<dd><p>Get EGI Check-in ID from access token</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>oidc_token</strong> – the token</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Check-in ID</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_mytoken_server">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_mytoken_server</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_mytoken_server"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_mytoken_server" title="Link to this definition"></a></dt>
-<dd><p>Get access token from mytoken server
-:param quiet:
-:param mytoken:
-:param mytoken_server:
-:return: access token, or None on error</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.get_token_from_oidc_agent">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.get_token_from_oidc_agent" title="Link to this definition"></a></dt>
-<dd><p>Get access token from oidc-agent
-:param quiet:
-:param oidc_agent_account: account name in oidc-agent
-:return: access token, or None on error</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.oidc_discover">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">oidc_discover</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_url</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#oidc_discover"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.oidc_discover" title="Link to this definition"></a></dt>
-<dd><p>Discover OIDC endpoints</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>oidc_url</strong> – CheckIn URL</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>JSON object of OIDC configuration</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.print_error">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">print_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quiet</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#print_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.print_error" title="Link to this definition"></a></dt>
-<dd><p>Print error message to stderr if not quiet</p>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fedcloudclient.checkin.token_list_vos">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.checkin.</span></span><span class="sig-name descname"><span class="pre">token_list_vos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/checkin.html#token_list_vos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.checkin.token_list_vos" title="Link to this definition"></a></dt>
-<dd><p>List VO memberships in EGI Check-in</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>oidc_access_token</strong></p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of VO names</p>
-</dd>
-</dl>
-</dd></dl>
-
 </section>
 <section id="module-fedcloudclient.endpoint">
 <span id="fedcloudclient-endpoint-module"></span><h2>fedcloudclient.endpoint module<a class="headerlink" href="#module-fedcloudclient.endpoint" title="Link to this heading"></a></h2>
@@ -532,7 +417,7 @@ e.g. (“image”, “list”, “–long”)</p></li>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="fedcloudclient.openstack.fedcloud_openstack_full">
-<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">fedcloud_openstack_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_protocol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_auth_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkin_identity_provider</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack_full" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.openstack.</span></span><span class="sig-name descname"><span class="pre">fedcloud_openstack_full</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_access_token</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os_protocol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os_auth_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">os_identity_provider</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">site</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">openstack_command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json_output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/openstack.html#fedcloud_openstack_full"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.openstack.fedcloud_openstack_full" title="Link to this definition"></a></dt>
 <dd><p>Calling openstack client with full options specified, including support
 for other identity providers and protocols</p>
 <dl class="field-list simple">
@@ -540,11 +425,20 @@ for other identity providers and protocols</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>oidc_access_token</strong> – Checkin access token. Passed to openstack client
 as –os-access-token</p></li>
-<li><p><strong>openstack_auth_protocol</strong> – Checkin protocol (openid, oidc). Passed to
-openstack client as –os-protocol</p></li>
-<li><p><strong>openstack_auth_type</strong> – Checkin authentication type (v3oidcaccesstoken).
+<li><p><strong>os_protocol</strong> – Checkin protocol (openi</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>, oidc). Passed to</dt><dd><p>openstack client as –os-protocol</p>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>os_auth_type</strong> – Checkin authentication type (v3oidcaccesstoken).
 Passed to openstack client as –os-auth-type</p></li>
-<li><p><strong>checkin_identity_provider</strong> – Checkin identity provider in mapping (egi.eu).
+<li><p><strong>os_identity_provider</strong> – Checkin identity provider in mapping (egi.eu).
 Passed to openstack client as –os-identity-provider</p></li>
 <li><p><strong>site</strong> – site ID in GOCDB</p></li>
 <li><p><strong>vo</strong> – VO name</p></li>
