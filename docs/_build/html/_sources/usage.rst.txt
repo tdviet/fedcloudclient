@@ -16,7 +16,7 @@ Usage
 * **"fedcloud secret"** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
-* **"fedcloud ec3"** as helper commands for deploying EC3.
+* **"fedcloud auth"**  is used to check the validity of access tokens and authentication credential,
 
 
 

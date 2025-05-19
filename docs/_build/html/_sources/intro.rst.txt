@@ -46,7 +46,7 @@ The following modules are included:
 * **fedcloudclient.secret** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
-* **fedcloudclient.ec3** for deploying elastic computing clusters in Cloud.
+* **fedcloudclient.auth** module provides utilities to verify the validity of access tokens and authentication credentials used in the EGI Federated Cloud,
 
 A short tutorial of the fedcloudclient is available in `this
 presentation <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_.

@@ -16,7 +16,7 @@ Usage
 * **"fedcloud secret"** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
-* **"fedcloud ec3"** as helper commands for deploying EC3.
+* **"fedcloud auth"**  is used to check the validity of access tokens and authentication credential,
 
 
 
@@ -105,6 +105,8 @@ This will show a list of configuration parameters:
 |  os_auth_type              |  v3oidcaccesstoken                                                                 |
 +----------------------------+------------------------------------------------------------------------------------+
 |  os_identity_provider      |  egi.eu                                                                            |
++----------------------------+------------------------------------------------------------------------------------+
+|  _MIN_ACCESS_TOKEN_TIME    |  30                                                                          |
 +----------------------------+------------------------------------------------------------------------------------+
 
 
