@@ -79,7 +79,8 @@ class OIDCToken(Token):
     def get_user_id(self) -> str:
         """
         Return use ID
-        :return:
+        
+        :return: user_id
         
         """
 
@@ -92,6 +93,7 @@ class OIDCToken(Token):
         """
         Get access token from oidc-agent
         :param oidc_agent_account: account name in oidc-agent
+        
         :return: access token, and set internal token, raise TokenError on None
         """
 
@@ -122,6 +124,7 @@ class OIDCToken(Token):
         Get access token from mytoken server
         :param mytoken:
         :param mytoken_server:
+        
         :return: access token, or None on error
         
         """
@@ -167,7 +170,8 @@ class OIDCToken(Token):
         :param access_token:
         :param oidc_agent_account:
         :param mytoken:
-        :return:
+        
+        :return: access_token or None
         
         """
         if mytoken:
@@ -194,6 +198,7 @@ class OIDCToken(Token):
     def oidc_discover(self) -> dict:
         """
         :param oidc_url: CheckIn URL get from payload
+        
         :return: JSON object of OIDC configuration
         
         """

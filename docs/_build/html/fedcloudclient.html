@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FedCloud client API references () &mdash; fedcloudclient  documentation</title>
+  <title>FedCloud client API references &mdash; fedcloudclient  documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css" />
@@ -53,7 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="development.html">Using FedCloud client in Python</a></li>
 <li class="toctree-l1"><a class="reference internal" href="scripts.html">Using FedCloud client in scripts</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">fedcloudclient API references</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">FedCloud client API references ()</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">FedCloud client API references</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ and Troubleshooting</a></li>
@@ -75,7 +75,7 @@
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="modules.html">fedcloudclient API references</a></li>
-      <li class="breadcrumb-item active">FedCloud client API references ()</li>
+      <li class="breadcrumb-item active">FedCloud client API references</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/fedcloudclient.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -86,7 +86,7 @@
            <div itemprop="articleBody">
              
   <section id="fedcloud-client-api-references">
-<h1>FedCloud client API references ()<a class="headerlink" href="#fedcloud-client-api-references" title="Link to this heading"></a></h1>
+<h1>FedCloud client API references<a class="headerlink" href="#fedcloud-client-api-references" title="Link to this heading"></a></h1>
 <section id="module-fedcloudclient.checkin">
 <span id="fedcloudclient-checkin-module"></span><h2>fedcloudclient.checkin module<a class="headerlink" href="#module-fedcloudclient.checkin" title="Link to this heading"></a></h2>
 <p>Implementation of “fedcloud token” commands for interactions with EGI Check-in and
@@ -143,23 +143,35 @@ access tokens</p>
 <span class="sig-name descname"><span class="pre">get_token_from_mytoken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mytoken</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mytoken_server</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_mytoken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_mytoken" title="Link to this definition"></a></dt>
 <dd><p>Get access token from mytoken server
 :param mytoken:
-:param mytoken_server:
-:return: access token, or None on error</p>
+:param mytoken_server:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>access token, or None on error</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent">
 <span class="sig-name descname"><span class="pre">get_token_from_oidc_agent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">oidc_agent_account</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_token_from_oidc_agent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_token_from_oidc_agent" title="Link to this definition"></a></dt>
 <dd><p>Get access token from oidc-agent
-:param oidc_agent_account: account name in oidc-agent
-:return: access token, and set internal token, raise TokenError on None</p>
+:param oidc_agent_account: account name in oidc-agent</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>access token, and set internal token, raise TokenError on None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="fedcloudclient.auth.OIDCToken.get_user_id">
 <span class="sig-name descname"><span class="pre">get_user_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#OIDCToken.get_user_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.OIDCToken.get_user_id" title="Link to this definition"></a></dt>
-<dd><p>Return use ID
-:return:</p>
+<dd><p>Return use ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>user_id</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -168,8 +180,12 @@ access tokens</p>
 <dd><p>Select valid token from multiple options
 :param access_token:
 :param oidc_agent_account:
-:param mytoken:
-:return:</p>
+:param mytoken:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>access_token or None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -199,6 +215,56 @@ access tokens</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.auth.</span></span><span class="sig-name descname"><span class="pre">Token</span></span><a class="reference internal" href="_modules/fedcloudclient/auth.html#Token"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.auth.Token" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Abstract object for managing tokens</p>
+</dd></dl>
+
+</section>
+<section id="module-fedcloudclient.conf">
+<span id="fedcloudclient-conf-module"></span><h2>fedcloudclient.conf module<a class="headerlink" href="#module-fedcloudclient.conf" title="Link to this heading"></a></h2>
+<p>Read/write configuration files</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.conf.init_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">init_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#init_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.init_config" title="Link to this definition"></a></dt>
+<dd><p>Init config moduls
+:return: actual config</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.conf.init_default_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">init_default_config</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/conf.html#init_default_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.init_default_config" title="Link to this definition"></a></dt>
+<dd><p>Initialisation of default settings</p>
+<p>:return dictionary of &lt;DEFAULT_SETTINGS&gt;</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.conf.load_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">load_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#load_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.load_config" title="Link to this definition"></a></dt>
+<dd><p>Load configuration file
+:param filename:
+:return: configuration data</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.conf.load_env">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">load_env</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/fedcloudclient/conf.html#load_env"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.load_env" title="Link to this definition"></a></dt>
+<dd><p>Load configs from environment variables
+:return: config</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.conf.save_config">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.conf.</span></span><span class="sig-name descname"><span class="pre">save_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/conf.html#save_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.conf.save_config" title="Link to this definition"></a></dt>
+<dd><p>Save configuration to file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> – name of config file</p></li>
+<li><p><strong>config_data</strong> – dict containing configuration</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -585,6 +651,66 @@ e.g. (“image”, “list”, “–long”)</p></li>
 <dd class="field-even"><p></p>
 </dd>
 </dl>
+</dd></dl>
+
+</section>
+<section id="fedcloudclient-logger-module">
+<h2>fedcloudclient.logger module<a class="headerlink" href="#fedcloudclient-logger-module" title="Link to this heading"></a></h2>
+<p id="module-fedcloudclient.logger">Logger configuration</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.logger.init_logger">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.logger.</span></span><span class="sig-name descname"><span class="pre">init_logger</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/logger.html#init_logger"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.logger.init_logger" title="Link to this definition"></a></dt>
+<dd><p>Init logger
+:return:</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fedcloudclient.logger.log_and_raise">
+<span class="sig-prename descclassname"><span class="pre">fedcloudclient.logger.</span></span><span class="sig-name descname"><span class="pre">log_and_raise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error_msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exception</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/logger.html#log_and_raise"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.logger.log_and_raise" title="Link to this definition"></a></dt>
+<dd><p>Log error and raise exception</p>
+</dd></dl>
+
+</section>
+<section id="fedcloudclient-locker-auth-module">
+<h2>fedcloudclient.locker_auth module<a class="headerlink" href="#fedcloudclient-locker-auth-module" title="Link to this heading"></a></h2>
+<p id="module-fedcloudclient.locker_auth">Class for managing Vault locker tokens</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="fedcloudclient.locker_auth.LockerToken">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">fedcloudclient.locker_auth.</span></span><span class="sig-name descname"><span class="pre">LockerToken</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">locker_token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/locker_auth.html#LockerToken"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.locker_auth.LockerToken" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">VaultToken</span></code></p>
+<p>Managing Vault locker token</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.locker_auth.LockerToken.get_user_id">
+<span class="sig-name descname"><span class="pre">get_user_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/locker_auth.html#LockerToken.get_user_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.locker_auth.LockerToken.get_user_id" title="Link to this definition"></a></dt>
+<dd><p>User ID is not available for locker token
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.locker_auth.LockerToken.get_vault_auth_method">
+<span class="sig-name descname"><span class="pre">get_vault_auth_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/locker_auth.html#LockerToken.get_vault_auth_method"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.locker_auth.LockerToken.get_vault_auth_method" title="Link to this definition"></a></dt>
+<dd><p>Get Vault user ID from Vault token
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.locker_auth.LockerToken.get_vault_user_id">
+<span class="sig-name descname"><span class="pre">get_vault_user_id</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/locker_auth.html#LockerToken.get_vault_user_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.locker_auth.LockerToken.get_vault_user_id" title="Link to this definition"></a></dt>
+<dd><p>Get Vault user ID from Vault token
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="fedcloudclient.locker_auth.LockerToken.vault_command">
+<span class="sig-name descname"><span class="pre">vault_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/fedcloudclient/locker_auth.html#LockerToken.vault_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#fedcloudclient.locker_auth.LockerToken.vault_command" title="Link to this definition"></a></dt>
+<dd><p>Perform Vault command
+:param command:
+:param path:
+:param data:
+:param vo:
+:return:</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>

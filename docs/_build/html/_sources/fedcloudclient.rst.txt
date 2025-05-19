@@ -1,5 +1,5 @@
-FedCloud client API references ()
-=================================
+FedCloud client API references
+==============================
 
 
 fedcloudclient.checkin module
@@ -14,6 +14,14 @@ fedcloudclient.auth module
 --------------------------
 
 .. automodule:: fedcloudclient.auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fedcloudclient.conf module
+--------------------------
+
+.. automodule:: fedcloudclient.conf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -41,6 +49,24 @@ fedcloudclient.openstack module
    :members:
    :undoc-members:
    :show-inheritance:
+
+fedcloudclient.logger module
+-------------------------
+
+.. automodule:: fedcloudclient.logger
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+fedcloudclient.locker_auth module
+-------------------------
+
+.. automodule:: fedcloudclient.locker_auth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 
 fedcloudclient.cli module
 -------------------------

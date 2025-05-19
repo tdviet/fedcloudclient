@@ -173,7 +173,8 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">get_user_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return use ID</span>
-<span class="sd">        :return:</span>
+<span class="sd">        </span>
+<span class="sd">        :return: user_id</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -189,6 +190,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get access token from oidc-agent</span>
 <span class="sd">        :param oidc_agent_account: account name in oidc-agent</span>
+<span class="sd">        </span>
 <span class="sd">        :return: access token, and set internal token, raise TokenError on None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -222,6 +224,7 @@
 <span class="sd">        Get access token from mytoken server</span>
 <span class="sd">        :param mytoken:</span>
 <span class="sd">        :param mytoken_server:</span>
+<span class="sd">        </span>
 <span class="sd">        :return: access token, or None on error</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -270,7 +273,8 @@
 <span class="sd">        :param access_token:</span>
 <span class="sd">        :param oidc_agent_account:</span>
 <span class="sd">        :param mytoken:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        </span>
+<span class="sd">        :return: access_token or None</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">mytoken</span><span class="p">:</span>
@@ -300,6 +304,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">oidc_discover</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        :param oidc_url: CheckIn URL get from payload</span>
+<span class="sd">        </span>
 <span class="sd">        :return: JSON object of OIDC configuration</span>
 <span class="sd">        </span>
 <span class="sd">        &quot;&quot;&quot;</span>
