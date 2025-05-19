@@ -1,13 +1,7 @@
 FedCloud client API references
 ==============================
 
-fedcloudclient.checkin module
------------------------------
 
-.. automodule:: fedcloudclient.checkin
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 fedcloudclient.auth module
 -----------------------------
