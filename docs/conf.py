@@ -44,7 +44,6 @@ html_css_files = [
 # Make sure sidebar and index content renders
 html_theme_options = {
     'logo_only': False,        # Show logo and project title
-    'display_version': False,
     'navigation_depth': 2,     # Show deeper headings
 }
 

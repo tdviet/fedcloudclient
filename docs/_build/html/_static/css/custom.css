@@ -1,15 +1,23 @@
-/* Class signatures: blue background, black text */
+/* 1) Classes stay blue */
 dt.sig.sig-class {
-  background-color: #e8f0fe !important; /* light‐blue bg */
+  background-color: #e8f0fe !important;
 }
 dt.sig.sig-class .sig-name {
-  color: #000 !important;               /* black text */
+  color: #000 !important;
 }
 
-/* Function signatures: gray background, black text */
-dt.sig.sig-function {
-  background-color: #f5f5f5 !important; /* light‐gray bg */
+/* 2) “Pure” functions (module-level) go gray */
+dl.py.function dt.sig {
+  background-color: #f5f5f5 !important;
 }
-dt.sig.sig-function .sig-name {
-  color: #000 !important;               /* black text */
+dl.py.function dt.sig .sig-name {
+  color: #000 !important;
+}
+
+/* 3) Methods (inside classes) also go gray */
+dl.py.method dt.sig {
+  background-color: #f5f5f5 !important;
+}
+dl.py.method dt.sig .sig-name {
+  color: #000 !important;
 }
