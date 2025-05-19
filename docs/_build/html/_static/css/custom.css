@@ -1,9 +1,16 @@
 /* docs/_static/css/custom.css */
 
-/* Unify class/function/method signature colors */
-.sig-class .sig-name,
-.sig-function .sig-name,
-.sig-method .sig-name {
-    background: #e8f0fe !important;
-    color:      #1a73e8 !important;
+/* 1) Style the signature line (the <dt>) */
+dt.sig {
+  background-color: #e8f0fe !important;
+}
+
+/* 2) Style the description block right after it (<dd> following a dt.sig) */
+dt.sig + dd {
+  background-color: #e8f0fe !important;
+}
+
+/* 3) Make the name text in all signatures the same blue */
+dt.sig span.sig-name {
+  color: #1a73e8 !important;
 }
