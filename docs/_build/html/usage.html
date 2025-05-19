@@ -49,8 +49,8 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#authentication-options">Authentication Options</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#authentication-options">Authentication Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configuration">Configuration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shell-completion">Shell completion</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fedcloud-help-command">fedcloud –help command</a></li>
@@ -107,9 +107,8 @@
 <a class="reference external" href="https://vault.docs.fedcloud.eu/index.html">Secret management service</a>,</p></li>
 <li><p><strong>“fedcloud auth”</strong>  is used to check the validity of access tokens and authentication credential,</p></li>
 </ul>
-</section>
 <section id="authentication-options">
-<h1>Authentication Options<a class="headerlink" href="#authentication-options" title="Link to this heading"></a></h1>
+<h2>Authentication Options<a class="headerlink" href="#authentication-options" title="Link to this heading"></a></h2>
 <p><strong>FedCloud</strong> commands require access tokens for authentication. Users have multiple options for providing these tokens:</p>
 <ul>
 <li><p><strong>Direct access token</strong>: Use the <code class="docutils literal notranslate"><span class="pre">--oidc-access-token</span></code> option to provide an access token directly. You can retrieve this token from the environment variable <code class="docutils literal notranslate"><span class="pre">FEDCLOUD_OIDC_ACCESS_TOKEN</span></code>, or pass it explicitly, e.g.:</p>
@@ -127,6 +126,7 @@
 <p>Alternatively, you can obtain tokens using the <a class="reference external" href="https://aai.egi.eu/token">EGI Check-in Token Portal</a>, which provides all necessary information for EGI Check-in users.</p>
 <p>In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).</p>
 <p>By default, the protocol used is <code class="docutils literal notranslate"><span class="pre">openid</span></code>. This can be changed using the <code class="docutils literal notranslate"><span class="pre">--os-protocol</span></code> option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., <code class="docutils literal notranslate"><span class="pre">oidc</span></code> for INFN-CLOUD-BARI).</p>
+</section>
 <section id="configuration">
 <h2>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h2>
 <p>Display the current configuration of <em>fedcloud</em> with:</p>

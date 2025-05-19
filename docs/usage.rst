@@ -21,7 +21,7 @@ Usage
 
 
 Authentication Options
-======================
+**********************
 
 **FedCloud** commands require access tokens for authentication. Users have multiple options for providing these tokens:
 
