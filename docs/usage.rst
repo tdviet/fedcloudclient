@@ -123,9 +123,9 @@ For example, to print the environment configuration, use the following command::
 
 This command shows, for instance, the following output:
 
-+----------------------------+-------------------------------------------------------------------+
++-----------------------------+------------------------------------------------------------------+
 |  Parameter                  |  Default value                                                   |
-+============================+===================================================================+
++=============================+==================================================================+
 |  oidc_agent_account         |  <NAME_OF_USER>                                                  |
 +-----------------------------+------------------------------------------------------------------+
 |  ...                        |  ...                                                             |
@@ -196,9 +196,9 @@ Consistent Parameter Naming
 
 Note the consistent naming convention for configuration parameters across different sources. For example, the same parameter is represented as:
 
-* ``--oidc-agent-account`` in the **command-line**
-* ``FEDCLOUD_OIDC_AGENT_ACCOUNT`` as an **environment variable**
-* ``oidc_agent_account`` in the **configuration file**
+* ``--access_token`` in the **command-line**
+* ``FEDCLOUD_ACCESS_TOKEN`` as an **environment variable**
+
 
 All configuration parameters follow this consistent mapping across command-line options, environment variables, and configuration files.
 
@@ -223,15 +223,15 @@ These parameters can be specified via:
 
 This design allows flexible and convenient configuration for various usage scenarios.
 
-+------------------------------+-------------------------+
-|  Environment variable        |  Command-line option    |
-+==============================+=========================+
-|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |
-+------------------------------+-------------------------+
-|  FEDCLOUD_MYTOKEN            |  --mytoken              |
-+------------------------------+-------------------------+
-|  FEDCLOUD_OIDC_AGENT_ACCOUNT |  --oidc-agent-account   |
-+------------------------------+-------------------------+
++------------------------------+-------------------------+--------------------------+
+|  Environment variable        |  Command-line option    | Configuration parameters |
++==============================+=========================+--------------------------+
+|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |  Not implemented         |
++------------------------------+-------------------------+--------------------------+
+|  Not implemented             |  --mytoken              |  mytoken                 |
++------------------------------+-------------------------+--------------------------+
+|  Not implemented             |  --oidc-agent-account   |  oidc_agent_account      |
++------------------------------+-------------------------+--------------------------+
 
 For convenience, it is recommended to set transient parameters—such as access tokens—via **environment variables**.  
 This simplifies the usage of *fedcloud* commands by avoiding the need to specify these parameters on the command line each time.
