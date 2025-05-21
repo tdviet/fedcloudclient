@@ -225,7 +225,7 @@ This design allows flexible and convenient configuration for various usage scena
 
 +------------------------------+-------------------------+--------------------------+
 |  Environment variable        |  Command-line option    | Configuration parameters |
-+==============================+=========================+--------------------------+
++==============================+=========================+==========================+
 |  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |  Not implemented         |
 +------------------------------+-------------------------+--------------------------+
 |  Not implemented             |  --mytoken              |  mytoken                 |
