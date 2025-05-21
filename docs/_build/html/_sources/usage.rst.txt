@@ -223,15 +223,15 @@ These parameters can be specified via:
 
 This design allows flexible and convenient configuration for various usage scenarios.
 
-+------------------------------+-------------------------+--------------------------+
-|  Environment variable        |  Command-line option    | Configuration parameters |
-+==============================+=========================+==========================+
-|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |  Not implemented         |
-+------------------------------+-------------------------+--------------------------+
-|  Not implemented             |  --mytoken              |  mytoken                 |
-+------------------------------+-------------------------+--------------------------+
-|  Not implemented             |  --oidc-agent-account   |  oidc_agent_account      |
-+------------------------------+-------------------------+--------------------------+
++------------------------------+-------------------------+---------------------------+
+|  Environment variable        |  Command-line option    |  Configuration parameters |
++==============================+=========================+===========================+
+|  FEDCLOUD_OIDC_ACCESS_TOKEN  |  --oidc-access-token    |  Not implemented          |
++------------------------------+-------------------------+---------------------------+
+|  Not implemented             |  --mytoken              |  mytoken                  |
++------------------------------+-------------------------+---------------------------+
+|  Not implemented             |  --oidc-agent-account   |  oidc_agent_account       |
++------------------------------+-------------------------+---------------------------+
 
 For convenience, it is recommended to set transient parameters—such as access tokens—via **environment variables**.  
 This simplifies the usage of *fedcloud* commands by avoiding the need to specify these parameters on the command line each time.
