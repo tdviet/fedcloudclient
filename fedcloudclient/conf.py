@@ -5,12 +5,14 @@ import json
 import os
 import sys
 from pathlib import Path
+import textwrap
 
 import click
 import yaml
 from tabulate import tabulate
+from fedcloudclient.exception import ConfigError
 
-#from fedcloudclient.exception import ConfigError
+
 
 DEFAULT_CONFIG_LOCATION = Path.home() / ".config/fedcloud/config.yaml"
 DEFAULT_SETTINGS = {
@@ -36,15 +38,34 @@ DEFAULT_SETTINGS = {
     "os_protocol": "openid",
     "os_auth_type": "v3oidcaccesstoken",
     "os_identity_provider": "egi.eu",
+    "_MIN_ACCESS_TOKEN_TIME": 30
 }
 
+def init_default_config():
+    """
+    Initialize the default configuration settings.
+
+    :return:  
+        A dictionary containing the default settings as defined by `DEFAULT_SETTINGS`.
+    :rtype: dict
+    """
+    default_config_init=DEFAULT_SETTINGS
+    return default_config_init
 
 def save_config(filename: str, config_data: dict):
     """
-    Save configuration to file
-    :param filename: name of config file
-    :param config_data: dict containing configuration
-    :return: None
+    Save a configuration dictionary to a YAML file.
+
+    :param filename:  
+        Path to the configuration file to write.
+    :type filename: str
+
+    :param config_data:  
+        A mapping of configuration keys to values to be serialized.
+    :type config_data: dict
+
+    :raises ConfigError:  
+        If writing the YAML fails (wraps `yaml.YAMLError`).
     """
     config_file = Path(filename).resolve()
     try:
@@ -52,14 +73,24 @@ def save_config(filename: str, config_data: dict):
             yaml.dump(config_data, file)
     except yaml.YAMLError as exception:
         error_msg = f"Error during saving configuration to {filename}: {exception}"
-        raise ConfigError(error_msg)
+        raise ConfigError(error_msg) from exception
 
 
 def load_config(filename: str) -> dict:
     """
-    Load configuration file
-    :param filename:
-    :return: configuration data
+    Load configuration data from a YAML file.
+
+    :param filename:  
+        Path to the configuration file to read.
+    :type filename: str
+
+    :return:  
+        A dictionary of configuration values parsed from the file.  
+        Returns an empty dict if the file does not exist.
+    :rtype: dict
+
+    :raises ConfigError:  
+        If the file exists but cannot be parsed as valid YAML.
     """
 
     config_file = Path(filename).resolve()
@@ -70,17 +101,25 @@ def load_config(filename: str) -> dict:
                 return yaml.safe_load(file)
         except yaml.YAMLError as exception:
             error_msg = f"Error during loading configuration from {filename}: {exception}"
-            raise ConfigError(error_msg)
+            raise ConfigError(error_msg) from exception
     else:
         return {}
 
 
 def load_env() -> dict:
     """
-    Load configs from environment variables
-    :return: config
+    Load FedCloud client configuration from environment variables.
+
+    Scans the current process environment for variables prefixed with
+    `FEDCLOUD_`, strips that prefix, converts the remainder to lowercase,
+    and returns them as configuration entries.
+
+    :return:  
+        A dictionary mapping config keys (lowercased, prefix removed) to
+        their string values from the environment.
+    :rtype: dict[str, str]
     """
-    env_config = dict()
+    env_config = {}
     for env in os.environ:
         if env.startswith("FEDCLOUD_"):
             config_key = env[9:].lower()
@@ -90,28 +129,35 @@ def load_env() -> dict:
 
 def init_config() -> dict:
     """
-    Init config moduls
-    :return: actual config
+    Initialize the FedCloud client configuration.
+
+    This function merges three sources of configuration, in order of precedence:
+    
+    1. `DEFAULT_SETTINGS` (hard-coded defaults).  
+    2. Environment variables prefixed with `FEDCLOUD_` (stripped of the prefix and lower-cased).  
+    3. Values loaded from a YAML config file (path can be overridden via `FEDCLOUD_CONFIG_FILE`).
+
+    :return:  
+        A dict containing the merged configuration settings.  
+        Later sources override earlier ones.
+    :rtype: dict[str, Any]
     """
     env_config = load_env()
     config_file = env_config.get("config_file", DEFAULT_CONFIG_LOCATION)
 
     try:
         saved_config = load_config(config_file)
-    except ConfigError as exception:
-        print(f"Error while loading config: {exception}")
+    except ConfigError:
         saved_config = {}
 
-    act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
+    act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     return act_config
-
 
 @click.group()
 def config():
     """
     Managing fedcloud configurations
     """
-
 
 @config.command()
 @click.option(
@@ -125,7 +171,6 @@ def config():
 def create(config_file: str):
     """Create default configuration file"""
     save_config(config_file, CONF)
-    print(f"Current configuration is saved in {config_file}")
 
 
 @config.command()
@@ -146,17 +191,60 @@ def create(config_file: str):
     type=click.Choice(["text", "YAML", "JSON"], case_sensitive=False),
 )
 
-def show(config_file: str, output_format: str):
-    """Show actual client configuration """
+@click.option(
+    "--source", "-s",
+    required=False,
+    help="Source of configuration data",
+    type=click.Choice(["DEFAULT_SETTINGS", "env_config", "saved_config"], case_sensitive=False),
+)
+
+def show(config_file: str, output_format: str, source: str):
+    """
+    Display the FedCloud client configuration.
+
+    Merges three layers of configuration—defaults, environment, and on-disk—
+    then prints one of:
+
+      - the defaults only  
+      - the env-vars only  
+      - the saved file only  
+      - the full merged config
+
+    :param config_file:  
+        Path to the YAML config file on disk.
+    :type config_file: str
+
+    :param output_format:  
+        One of `"text"`, `"YAML"`, or `"JSON"` (case-insensitive) for the
+        desired output format.
+    :type output_format: str
+
+    :param source:  
+        If provided, limits display to one of `"DEFAULT_SETTINGS"`,  
+        `"env_config"`, or `"saved_config"`.  Otherwise shows the full merge.
+    :type source: Optional[str]
+
+    :return:  
+        None
+    :rtype: None
+    """
     saved_config = load_config(config_file)
     env_config = load_env()
-    act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
+    default_settings=init_default_config()
+    if source is not None:
+        act_config = vars()[source]
+    else:
+        act_config = {**default_settings, **env_config, **saved_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
     elif output_format == "JSON":
         json.dump(act_config, sys.stdout, indent=4)
     else:
-        print(tabulate(act_config.items(), headers=["parameter", "value"]))
+        wrapped_data = [
+        ["\n".join(textwrap.wrap(cell, width=200)) if isinstance(cell, str) else cell for cell in row]
+        for row in act_config.items()]
 
+        #print(tabulate(act_config.items(), headers=["parameter", "value"]))
+        print(tabulate(wrapped_data, headers=["parameter", "value"]))
 
 CONF = init_config()

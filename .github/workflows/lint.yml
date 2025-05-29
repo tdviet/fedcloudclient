@@ -1,11 +1,11 @@
 ---
-name: Lint
+name: Super-Linter
 
 on:
   push:
-    branches: [ master, devel ]
+    branches: [2.0-alpha-tests]
   pull_request:
-    branches: [ master ]
+    branches: [2.0-alpha-tests]
   workflow_dispatch:
 
 jobs:

@@ -69,15 +69,19 @@ class LockerToken(VaultToken):
             elif command == "put":
                 response = requests.post(url, headers=headers, data=data)
             else:
-                log_and_raise(f"Invalid command {command}", ConfigError)
+                msg_err=f"Invalid command {command}"
+                log_and_raise(msg_err, ConfigError)
+                response=None
 
-            response.raise_for_status()
+            if response is not None:
+                response.raise_for_status()
 
             if command in ["list", "get"]:
                 response_json = response.json()
                 return dict(response_json)
-            else:
-                return None
+
+            return None
         except requests.exceptions.HTTPError as exception:
             error_msg = f"Error: Error when accessing secrets on server. Server response: {type(exception).__name__}: {exception}"
             log_and_raise(error_msg, ServiceError)
+            return None

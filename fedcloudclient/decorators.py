@@ -1,6 +1,7 @@
 """
 Decorators for command-line parameters
 """
+import os
 from functools import wraps
 
 import click
@@ -13,6 +14,8 @@ from fedcloudclient.conf import CONF
 from fedcloudclient.exception import TokenError
 from fedcloudclient.locker_auth import LockerToken
 from fedcloudclient.vault_auth import VaultToken
+from fedcloudclient.auth import OIDCToken
+from fedcloudclient.logger import log_and_raise
 
 ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
 
@@ -136,7 +139,7 @@ def oidc_params(func):
     @optgroup.option(
         "--oidc-access-token",
         help="OIDC access token",
-        default=CONF.get("oidc_access_token"),
+        default=os.getenv("FEDCLOUD_OIDC_ACCESS_TOKEN"),
         metavar="token",
     )
     @optgroup.option(
@@ -153,15 +156,16 @@ def oidc_params(func):
     )
     @wraps(func)
     def wrapper(*args, **kwargs):
-        from fedcloudclient.checkin import get_access_token
 
-        access_token = get_access_token(
+        token=OIDCToken()
+        access_token = token.multiple_token(
             kwargs.pop("oidc_access_token"),
             kwargs.pop("oidc_agent_account"),
             kwargs.pop("mytoken"),
             kwargs.pop("mytoken_server"),
-        )
+        ) # pylint: disable=assignment-from-none
         kwargs["access_token"] = access_token
+
         return func(*args, **kwargs)
 
     return wrapper
@@ -399,8 +403,9 @@ def secret_token_params(func):
             token = VaultToken()
             try:
                 token.multiple_token(access_token, oidc_agent_account, mytoken)
-            except TokenError as e:
-                print(e)
+            except TokenError:
+                error_msg=f"Can not access to the ACCESS_TOKEN: {TokenError}"
+                log_and_raise(error_msg, TokenError)
                 SystemExit(1)
 
         kwargs["token"] = token

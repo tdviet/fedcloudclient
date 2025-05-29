@@ -16,5 +16,5 @@ def test_get_locker_secret(locker_token: str):
 
 
 if __name__ == "__main__":
-    locker_token = os.environ["FEDCLOUD_LOCKER_TOKEN"]
-    test_get_locker_secret(locker_token)
+    locker_token_main = os.environ["FEDCLOUD_LOCKER_TOKEN"]
+    test_get_locker_secret(locker_token_main)

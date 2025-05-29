@@ -6,7 +6,7 @@ import logging
 import logging.config
 from pathlib import Path
 
-from fedcloudclient.conf import CONF as CONF
+from fedcloudclient.conf import CONF
 
 
 def init_logger():

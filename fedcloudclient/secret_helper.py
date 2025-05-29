@@ -12,7 +12,9 @@ from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from tabulate import tabulate
 
-from fedcloudclient.conf import CONF as CONF
+from fedcloudclient.conf import CONF
+from fedcloudclient.exception import ServiceError
+from fedcloudclient.logger import log_and_raise
 
 VAULT_SALT = CONF.get("vault_salt")
 
@@ -36,25 +38,26 @@ def read_data_from_file(input_format: str, input_file: str):
 
         # read text/binary files to strings
         if input_format == "binary":
-            with open(input_file, "rb") if input_file else sys.stdin.buffer as f:
-                return base64.b64encode(f.read()).decode()
+            with open(input_file, "rb") if input_file else sys.stdin.buffer as file:
+                return base64.b64encode(file.read()).decode()
         if input_format == "text":
-            with open(input_file, "r") if input_file else sys.stdin as f:
-                return f.read()
+            with open(input_file, "r", encoding="utf-8") if input_file else sys.stdin as file:
+                return file.read()
 
         # reading YAML or JSON to dict
-        with open(input_file) if input_file else sys.stdin as f:
+        with open(input_file, encoding="utf-8") if input_file else sys.stdin as file:
             data = {}
             if input_format == "YAML":
-                data = yaml.safe_load(f)
+                data = yaml.safe_load(file)
             elif input_format == "JSON":
-                data = json.load(f)
+                data = json.load(file)
             return dict(data)
 
-    except (ValueError, FileNotFoundError, yaml.YAMLError) as e:
-        raise SystemExit(
-            f"Error: Error when reading file {input_file}. Error message: {type(e).__name__}: {e}"
-        )
+    except (ValueError, FileNotFoundError, yaml.YAMLError) as exception:
+        msg_err= f"Error: Error when reading file {input_file}. Error message: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
+
 
 
 def secret_params_to_dict(params: list, binary_file: bool = False):
@@ -79,10 +82,11 @@ def secret_params_to_dict(params: list, binary_file: bool = False):
         else:
             try:
                 key, value = param.split("=", 1)
-            except ValueError:
-                raise SystemExit(
-                    f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
-                )
+            except ValueError as exception:
+                msg_err=f"Error: Expecting 'key=value' arguments for secrets. '{param}' provided."
+                log_and_raise(msg_err, ServiceError(msg_err))
+                raise SystemExit(msg_err) from exception
+
             if value.startswith("@") or value == "-":
                 if binary_file:
                     value = read_data_from_file("binary", value[1:])
@@ -138,8 +142,10 @@ def decrypt_data(decrypt_key: str, secrets: dict):
         fernet = Fernet(derived_key)
         for key in secrets:
             secrets[key] = fernet.decrypt(secrets[key].encode()).decode()
-    except InvalidToken as e:
-        raise SystemExit(f"Error: Error during decryption. {e}")
+    except InvalidToken as exception:
+        msg_err=f"Error: Error during decryption. {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
 
 
 def print_secrets(output_file: str, output_format: str, secrets: dict):
@@ -152,18 +158,19 @@ def print_secrets(output_file: str, output_format: str, secrets: dict):
     """
 
     try:
-        with open(output_file, "wt") if output_file else sys.stdout as f:
+        with open(output_file, "wt", encoding="utf-8") if output_file else sys.stdout as file:
             if output_format == "JSON":
-                json.dump(secrets, f, indent=4)
+                json.dump(secrets, file, indent=4)
             elif output_format == "YAML":
-                yaml.dump(secrets, f, sort_keys=False)
+                yaml.dump(secrets, file, sort_keys=False)
             else:
-                print(tabulate(secrets.items(), headers=["key", "value"]), file=f)
+                print(tabulate(secrets.items(), headers=["key", "value"]), file=file)
 
-    except (ValueError, FileNotFoundError, yaml.YAMLError) as e:
-        raise SystemExit(
-            f"Error: Error when writing file {output_file}. Error message: {type(e).__name__}: {e}"
-        )
+    except (ValueError, FileNotFoundError, yaml.YAMLError) as exception:
+        msg_err= f"Error: Error when writing file {output_file}. Error message: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
+
 
 
 def print_value(output_file: str, binary_file: bool, value: str):
@@ -177,13 +184,13 @@ def print_value(output_file: str, binary_file: bool, value: str):
 
     try:
         if binary_file:
-            with open(output_file, "wb") if output_file else sys.stdout.buffer as f:
-                f.write(base64.b64decode(value.encode()))
+            with open(output_file, "wb", encoding="utf-8") if output_file else sys.stdout.buffer as file:
+                file.write(base64.b64decode(value.encode()))
         else:
-            with open(output_file, "wt") if output_file else sys.stdout as f:
-                f.write(value)
+            with open(output_file, "wt", encoding="utf-8") if output_file else sys.stdout as file:
+                file.write(value)
 
-    except (ValueError, FileNotFoundError, TypeError) as e:
-        raise SystemExit(
-            f"Error: Error when writing file {output_file}. Error message: {type(e).__name__}: {e}"
-        )
+    except (ValueError, FileNotFoundError, TypeError) as exception:
+        msg_err=f"Error: Error when writing file {output_file}. Error message: {type(exception).__name__}: {exception}"
+        log_and_raise(msg_err, ServiceError(msg_err))
+        raise SystemExit(msg_err) from exception
