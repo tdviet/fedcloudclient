@@ -30,5 +30,6 @@ cli.add_command(openstack)
 cli.add_command(openstack_int)
 cli.add_command(config)
 
+
 if __name__ == "__main__":
     cli()
