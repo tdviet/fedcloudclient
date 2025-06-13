@@ -5,6 +5,25 @@
   "title": "site specs",
   "description": "site configuration schema",
   "definitions": {
+    "imagesdata": {
+      "type": "object",
+      "properties": {
+        "sync": {
+          "type": "boolean",
+          "description": "Do image synchronisation",
+          "default": false
+        },
+        "formats": {
+          "type": "array",
+          "title": "formats",
+          "description": "Supported VM image formats at the site.",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "vodata": {
       "type": "object",
       "properties": {
@@ -22,17 +41,11 @@
           }
         }
       },
-      "required": [
-        "auth",
-        "name"
-      ],
+      "required": ["auth", "name"],
       "additionalProperties": true
     }
   },
-  "required": [
-    "gocdb",
-    "endpoint"
-  ],
+  "required": ["gocdb", "endpoint"],
   "properties": {
     "gocdb": {
       "$id": "#/properties/gocdb",
@@ -70,6 +83,13 @@
       "items": {
         "$ref": "#/definitions/vodata"
       }
+    },
+    "images": {
+      "$id": "#/properties/images",
+      "title": "Image Configuration",
+      "description": "Image configuration",
+      "type": "object",
+      "$ref": "#/definitions/imagesdata"
     }
   },
   "additionalProperties": false
