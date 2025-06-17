@@ -4,51 +4,78 @@ Introduction
 .. image:: https://zenodo.org/badge/336671726.svg
    :target: https://zenodo.org/badge/latestdoi/336671726
 
-The `FedCloud client <https://fedcloudclient.fedcloud.eu/>`_ is a high-level Python package for a command-line client
-designed for interaction with the OpenStack services in the EGI infrastructure. The client can access various EGI
-services and can perform many tasks for users including managing access tokens, listing services, and mainly execute
-commands on OpenStack sites in EGI infrastructure.
+FedCloud Client
+===============
 
-The most notable features of FedCloud client are following:
+The **FedCloud Client** (`https://fedcloudclient.fedcloud.eu/`) is a high-level Python package providing a unified command-line interface to the EGI Federated Cloud’s OpenStack services. It streamlines tasks such as managing access tokens, discovering services, and executing OpenStack commands across multiple sites.
 
-* **Rich functionalities:** have wide ranges of useful commands, including checking access token, searching for
-  services, listing sites and VOs, and interaction with OpenStack sites.
+Key Features
+------------
 
-* **Simple usages:** can perform any OpenStack command on any sites with only three parameters: the site, the VO
-  and the command. For example, to list virtual machines (VM) images available to members of ``vo.access.egi.eu`` VO
-  on ``IISAS-FedCloud`` site, run the following command:
+- **Comprehensive Command Set**  
+  Access a broad range of operations, including:
+  
+  - Token management (retrieve, inspect, renew)  
+  - Service discovery and endpoint lookup  
+  - Listing and filtering sites, virtual organizations (VOs), and resources  
+  - Direct interaction with OpenStack services (compute, image, network, etc.)
 
-::
+- **Minimal Syntax, Maximum Power**  
+  Execute any OpenStack action on any site with just three parameters:
+  
+  .. code-block:: console
 
-   $ fedcloud openstack image list --vo vo.access.egi.eu --site IISAS-FedCloud
+     $ fedcloud openstack <command> --vo <VO_NAME> --site <SITE_NAME>
 
-* **Federation-wide:** Single client for all OpenStack sites and related services of EGI Cloud infrastructure.
-  Single command may perform an action on all sites by specifying :code:`--site ALL_SITES`.
+  For example, to list all available VM images for the VO ``vo.access.egi.eu`` on the ``IISAS-FedCloud`` site:
 
-* **Programmable:** the client is designed for using in
-  `scripts for automation <https://fedcloudclient.fedcloud.eu/scripts.html>`_
-  or as a `Python library <https://fedcloudclient.fedcloud.eu/development.html>`_
-  for programming FedCloud services.
+  .. code-block:: console
 
-The following modules are included:
+     $ fedcloud openstack image list \
+         --vo vo.access.egi.eu \
+         --site IISAS-FedCloud
 
-* **fedcloudclient.conf** for handling fedcloudclient configuration,
+- **Federation-Wide Scope**  
+  One client, all sites. Use the special ``ALL_SITES`` identifier to run a command across every configured site in the federation:
 
-* **fedcloudclient.checkin** for operation with EGI Check-in like getting tokens,
+  .. code-block:: console
 
-* **fedcloudclient.endpoint** for searching endpoints via GOCDB, getting unscoped/scoped token from
-  OpenStack keystone,
+     $ fedcloud openstack server list --vo vo.access.egi.eu --site ALL_SITES
 
-* **fedcloudclient.sites** for managing site configurations,
+- **Scriptable & Extensible**  
+  Designed for automation and integration:
+  
+  - **Shell scripting**: embed ``fedcloud`` calls in CI/CD pipelines or custom scripts. See :doc:`scripts </scripts.html>`.  
+  - **Python library**: import and invoke client functionality programmatically. See :doc:`developer guide </development.html>`.
 
-* **fedcloudclient.openstack** for performing OpenStack operations on sites,
+Core Modules
+------------
 
-* **fedcloudclient.secret** for accessing secrets in
-  `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
+.. list-table::
+   :header-rows: 1
 
-* **fedcloudclient.auth** module provides utilities to verify the validity of access tokens and authentication credentials used in the EGI Federated Cloud,
+   * - Module
+     - Purpose
+   * - ``fedcloudclient.conf``
+     - Manage and validate client configuration (profiles, defaults).
+   * - ``fedcloudclient.checkin``
+     - Interact with EGI Check-in: fetch and renew OpenID Connect tokens.
+   * - ``fedcloudclient.endpoint``
+     - Discover service endpoints via GOCDB; obtain unscoped and scoped tokens from Keystone.
+   * - ``fedcloudclient.sites``
+     - Configure and query site metadata (regions, URLs, capabilities).
+   * - ``fedcloudclient.openstack``
+     - Execute OpenStack CLI commands (``nova``, ``glance``, ``neutron``) against specified sites.
+   * - ``fedcloudclient.secret``
+     - Retrieve and manage secrets from the EGI Vault service.
+   * - ``fedcloudclient.auth``
+     - Validate access tokens and credentials; utilities for checking token expiration and scopes.
 
-A short tutorial of the fedcloudclient is available in `this
-presentation <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_.
-The full documentation, including installation, usage and API description is available
-at https://fedcloudclient.fedcloud.eu/.
+Getting Started
+---------------
+
+A concise introductory walkthrough is available in this `presentation <https://docs.google.com/presentation/d/1aOdcceztXe8kZaIeVnioF9B0vIHLzJeklSNOdVCL3Rw/edit?usp=sharing>`_.  
+
+For detailed installation instructions, full usage examples, and API references, see the official documentation:
+
+`https://fedcloudclient.fedcloud.eu/ <https://fedcloudclient.fedcloud.eu/>`_
