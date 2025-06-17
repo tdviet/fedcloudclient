@@ -283,9 +283,9 @@ def vos(
 
     project_list, project_error_list = get_projects_from_sites(access_token, site)
     if len(project_list) > 0:
-        for p in project_list:
-            vo = find_vo_from_project_id(p[3], p[0])
-            p.insert(0, vo)
+        for project in project_list:
+            vo = find_vo_from_project_id(project[3], project[0])
+            project.insert(0, vo)
         print(
             tabulate(
                 project_list, headers=["VO", "id", "Project name", "enabled", "site"]

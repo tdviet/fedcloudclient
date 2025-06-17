@@ -1,0 +1,23 @@
+/* 1) Classes stay blue */
+dt.sig.sig-class {
+  background-color: #e8f0fe !important;
+}
+dt.sig.sig-class .sig-name {
+  color: #000 !important;
+}
+
+/* 2) “Pure” functions (module-level) go gray */
+dl.py.function dt.sig {
+  background-color: #f5f5f5 !important;
+}
+dl.py.function dt.sig .sig-name {
+  color: #000 !important;
+}
+
+/* 3) Methods (inside classes) also go gray */
+dl.py.method dt.sig {
+  background-color: #f5f5f5 !important;
+}
+dl.py.method dt.sig .sig-name {
+  color: #000 !important;
+}
