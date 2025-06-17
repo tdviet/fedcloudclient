@@ -1,7 +1,9 @@
 Usage
 =====
 
-**FedCloud client** has six  main groups of commands:
+**FedCloud client** has the following main groups of commands:
+
+* **"fedcloud config"** for handling fedcloudclient configuration,
 
 * **"fedcloud token"** for interactions with EGI Check-in and access tokens,
 
@@ -11,71 +13,229 @@ Usage
 
 * **"fedcloud openstack"** or **"fedcloud openstack-int"** for performing OpenStack commands on sites,
 
-* **fedcloud secret** for accessing secrets in
+* **"fedcloud secret"** for accessing secrets in
   `Secret management service <https://vault.docs.fedcloud.eu/index.html>`_,
 
-* **"fedcloud ec3"** as helper commands for deploying EC3.
+* **"fedcloud auth"**  is used to check the validity of access tokens and authentication credential,
 
 
-Authentication
-**************
 
-Many **fedcloud** commands need access tokens for authentication. Users can choose whether to provide access tokens
-directly (via option *"--oidc-access-token"*), or via oidc-agent (via option *"--oidc-agent-account"*), use refresh
-tokens (must be provided together with Check-in client ID and secret) to generate access tokens on the fly. Therefore,
-in most cases, the option *"--oidc-access-token"* can be replaced by the option *"--oidc-agent-account"*, or the
-combination of *"--oidc-refresh-token"*, *"--oidc-client-id"* and *"--oidc-client-secret"*.
+Authentication Options
+**********************
 
-Users of EGI Check-in can get all information needed for obtaining refresh and access tokens from `EGI Check-in Token
-Portal <https://aai.egi.eu/token>`_. For providing access token via *oidc-agent*, follow the instructions from
-`oidc-agent <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ for registering a client, then
-give the client name (account name in *oidc-agent*) to *FedCloud client* via option *"--oidc-agent-account"*.
+**FedCloud** commands require access tokens for authentication. Users have multiple options for providing these tokens:
 
-Refresh tokens have long lifetime (one year in EGI Check-in), so they must be properly protected. Exposing refresh
-tokens via environment variables or command-line options is considered as insecure and will be disable in near
-future in favor of using *oidc-agent*. If multiple methods of getting access tokens are given at the same time,
-the client will try to get the tokens from the oidc-agent first, then from refresh tokens.
+- **Direct access token**: Use the ``--oidc-access-token`` option to provide an access token directly. You can retrieve this token from the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``, or pass it explicitly, e.g.:
 
-The default OIDC identity provider is EGI Check-in (https://aai.egi.eu/auth/realms/egi). Users can set other OIDC identity
-provider via option *"--oidc-url"*. Remember to set identity provider's name *"--openstack-auth-provider"* accordingly
-for OpenStack commands.
+  ``fedcloud token check --oidc-access-token <ACCESS_TOKEN>``
 
-The default protocol is *"openid"*. Users can change default protocol via option *"--openstack-auth-protocol"*. However,
-sites may have protocol fixedly defined in site configuration, e.g. *"oidc"* for INFN-CLOUD-BARI.
+- **OIDC agent**: Use the ``--oidc-agent-account`` option to integrate with `oidc-agent <https://indigo-dc.gitbooks.io/oidc-agent/>`_. For example, check token validity with:
 
-Environment variables
-*********************
+  ``fedcloud token check --oidc-agent-account <NAME_OF_USER_FOR_OIDC_AGENT>``
 
-Most of fedcloud options, including options for tokens can be set via environment variables:
+  To use this method, follow the instructions at `oidc-agent for EGI <https://indigo-dc.gitbook.io/oidc-agent/user/oidc-gen/provider/egi/>`_ to register a client, then pass the client (account) name to the FedCloud client.
 
-+-----------------------------+---------------------------------+------------------------------------+
-|     Environment variables   |   Command-line options          |          Default value             |
-+=============================+=================================+====================================+
-|    OIDC_AGENT_ACCOUNT       |   --oidc-agent-account          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_ACCESS_TOKEN        |   --oidc-access-token           |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_REFRESH_TOKEN       |   --oidc-refresh-token          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_CLIENT_ID           |   --oidc-client-id              |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_CLIENT_SECRET       |   --oidc-client-secret          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OIDC_URL                 |   --oidc-url                    | https://aai.egi.eu/auth/realms/egi |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_PROTOCOL  |   --openstack-auth-protocol     |             openid                 |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_PROVIDER  |   --openstack-auth-provider     |             egi.eu                 |
-+-----------------------------+---------------------------------+------------------------------------+
-|    OPENSTACK_AUTH_TYPE      |   --openstack-auth-type         |         v3oidcaccesstoken          |
-+-----------------------------+---------------------------------+------------------------------------+
-|    EGI_SITE                 |   --site                        |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
-|    EGI_VO                   |   --vo                          |                                    |
-+-----------------------------+---------------------------------+------------------------------------+
+- **Mytoken**: Use the ``--mytoken`` option to authenticate with a token from the `Mytoken service <https://mytoken.data.kit.edu/>`_. To check token validity:
 
-For convenience, always set the frequently used options like tokens via environment variables, that can save a lot of
-time.
+  ``fedcloud token check --mytoken <TOKEN_FOR_MYTOKEN>``
+
+  When creating a Mytoken, ensure you select **"Allows obtaining OpenID Connect Access Tokens"**. You may also use the ``--mytoken-server`` option to authenticate with a specific Mytoken server.
+
+Alternatively, you can obtain tokens using the `EGI Check-in Token Portal <https://aai.egi.eu/token>`_, which provides all necessary information for EGI Check-in users.
+
+In addition to command-line options, environment variables can be used for passing tokens, as summarized in the table below (not shown here).
+
+By default, the protocol used is ``openid``. This can be changed using the ``--os-protocol`` option. Note that some sites may have a fixed protocol defined in their site configuration (e.g., ``oidc`` for INFN-CLOUD-BARI).
+
+
+Configuration
+*************
+
+Display the current configuration of *fedcloud* with:
+
+::
+
+    $ fedcloud config show
+
+This will show a list of configuration parameters:
+
++----------------------------+------------------------------------------------------------------------------------+
+|  Parameter                 |  Default value                                                                     |
++============================+====================================================================================+
+|  site                      |  IISAS-FedCloud                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vo                        |  vo.access.egi.eu                                                                  |
++----------------------------+------------------------------------------------------------------------------------+
+|  site_list_url             |  https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml  |
++----------------------------+------------------------------------------------------------------------------------+
+|  site_dir                  |  ${HOME}/.config/fedcloud/site-config                                              |
++----------------------------+------------------------------------------------------------------------------------+
+|  oidc_url                  |  https://aai.egi.eu/auth/realms/egi                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  gocdb_public_url          |  https://goc.egi.eu/gocdbpi/public/                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  gocdb_service_group       |  org.openstack.nova                                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_endpoint            |  https://vault.services.fedcloud.eu:8200                                           |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_role                |                                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_mount_point         |  /secrets/                                                                         |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_locker_mount_point  |  /v1/cubbyhole/                                                                    |
++----------------------------+------------------------------------------------------------------------------------+
+|  vault_salt                |  fedcloud_salt                                                                     |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_file                  |  ${HOME}/.config/fedcloud/logs/fedcloud.log                                        |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_level                 |  DEBUG                                                                             |
++----------------------------+------------------------------------------------------------------------------------+
+|  log_config_file           |  ${HOME}/.config/fedcloud/logging.conf                                             |
++----------------------------+------------------------------------------------------------------------------------+
+|  requests_cert_file        |  ${HOME}/.config/fedcloud/cert/certs.pem                                           |
++----------------------------+------------------------------------------------------------------------------------+
+|  oidc_agent_account        |  egi                                                                               |
++----------------------------+------------------------------------------------------------------------------------+
+|  min_access_token_time     |  30                                                                                |
++----------------------------+------------------------------------------------------------------------------------+
+|  mytoken_server            |  https://mytoken.data.kit.edu                                                      |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_protocol               |  openid                                                                            |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_auth_type              |  v3oidcaccesstoken                                                                 |
++----------------------------+------------------------------------------------------------------------------------+
+|  os_identity_provider      |  egi.eu                                                                            |
++----------------------------+------------------------------------------------------------------------------------+
+|  _MIN_ACCESS_TOKEN_TIME    |  30                                                                                |
++----------------------------+------------------------------------------------------------------------------------+
+
+
+The **FedCloud client** supports multiple types of configuration:
+
+- **Default settings** – accessible using **``DEFAULT_SETTINGS``**, these are the built-in default values.
+- **Local environment settings** – custom configuration values defined in the environment and loaded via **``env_config``**.
+- **Saved configuration settings** – user-defined settings stored in a JSON file, accessible via **``saved_config``**.
+
+For example, to print the environment configuration, use the following command::
+
+    $ fedcloud config show --source env_config
+  
+
+This command shows, for instance, the following output:
+
++-----------------------------+------------------------------------------------------------------+
+|  Parameter                  |  Default value                                                   |
++=============================+==================================================================+
+|  oidc_agent_account         |  <NAME_OF_USER>                                                  |
++-----------------------------+------------------------------------------------------------------+
+|  ...                        |  ...                                                             |
++-----------------------------+------------------------------------------------------------------+
+      
+
+
+The *fedcloud* configuration can be saved to a file using the following command
+
+::
+    $ fedcloud config create
+
+By default, the configuration file is saved to **${HOME}/.config/fedcloud/config.yaml**,  
+but this location can be changed using the ``--config`` option. For example:
+
+::
+
+    $ fedcloud config create --config-file /path/to/file.yaml
+
+
+Using Environment Variables and Configuration Priorities
+--------------------------------------------------------
+
+It is also possible to use the *FEDCLOUD_CONFIG_FILE* environment variable instead of the ``--config`` option in the command line.  
+This allows users to manage and switch between multiple configuration files—one per project—each with its own settings.
+
+The *fedcloud* client supports configuration from multiple sources, in the following order of priority (highest to lowest):
+
+#. **Command-line options** – override all other settings.  
+   Example: ``--site IISAS-FedCloud``
+
+#. **Environment variables** – must begin with the prefix ``FEDCLOUD_``.  
+   Example: ``FEDCLOUD_SITE=IISAS-FedCloud``
+
+#. **Configuration file** – typically stored as ``config.yaml``.  
+   Example: the ``site`` setting in ``config.yaml``
+
+#. **Default configuration** – hardcoded defaults (lowest priority).  
+   See the `source code <https://github.com/jaro221/fedcloudclient>`_ for details.
+
+The priority order is important:  
+default values are overridden by the configuration file,  
+which is overridden by environment variables,  
+which are in turn overridden by command-line options.
+
+For example, the default configuration includes:
+
+- ``site = IISAS-FedCloud``
+- ``vo = vo.access.egi.eu``
+
+These values can be changed using any of the higher-priority methods. For example:
+
+::
+
+    $ fedcloud openstack --vo training.egi.eu --site IFCA-LCG2 server list
+
+or
+
+::
+
+    $ export FEDCLOUD_VO=training.egi.eu
+    $ export FEDCLOUD_SITE=IFCA-LCG2
+    $ fedcloud openstack server list
+
+
+Consistent Parameter Naming
+---------------------------
+
+Note the consistent naming convention for configuration parameters across different sources. For example, the same parameter is represented as:
+
+* ``--access_token`` in the **command-line**
+* ``FEDCLOUD_ACCESS_TOKEN`` as an **environment variable**
+
+
+All configuration parameters follow this consistent mapping across command-line options, environment variables, and configuration files.
+
+Additional Configurable Parameters
+----------------------------------
+
+In addition to ``oidc_agent_account``, the following parameters can also be configured in the same way:
+
+* ``site`` – the OpenStack site to target
+* ``vo`` – the Virtual Organisation (VO)
+* ``check_in_url`` – the EGI Check-in OIDC endpoint
+* ``client_id`` – the OIDC client ID
+* ``scopes`` – requested OIDC scopes
+* ``access_token`` – manually provided access token
+* ``output_format`` – format of output, e.g., ``table``, ``json``, or ``yaml``
+
+These parameters can be specified via:
+
+- command-line options (e.g., ``--site``, ``--vo``),
+- environment variables (e.g., ``FEDCLOUD_SITE``, ``FEDCLOUD_VO``), or
+- configuration files (e.g., ``site: IISAS-FedCloud`` in ``config.yaml``).
+
+This design allows flexible and convenient configuration for various usage scenarios.
+
++-------------------------------+-------------------------+---------------------------+
+|  Environment variable         |  Command-line option    |  Configuration parameters |
++===============================+=========================+===========================+
+|  FEDCLOUD_OIDC_ACCESS_TOKEN   |  --oidc-access-token    |  Not implemented          |
++-------------------------------+-------------------------+---------------------------+
+|  Not implemented              |  --mytoken              |  mytoken                  |
++-------------------------------+-------------------------+---------------------------+
+|  FEDCLOUD_OIDC_AGENT_ACCOUNT  |  --oidc-agent-account   |  oidc_agent_account       |
++-------------------------------+-------------------------+---------------------------+
+
+For convenience, it is recommended to set transient parameters—such as access tokens—via **environment variables**.  
+This simplifies the usage of *fedcloud* commands by avoiding the need to specify these parameters on the command line each time.
+
 
 Shell completion
 ****************
@@ -116,36 +276,57 @@ fedcloud --help command
       --help  Show this message and exit.
 
     Commands:
-      endpoint       Endpoint command group for interaction with GOCDB and endpoints
-      openstack      Executing OpenStack commands on site and VO
+      config         Managing fedcloud configurations
+      endpoint       Obtain endpoint details and scoped tokens
+      openstack      Execute OpenStack commands on site and VO
       openstack-int  Interactive OpenStack client on site and VO
-      site           Site command group for manipulation with site configurations
-      token          Token command group for manipulation with tokens
+      secret         Commands for accessing secret objects
+      select         Select resources according to specification
+      site           Obtain site configurations
+      token          Get details of access token
 
 
 fedcloud token commands
 ***********************
 
-* **"fedcloud token check --oidc-access-token <ACCESS_TOKEN>"**: Check the expiration time of access token, so users can know whether
-  they need to refresh it. As mentioned before, access token may be given via environment variable *OIDC_ACCESS_TOKEN*,
-  so the option *--oidc-access-token* is not shown in all examples bellows, even if the option is required.
+* **``fedcloud token check``** – Checks the expiration time of the configured access token,  
+  allowing users to determine whether it needs to be refreshed.
+
+As mentioned earlier, the access token can be provided via the environment variable ``FEDCLOUD_OIDC_ACCESS_TOKEN``.  
+For this reason, the ``--oidc-access-token`` option is not shown in all examples below, even though it may be required if the token is not set via environment variables.
+
 
 ::
 
     $ fedcloud token check
+
+Output is shown as:
+::
     Access token is valid to 2021-01-02 01:25:39 UTC
     Access token expires in 3571 seconds
 
 
-* **"fedcloud token list-vos --oidc-access-token <ACCESS_TOKEN>"** : Print the list of VO memberships according to EGI Check-in
+* **"fedcloud token list-vos"** : Print the list of VO memberships according to EGI Check-in
 
 ::
 
     $ fedcloud token list-vos
+
+Sample output:
+::
     eosc-synergy.eu
     fedcloud.egi.eu
     training.egi.eu
 
+* **"fedcloud token issue"** : Print the access_token
+
+::
+
+    $ fedcloud token issue
+    
+Sample output:
+::
+  egwergwregrwegreg...
 
 fedcloud endpoint commands
 **************************
@@ -159,6 +340,10 @@ directly from GOCDB (Grid Operations Configuration Management Database) https://
 ::
 
     $ fedcloud endpoint list
+
+Sample output:
+
+::
     Site                type                URL
     ------------------  ------------------  ------------------------------------------------
     IFCA-LCG2           org.openstack.nova  https://api.cloud.ifca.es:5000/v3/
@@ -214,7 +399,7 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 ::
 
     $ fedcloud endpoint token --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
-    export OS_TOKEN="gAAAAA..."
+    export FEDCLOUD_OS_TOKEN="eayeghjtjtj..."
 
 
 * **"fedcloud endpoint env --site <SITE> --project-id <PROJECT> --oidc-access-token <ACCESS_TOKEN>"** : Print
@@ -224,35 +409,11 @@ If the site is set to *ALL_SITES*, or the argument *-a* is used, the command wil
 
     $ fedcloud endpoint env --site IFCA-LCG2 --project-id 3b9754ad8c6046b4aec43ec21abe7d8c
     # environment for IFCA-LCG2
-    export OS_AUTH_URL="https://api.cloud.ifca.es:5000/v3/"
-    export OS_AUTH_TYPE="v3oidcaccesstoken"
-    export OS_IDENTITY_PROVIDER="egi.eu"
-    export OS_PROTOCOL="openid"
-    export OS_ACCESS_TOKEN="..."
-
-
-fedcloud ec3 commands
-**************************
-
-**"fedcloud ec3"** commands are helper commands for deploying EC3 (Elastic Cloud Compute Cluster) in Cloud
-via Infrastructure Manager. The commands will create necessary template and authorization files for EC3 client.
-
-* **"fedcloud ec3 init --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat --template-dir
-  ./templates"** : Generate authorization file (by default *auth.dat*) and template file (by default
-  *./templates/refresh.radl*) for EC3 client.
-
-::
-
-    $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
-
-
-* **"fedcloud ec3 refresh --site <SITE> --vo <VO> --oidc-access-token <ACCESS_TOKEN> --auth-file auth.dat"** :
-  Refresh the access token stored in authorization file (by default *auth.dat*).
-
-::
-
-    $ fedcloud ec3 init --site CESGA --vo vo.access.egi.eu
-
+    export FEDCLOUD_OS_AUTH_URL="https://api.cloud.ifca.es:5000/v3/"
+    export FEDCLOUD_OS_AUTH_TYPE="v3oidcaccesstoken"
+    export FEDCLOUD_OS_IDENTITY_PROVIDER="egi.eu"
+    export FEDCLOUD_OS_PROTOCOL="openid"
+    export FEDCLOUD_OS_ACCESS_TOKEN="..."
 
 
 fedcloud site commands
@@ -291,6 +452,17 @@ VOs and so on.
     ...
 
 
+* **"fedcloud site list --vo <VO-name>"** : List all sites supporting a Virtual Organization
+
+::
+
+    $ fedcloud site vo-list --vo vo.access.egi.eu
+    BIFI
+    CENI
+    CESGA-CLOUD
+    ...
+
+
 * **"fedcloud site show --site <SITE>"** : Show configuration of the corresponding site.
 
 ::
@@ -312,8 +484,8 @@ VOs and so on.
 ::
 
     $ fedcloud site show-project-id --site IISAS-FedCloud --vo eosc-synergy.eu
-    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
-    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+    export FEDCLOUD_OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export FEDCLOUD_OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
 
 
 * **"fedcloud site env --site <SITE> --vo <VO>"**: set OpenStack environment variable for the VO on the site.
@@ -321,13 +493,13 @@ VOs and so on.
 ::
 
     $ fedcloud site env --site IISAS-FedCloud --vo eosc-synergy.eu
-    export OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
-    export OS_AUTH_TYPE="v3oidcaccesstoken"
-    export OS_IDENTITY_PROVIDER="egi.eu"
-    export OS_PROTOCOL="openid"
-    export OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
+    export FEDCLOUD_OS_AUTH_URL="https://cloud.ui.savba.sk:5000/v3/"
+    export FEDCLOUD_OS_AUTH_TYPE="v3oidcaccesstoken"
+    export FEDCLOUD_OS_IDENTITY_PROVIDER="egi.eu"
+    export FEDCLOUD_OS_PROTOCOL="openid"
+    export FEDCLOUD_OS_PROJECT_ID="51f736d36ce34b9ebdf196cfcabd24ee"
     # Remember to set OS_ACCESS_TOKEN, e.g. :
-    # export OS_ACCESS_TOKEN=`oidc-token egi`
+    # export FEDCLOUD_OS_ACCESS_TOKEN=`oidc-token egi`
 
 
 The main differences between *"fedcloud endpoint env"* and *"fedcloud site env"* commands are that the second command
@@ -430,6 +602,13 @@ If the site is *ALL_SITES*, the OpenStack command will be executed on all sites 
     | df25f80f-ed19-4e0b-805e-d34620ba0334 | m1.medium |  4096 |   40 |         0 |     2 | True      |
     ...
     (openstack)
+
+
+fedcloud config commands
+***************************
+* **"fedcloud config --config-file create"** : Create default configuration file in default location for configuration file
+
+
 
 fedcloud secret commands
 ***************************
