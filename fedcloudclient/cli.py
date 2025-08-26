@@ -8,6 +8,7 @@ from fedcloudclient.checkin import token
 from fedcloudclient.conf import config
 from fedcloudclient.endpoint import endpoint
 from fedcloudclient.openstack import openstack, openstack_int
+from fedcloudclient.jupyterhub import jupyterhub
 from fedcloudclient.secret import secret
 from fedcloudclient.select import select
 from fedcloudclient.sites import site
@@ -29,6 +30,7 @@ cli.add_command(select)
 cli.add_command(openstack)
 cli.add_command(openstack_int)
 cli.add_command(config)
+cli.add_command(jupyterhub)
 
 if __name__ == "__main__":
     cli()
