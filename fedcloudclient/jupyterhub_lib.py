@@ -291,11 +291,12 @@ def _token_request(**kwargs):
         ]
         for kwargs_key, api_item_key in data_items:
             kwargs_item = kwargs.get(kwargs_key, None)
-            # Empty tuple check is for role and scope as they
-            # can't be specified both at the same time. Hub API
-            # error will notify user in case of both being set
+
             if kwargs_item is not None and kwargs_item != ():
                 data.update({api_item_key: kwargs[kwargs_key]})
+        if "roles" in data and "scopes" in data:
+            print("Error - roles and scopes cannot be specified both at the same time")
+            return None
         kwargs.update({"data": data})
     user_id = (
         kwargs["user"]
