@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.4.4-beyond]
+- Add support for jupyper notebook
+
 ## [1.2.9]
 - Outputs platform-specific set environment commands
 - Better help messages
