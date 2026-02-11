@@ -50,16 +50,26 @@ def test_get_vo_secret(vault_token: str, vo_secret: str):
     assert response["data"]["test"] == "test"
 
 
-if __name__ == "__main__":
+def test_main():
     #Before testing, setup testing environment with
     #export  FEDCLOUD_MYTOKEN=<mytoken>
     #export  FEDCLOUD_ID=<your Checkin ID>
     #export  FEDCLOUD_VAULT_TOKEN=<Vault token exported from GUI>
 
-    os_mytoken = os.environ["FEDCLOUD_MYTOKEN"]
-    os_user_id = os.environ["FEDCLOUD_ID"]
-    oidc_vault_token = os.environ["FEDCLOUD_VAULT_TOKEN"]
+    os_mytoken = os.environ.get("FEDCLOUD_MYTOKEN", "DEFAULT_FEDCLOUD_MYTOKEN")
+    os_user_id = os.environ.get("FEDCLOUD_ID", "DFAULT_FEDCLOUD_ID")
+    oidc_vault_token = os.environ.get("FEDCLOUD_VAULT_TOKEN", "DEFAULT_FEDCLOUD_VAULT_TOKEN")
     test_vault_login(os_mytoken)
     test_user_id_from_vault_token(oidc_vault_token, os_user_id)
     test_get_personal_secret(oidc_vault_token)
     test_get_vo_secret(oidc_vault_token, "vo.access.egi.eu")
+
+    # Run pytest programmatically
+    # This will discover and run all tests in the file
+    exit_code = pytest.main([__file__, "-v"])
+
+    return exit_code
+
+
+if __name__ == "__main__":
+    test_main()

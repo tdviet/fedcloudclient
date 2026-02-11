@@ -15,6 +15,16 @@ def test_get_locker_secret(locker_token: str):
     assert response["data"]["test"] == "test"
 
 
-if __name__ == "__main__":
-    locker_token_main = os.environ["FEDCLOUD_LOCKER_TOKEN"]
+def test_main():
+    locker_token_main = os.environ.get("FEDCLOUD_LOCKER_TOKEN", "DEFAULT_TOKEN")
     test_get_locker_secret(locker_token_main)
+
+    # Run pytest programmatically
+    # This will discover and run all tests in the file
+    exit_code = pytest.main([__file__, "-v"])
+
+    return exit_code
+
+
+if __name__ == "__main__":
+    test_main()
