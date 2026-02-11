@@ -60,7 +60,7 @@ def load_config(filename):
         with config_file.open(mode="r", encoding="utf-8") as file:
             return yaml.safe_load(file)
     except Exception as exception:
-        print(f"Error during reading site config from {filename}")
+        print(f"Error during reading site config from {filename}...")
         raise SystemExit(f"Exception: {exception}")
 
 
