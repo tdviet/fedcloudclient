@@ -1,11 +1,8 @@
-"""
-Main CLI module
-"""
-
 import click
 
 from fedcloudclient.checkin import token
 from fedcloudclient.config import config
+from fedcloudclient.conf import config
 from fedcloudclient.endpoint import endpoint
 from fedcloudclient.openstack import openstack, openstack_int
 from fedcloudclient.secret import secret
