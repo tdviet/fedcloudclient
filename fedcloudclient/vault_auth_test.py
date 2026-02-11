@@ -64,12 +64,6 @@ def test_main():
     test_get_personal_secret(oidc_vault_token)
     test_get_vo_secret(oidc_vault_token, "vo.access.egi.eu")
 
-    # Run pytest programmatically
-    # This will discover and run all tests in the file
-    exit_code = pytest.main([__file__, "-v"])
-
-    return exit_code
-
 
 if __name__ == "__main__":
     test_main()
