@@ -9,7 +9,6 @@
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CLOUDIFIN.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CSTCLOUD-EGI.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/CYFRONET-CLOUD.yaml"
-- "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/DESY-CC.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/GRNET-OPENSTACK.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/IFCA-LCG2.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/IISAS-FedCloud-cloud.yaml"
@@ -25,4 +24,3 @@
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/fedcloud.srce.hr.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/EODC.yaml"
 - "https://raw.githubusercontent.com/EGI-Federation/fedcloud-catchall-operations/main/sites/ELKH-CLOUD.yaml"
-
