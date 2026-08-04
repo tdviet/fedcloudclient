@@ -10,7 +10,7 @@ from click_option_group import (
     optgroup, MutuallyExclusiveOptionGroup,
 )
 
-from fedcloudclient.conf import CONF
+from fedcloudclient.config import load_config
 from fedcloudclient.exception import TokenError
 from fedcloudclient.locker_auth import LockerToken
 from fedcloudclient.vault_auth import VaultToken
@@ -18,7 +18,7 @@ from fedcloudclient.auth import OIDCToken
 from fedcloudclient.logger import log_and_raise
 
 ALL_SITES_KEYWORDS = {"ALL_SITES", "ALL-SITES"}
-
+CONF = load_config("FEDCLOUD_CONFIG_FILE")
 # Decorator for --oidc-access-token
 oidc_access_token_params = click.option(
     "--oidc-access-token",

@@ -5,14 +5,17 @@ Class for managing tokens
 import re
 import time
 from datetime import datetime
+from fedcloudclient.config import load_config
 import jwt
 import liboidcagent as agent
 import requests
 
-from fedcloudclient.conf import CONF
+from fedcloudclient.config import load_config
 from fedcloudclient.exception import TokenError
 from fedcloudclient.logger import log_and_raise
-from fedcloudclient.conf import save_config, DEFAULT_CONFIG_LOCATION
+from fedcloudclient.config import save_config, DEFAULT_CONFIG_LOCATION
+
+CONF = load_config("FEDCLOUD_CONFIG_FILE")
 
 # pylint: disable=too-few-public-methods
 class Token:
