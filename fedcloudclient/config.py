@@ -60,7 +60,7 @@ def load_config(filename):
         with config_file.open(mode="r", encoding="utf-8") as file:
             return yaml.safe_load(file)
     except Exception as exception:
-        print(f"Error during reading site config from {filename}")
+        print(f"Error during reading site config from {filename}...")
         raise SystemExit(f"Exception: {exception}")
 
 
@@ -119,7 +119,7 @@ def show(config_file, output_format):
     """Show actual client configuration """
     saved_config = load_config(config_file)
     env_config = load_env()
-    act_config = {**DEFAULT_SETTINGS, **saved_config, **env_config}
+    act_config = {**DEFAULT_SETTINGS, **env_config, **saved_config}
     if output_format == "YAML":
         yaml.dump(act_config, sys.stdout, sort_keys=False)
     elif output_format == "JSON":

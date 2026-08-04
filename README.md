@@ -175,23 +175,3 @@ fedcloudclient API is available at
    You can also execute
    `fedcloud endpoint projects --site SITE --oidc-access-token ACCESS_TOKEN` to find project IDs of the VOs on the site
    and add the VOs to local site configuration on your machine manually.
-
-1. I would like to add supports for additional sites/VOs/identity providers that are not parts of EGI Federated Cloud.
-
-   Other identity providers may be specified via option `--oidc-url` or environment variable `CHECKIN_OIDC_URL`.
-   Additional sites and VOs may be added to local site configuration files.
-
-1. Why there are so many options for authentication: access token, refresh token, and oidc-agent? Which one should be
-   used?
-
-   Cloud operations need only access tokens, not refresh tokens. Access tokens have short lifetime (one hour in EGI
-   Check-in), so they have lower security constraints. However, they have to be refreshed frequently, that may be
-   inconvenient for some users.
-
-   If a refresh token is given as parameter to `fedcloud` client (together with client ID and client secret), an access
-   token will be generated on the fly from the refresh token and client ID/secret. However, using unencrypted refresh
-   tokens is considered as insecure and will be removed in future versions in favor of oidc-agent.
-
-   [oidc-agent](https://indigo-dc.gitbook.io/oidc-agent/) stores the refresh token securely and will automatically
-   generate a new access token when the current one expires, so that is the recommended way to provide access token to
-   fedcloudclient

@@ -9,14 +9,12 @@ import os
 import subprocess  # nosec Subprocess is required for invoking openstack client
 import sys
 from distutils.spawn import find_executable
-
 import click
 
+from fedcloudclient.logger import log_and_raise
+from fedcloudclient.conf import CONF
 from fedcloudclient.decorators import (
     ALL_SITES_KEYWORDS,
-    DEFAULT_AUTH_TYPE,
-    DEFAULT_IDENTITY_PROVIDER,
-    DEFAULT_PROTOCOL,
     all_site_params,
     oidc_params,
     openstack_output_format_params,
@@ -29,6 +27,10 @@ from fedcloudclient.sites import (
     list_sites,
 )
 
+DEFAULT_AUTH_TYPE = CONF.get("os_auth_type")
+DEFAULT_IDENTITY_PROVIDER = CONF.get("os_identity_provider")
+DEFAULT_PROTOCOL = CONF.get("os_protocol")
+
 __OPENSTACK_CLIENT = "openstack"
 __MAX_WORKER_THREAD = 30
 __MISSING_VO_ERROR_CODE = 11
@@ -38,9 +40,9 @@ CONFLICTING_ENVS = ["OS_TOKEN", "OS_USER_DOMAIN_NAME"]
 
 def fedcloud_openstack_full(
     oidc_access_token,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    checkin_identity_provider,
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
     site,
     vo,
     openstack_command,
@@ -52,11 +54,12 @@ def fedcloud_openstack_full(
 
     :param oidc_access_token: Checkin access token. Passed to openstack client
            as --os-access-token
-    :param openstack_auth_protocol: Checkin protocol (openid, oidc). Passed to
+    :param os_protocol: Checkin protocol (openi
+    , oidc). Passed to
            openstack client as --os-protocol
-    :param openstack_auth_type: Checkin authentication type (v3oidcaccesstoken).
+    :param os_auth_type: Checkin authentication type (v3oidcaccesstoken).
            Passed to openstack client as --os-auth-type
-    :param checkin_identity_provider: Checkin identity provider in mapping (egi.eu).
+    :param os_identity_provider: Checkin identity provider in mapping (egi.eu).
            Passed to openstack client as --os-identity-provider
     :param site: site ID in GOCDB
     :param vo: VO name
@@ -65,6 +68,7 @@ def fedcloud_openstack_full(
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
+    
     """
 
     endpoint, project_id, protocol = find_endpoint_and_project_id(site, vo)
@@ -72,17 +76,17 @@ def fedcloud_openstack_full(
         return __MISSING_VO_ERROR_CODE, f"VO {vo} not found on site {site}\n"
 
     if protocol is None:
-        protocol = openstack_auth_protocol
+        protocol = os_protocol
 
     options = (
         "--os-auth-url",
         endpoint,
         "--os-auth-type",
-        openstack_auth_type,
+        os_auth_type,
         "--os-protocol",
         protocol,
         "--os-identity-provider",
-        checkin_identity_provider,
+        os_identity_provider,
         "--os-access-token",
         oidc_access_token,
     )
@@ -105,7 +109,7 @@ def fedcloud_openstack_full(
         (__OPENSTACK_CLIENT,) + openstack_command + options,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env=my_env,
+        env=my_env, check=True
     )
 
     error_code = completed.returncode
@@ -146,6 +150,7 @@ def fedcloud_openstack(
     :param json_output: if result is JSON object or string. Default:True
 
     :return: error code, result or error message
+    
     """
 
     return fedcloud_openstack_full(
@@ -194,6 +199,7 @@ def print_result(
     :param ignore_missing_vo:
     :param first:
     :return:
+    
     """
 
     command = " ".join(command)
@@ -238,14 +244,15 @@ def openstack(
     all_sites,
     vo,
     openstack_command,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    openstack_auth_provider,
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
     ignore_missing_vo,
     json_output,
 ):
     """
     Execute OpenStack commands on site and VO
+    
     """
 
     if not check_openstack_client_installation():
@@ -265,9 +272,9 @@ def openstack(
             executor.submit(
                 fedcloud_openstack_full,
                 access_token,
-                openstack_auth_protocol,
-                openstack_auth_type,
-                openstack_auth_provider,
+                os_protocol,
+                os_auth_type,
+                os_identity_provider,
                 site,
                 vo,
                 openstack_command,
@@ -279,14 +286,16 @@ def openstack(
         # Get results and print them
         first = True
 
-        # Get the result, first come first serve
+        # Get the result, first come, first served
         for future in concurrent.futures.as_completed(results):
             site = results[future]
             exc_msg = None
             try:
                 error_code, result = future.result()
-            except Exception as exc:
-                exc_msg = exc
+            except Exception as exception:
+                msg_err=f"Can not get result in OpenStack: {exception}"
+                log_and_raise(msg_err, exception)
+                raise Exception(msg_err) from exception
 
             # Print result
             print_result(
@@ -316,12 +325,15 @@ def openstack_int(
     access_token,
     site,
     vo,
-    openstack_auth_protocol,
-    openstack_auth_type,
-    openstack_auth_provider,
-):
+    os_protocol,
+    os_auth_type,
+    os_identity_provider,
+    ):
     """
     Interactive OpenStack client on site and VO
+    
+    :return: None
+
     """
 
     if not check_openstack_client_installation():
@@ -332,15 +344,16 @@ def openstack_int(
         raise SystemExit(f"Error: VO {vo} not found on site {site}")
 
     if protocol is None:
-        protocol = openstack_auth_protocol
+        protocol = os_protocol
     my_env = os.environ.copy()
     my_env["OS_AUTH_URL"] = endpoint
-    my_env["OS_AUTH_TYPE"] = openstack_auth_type
+    my_env["OS_AUTH_TYPE"] = os_auth_type
     my_env["OS_PROTOCOL"] = protocol
-    my_env["OS_IDENTITY_PROVIDER"] = openstack_auth_provider
+    my_env["OS_IDENTITY_PROVIDER"] = os_identity_provider
     my_env["OS_ACCESS_TOKEN"] = access_token
     my_env["OS_PROJECT_ID"] = project_id
 
     # Calling OpenStack client as subprocess
     # Ignore bandit warning
-    subprocess.run(__OPENSTACK_CLIENT, env=my_env)  # nosec
+    subprocess.run(__OPENSTACK_CLIENT, env=my_env, check=True)  # nosec
+    return None

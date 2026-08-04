@@ -1,3 +1,4 @@
+---
 name: Build and push images to DockerHub
 
 on:

@@ -35,7 +35,7 @@ def get_shell_type():
 
     return Shell.LINUX
 
-
+#Imported to the sites
 def print_set_env_command(name, value):
     """
     Print command to set environment variable,
