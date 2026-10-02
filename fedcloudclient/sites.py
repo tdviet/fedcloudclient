@@ -18,7 +18,7 @@ from typing import List
 from urllib.request import Request, urlopen
 
 import click
-import pkg_resources
+from importlib.resources import files
 import yaml
 from jsonschema import validate
 
@@ -54,8 +54,9 @@ def read_site_schema():
 
     :return: JSON object from schema.json
     """
-    file = pkg_resources.resource_stream("fedcloudclient", "schema.json")
-    schema = json.load(file)
+    # Open the bundled file inside the fedcloudclient package as a binary stream
+    with files("fedcloudclient").joinpath("schema.json").open("rb") as file:
+        schema = json.load(file)
     return schema
 
 

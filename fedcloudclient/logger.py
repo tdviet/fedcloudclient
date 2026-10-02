@@ -30,8 +30,14 @@ def init_logger():
 def log_and_raise(error_msg: str, exception):
     """
     Log error and raise exception
+
+    :param error_msg: error message to log (and to use as exception message)
+    :param exception: either an exception class, which is instantiated with
+           error_msg, or an exception instance, which is raised as is
     """
     LOG.error(error_msg)
+    if isinstance(exception, BaseException):
+        raise exception
     raise exception(error_msg)
 
 
