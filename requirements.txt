@@ -10,6 +10,6 @@ jsonpath-ng==1.6.0
 PyYAML==6.0.1
 setuptools==84.0.0
 jsonschema==4.19.2
-psutil==5.9.6
+psutil==7.2.2
 hvac==2.0.0
 cryptography==50.0.1
