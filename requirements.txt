@@ -8,7 +8,7 @@ python-openstackclient==6.3.0
 liboidcagent==0.6.0
 jsonpath-ng==1.6.0
 PyYAML==6.0.1
-setuptools==68.2.2
+setuptools==84.0.0
 jsonschema==4.19.2
 psutil==5.9.6
 hvac==2.0.0
