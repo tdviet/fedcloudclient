@@ -40,4 +40,5 @@ jobs:
           pytest
       - name: Run test
         run: |
+          python -m pip install .
           fedcloud --version
