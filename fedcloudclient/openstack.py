@@ -109,7 +109,7 @@ def fedcloud_openstack_full(
         (__OPENSTACK_CLIENT,) + openstack_command + options,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        env=my_env, check=True
+        env=my_env
     )
 
     error_code = completed.returncode
