@@ -6,10 +6,10 @@ defusedxml~=0.7.1
 pyjwt==2.15.1
 python-openstackclient==10.3.0
 liboidcagent==0.6.0
-jsonpath-ng==1.8.0
+jsonpath-ng==1.9.1
 PyYAML==6.0.3
 setuptools==84.0.0
 jsonschema==4.26.0
 psutil==7.2.2
 hvac==2.4.0
-cryptography==50.0.1
+cryptography==50.0.2
