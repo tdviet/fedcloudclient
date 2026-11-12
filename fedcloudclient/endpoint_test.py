@@ -125,7 +125,10 @@ def test_get_scoped_token_returns_region(monkeypatch):
             ]
         }
     }
+    calls = []
+
     def fake_post(url, **kwargs):
+        calls.append(kwargs)
         return FakeResponse(201, {"X-Subject-Token": "scoped-token"}, token_body)
 
     monkeypatch.setattr(endpoint.requests, "post", fake_post)
@@ -135,6 +138,8 @@ def test_get_scoped_token_returns_region(monkeypatch):
     assert scoped_token == "scoped-token"
     assert protocol == "openid"
     assert region == "IPHC"
+    # The scoped token request must not be able to hang forever
+    assert calls[-1]["timeout"] == endpoint.TIMEOUT
 
 
 def test_unscoped_token_falls_back_to_oidc(monkeypatch):

@@ -168,7 +168,7 @@ def get_scoped_token(os_auth_url, access_token, project_id):
             "scope": {"project": {"id": project_id}},
         }
     }
-    request = requests.post(url, json=body)
+    request = requests.post(url, json=body, timeout=TIMEOUT)
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
         raise TokenException(SCOPED_TOKEN_ERROR_MSG)
