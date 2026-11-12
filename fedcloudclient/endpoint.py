@@ -130,9 +130,10 @@ def get_unscoped_token(os_auth_url, access_token):
                 os_auth_url, access_token, protocol
             )
             return unscoped_token, protocol
-        except RuntimeError:
+        except (RuntimeError, TokenException):
+            # Try the next protocol
             pass
-    raise TokenException(SCOPED_TOKEN_ERROR_MSG)
+    raise TokenException(UNSCOPED_TOKEN_ERROR_MSG)
 
 
 def get_region_from_token(token_body):

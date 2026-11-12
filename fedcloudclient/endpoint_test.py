@@ -2,6 +2,8 @@
 Testing unit for endpoint.py
 """
 
+import pytest
+
 from fedcloudclient import endpoint
 
 
@@ -123,7 +125,6 @@ def test_get_scoped_token_returns_region(monkeypatch):
             ]
         }
     }
-
     def fake_post(url, **kwargs):
         return FakeResponse(201, {"X-Subject-Token": "scoped-token"}, token_body)
 
@@ -134,6 +135,41 @@ def test_get_scoped_token_returns_region(monkeypatch):
     assert scoped_token == "scoped-token"
     assert protocol == "openid"
     assert region == "IPHC"
+
+
+def test_unscoped_token_falls_back_to_oidc(monkeypatch):
+    """
+    If the site does not support the openid protocol, oidc is tried
+    """
+    urls = []
+
+    def fake_post(url, **kwargs):
+        urls.append(url)
+        if "/protocols/openid/auth" in url:
+            return FakeResponse(401)
+        return FakeResponse(201, {"X-Subject-Token": "unscoped-token"})
+
+    monkeypatch.setattr(endpoint.requests, "post", fake_post)
+    unscoped_token, protocol = endpoint.get_unscoped_token(
+        "https://sbgcloud.in2p3.fr:5000/v3", "access-token"
+    )
+    assert unscoped_token == "unscoped-token"
+    assert protocol == "oidc"
+    assert len(urls) == 2
+
+
+def test_unscoped_token_raises_when_no_protocol_works(monkeypatch):
+    """
+    If no protocol works, the error is about the unscoped token
+    """
+
+    def fake_post(url, **kwargs):
+        return FakeResponse(401)
+
+    monkeypatch.setattr(endpoint.requests, "post", fake_post)
+    with pytest.raises(endpoint.TokenException) as error:
+        endpoint.get_unscoped_token("https://sbgcloud.in2p3.fr:5000/v3", "access-token")
+    assert endpoint.UNSCOPED_TOKEN_ERROR_MSG in str(error.value)
 
 
 def test_region_from_site_warns_on_token_error(monkeypatch, capsys):
