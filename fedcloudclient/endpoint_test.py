@@ -2,6 +2,7 @@
 Testing unit for endpoint.py
 """
 
+from click.testing import CliRunner
 import pytest
 
 from fedcloudclient import endpoint
@@ -24,89 +25,53 @@ class FakeResponse:
         return self._body
 
 
-def test_region_from_single_region_catalog():
+def catalog(*regions, field="region_id"):
     """
-    A catalog with one region gives that region
+    Build a Keystone token body with one endpoint per region
     """
-    token_body = {
+    return {
         "token": {
             "catalog": [
                 {
                     "type": "compute",
                     "name": "nova",
-                    "endpoints": [
-                        {
-                            "interface": "public",
-                            "region_id": "IPHC",
-                            "url": "https://sbgcloud.in2p3.fr:8774/v2.1",
-                        }
-                    ],
+                    "endpoints": [{field: region} for region in regions],
                 }
             ]
         }
     }
-    assert endpoint.get_region_from_token(token_body) == "IPHC"
+
+
+def test_region_from_single_region_catalog():
+    """
+    A catalog with one region gives that region
+    """
+    assert endpoint.get_region_from_token(catalog("IPHC")) == "IPHC"
 
 
 def test_region_from_multiple_regions_returns_first():
     """
     A catalog with several regions gives the first one
     """
-    token_body = {
-        "token": {
-            "catalog": [
-                {
-                    "type": "compute",
-                    "name": "nova",
-                    "endpoints": [
-                        {"interface": "public", "region_id": "RegionOne"},
-                        {"interface": "public", "region_id": "RegionTwo"},
-                    ],
-                }
-            ]
-        }
-    }
-    assert endpoint.get_region_from_token(token_body) == "RegionOne"
+    assert (
+        endpoint.get_region_from_token(catalog("RegionOne", "RegionTwo")) == "RegionOne"
+    )
 
 
 def test_region_from_region_field():
     """
     The region may be in the "region" field instead of "region_id"
     """
-    token_body = {
-        "token": {
-            "catalog": [
-                {
-                    "type": "compute",
-                    "name": "nova",
-                    "endpoints": [{"interface": "public", "region": "IPHC"}],
-                }
-            ]
-        }
-    }
-    assert endpoint.get_region_from_token(token_body) == "IPHC"
+    assert endpoint.get_region_from_token(catalog("IPHC", field="region")) == "IPHC"
 
 
-def test_region_from_empty_catalog():
+def test_region_from_token_without_region():
     """
-    An empty catalog gives None
+    A token body without any region gives None
     """
-    assert endpoint.get_region_from_token({"token": {"catalog": []}}) is None
-
-
-def test_region_from_catalog_without_endpoints():
-    """
-    A catalog entry without endpoints gives None
-    """
-    token_body = {"token": {"catalog": [{"type": "compute", "name": "nova"}]}}
-    assert endpoint.get_region_from_token(token_body) is None
-
-
-def test_region_from_token_without_catalog():
-    """
-    A token body without catalog gives None
-    """
-    assert endpoint.get_region_from_token({"token": {"expires_at": "never"}}) is None
+    assert endpoint.get_region_from_token(catalog()) is None
+    assert endpoint.get_region_from_token({"token": {"catalog": [{"name": "nova"}]}}) is None
+    assert endpoint.get_region_from_token({"token": {}}) is None
     assert endpoint.get_region_from_token({}) is None
 
 
@@ -114,30 +79,17 @@ def test_get_scoped_token_returns_region(monkeypatch):
     """
     get_scoped_token returns the token, the protocol and the region
     """
-    token_body = {
-        "token": {
-            "catalog": [
-                {
-                    "type": "compute",
-                    "name": "nova",
-                    "endpoints": [{"interface": "public", "region_id": "IPHC"}],
-                }
-            ]
-        }
-    }
     calls = []
 
     def fake_post(url, **kwargs):
         calls.append(kwargs)
-        return FakeResponse(201, {"X-Subject-Token": "scoped-token"}, token_body)
+        return FakeResponse(201, {"X-Subject-Token": "scoped-token"}, catalog("IPHC"))
 
     monkeypatch.setattr(endpoint.requests, "post", fake_post)
     scoped_token, protocol, region = endpoint.get_scoped_token(
-        "https://sbgcloud.in2p3.fr:5000/v3", "access-token", "project-id"
+        "https://keystone.example.org:5000/v3", "access-token", "project-id"
     )
-    assert scoped_token == "scoped-token"
-    assert protocol == "openid"
-    assert region == "IPHC"
+    assert (scoped_token, protocol, region) == ("scoped-token", "openid", "IPHC")
     # The scoped token request must not be able to hang forever
     assert calls[-1]["timeout"] == endpoint.TIMEOUT
 
@@ -155,11 +107,10 @@ def test_unscoped_token_falls_back_to_oidc(monkeypatch):
         return FakeResponse(201, {"X-Subject-Token": "unscoped-token"})
 
     monkeypatch.setattr(endpoint.requests, "post", fake_post)
-    unscoped_token, protocol = endpoint.get_unscoped_token(
-        "https://sbgcloud.in2p3.fr:5000/v3", "access-token"
+    assert endpoint.get_unscoped_token("https://keystone/v3", "token") == (
+        "unscoped-token",
+        "oidc",
     )
-    assert unscoped_token == "unscoped-token"
-    assert protocol == "oidc"
     assert len(urls) == 2
 
 
@@ -167,13 +118,11 @@ def test_unscoped_token_raises_when_no_protocol_works(monkeypatch):
     """
     If no protocol works, the error is about the unscoped token
     """
-
-    def fake_post(url, **kwargs):
-        return FakeResponse(401)
-
-    monkeypatch.setattr(endpoint.requests, "post", fake_post)
+    monkeypatch.setattr(
+        endpoint.requests, "post", lambda url, **kwargs: FakeResponse(401)
+    )
     with pytest.raises(endpoint.TokenException) as error:
-        endpoint.get_unscoped_token("https://sbgcloud.in2p3.fr:5000/v3", "access-token")
+        endpoint.get_unscoped_token("https://keystone/v3", "token")
     assert endpoint.UNSCOPED_TOKEN_ERROR_MSG in str(error.value)
 
 
@@ -183,12 +132,55 @@ def test_region_from_site_warns_on_token_error(monkeypatch, capsys):
     must still be generated without the region
     """
 
-    def fake_get_scoped_token(*args, **kwargs):
+    def fail(*args):
         raise endpoint.TokenException(endpoint.SCOPED_TOKEN_ERROR_MSG)
 
-    monkeypatch.setattr(endpoint, "get_scoped_token", fake_get_scoped_token)
-    region = endpoint.get_region_from_site(
-        "https://sbgcloud.in2p3.fr:5000/v3", "access-token", "project-id"
-    )
-    assert region is None
+    monkeypatch.setattr(endpoint, "get_scoped_token", fail)
+    assert endpoint.get_region_from_site("https://keystone/v3", "token", "project") is None
     assert "Unable to get region" in capsys.readouterr().err
+
+
+def invoke_endpoint_env(monkeypatch, region, with_region):
+    """
+    Run "endpoint env" with GOCDB and Keystone mocked out
+    """
+    monkeypatch.setattr(
+        endpoint,
+        "find_endpoint",
+        lambda *args, **kwargs: [
+            ["SITE", "org.openstack.nova", "https://keystone.example.org:5000/v3"]
+        ],
+    )
+    monkeypatch.setattr(
+        endpoint, "get_scoped_token", lambda *args: ("token", "openid", region)
+    )
+    args = [
+        "env",
+        "--site",
+        "SITE",
+        "--project-id",
+        "project-id",
+        "--oidc-access-token",
+        "token",
+    ]
+    if with_region:
+        args.append("--with-region")
+    return CliRunner().invoke(endpoint.endpoint, args)
+
+
+def test_endpoint_env_with_region(monkeypatch):
+    """
+    "endpoint env --with-region" prints the region of the scoped token
+    """
+    result = invoke_endpoint_env(monkeypatch, "IPHC", with_region=True)
+    assert result.exit_code == 0
+    assert 'export OS_REGION_NAME="IPHC";' in result.output
+
+
+def test_endpoint_env_without_region(monkeypatch):
+    """
+    Without --with-region, "endpoint env" does not print the region
+    """
+    result = invoke_endpoint_env(monkeypatch, "IPHC", with_region=False)
+    assert result.exit_code == 0
+    assert "OS_REGION_NAME" not in result.output
