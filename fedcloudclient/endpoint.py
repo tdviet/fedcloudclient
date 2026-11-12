@@ -33,6 +33,7 @@ TLS_ERROR_MSG = "TLS error. IGTF certificates may not have been installed"
 CONNECTION_ERROR_MSG = "Connection error"
 SCOPED_TOKEN_ERROR_MSG = "Unable to get a scoped token"
 UNSCOPED_TOKEN_ERROR_MSG = "Unable to get an unscoped token"
+NO_REGION_MSG = "No region found in the service catalog"
 
 
 class TokenException(Exception):
@@ -129,9 +130,30 @@ def get_unscoped_token(os_auth_url, access_token):
                 os_auth_url, access_token, protocol
             )
             return unscoped_token, protocol
-        except RuntimeError:
+        except (RuntimeError, TokenException):
+            # Try the next protocol
             pass
-    raise TokenException(SCOPED_TOKEN_ERROR_MSG)
+    raise TokenException(UNSCOPED_TOKEN_ERROR_MSG)
+
+
+def get_region_from_token(token_body):
+    """
+    Get the region advertised in the service catalog of a token
+
+    The catalog may list several regions, e.g. on sites with more than one
+    nova endpoint. The first one is returned, as a best guess.
+
+    :param token_body: body of a Keystone token response
+    :return: region name, or None if the catalog does not advertise any
+    """
+    for service in token_body.get("token", {}).get("catalog", []):
+        for endpoint in service.get("endpoints", []):
+            # Keystone v3 calls the field region_id, the OpenStack client
+            # exposes it as region
+            region = endpoint.get("region_id") or endpoint.get("region")
+            if region:
+                return region
+    return None
 
 
 def get_scoped_token(os_auth_url, access_token, project_id):
@@ -146,12 +168,36 @@ def get_scoped_token(os_auth_url, access_token, project_id):
             "scope": {"project": {"id": project_id}},
         }
     }
-    request = requests.post(url, json=body)
+    request = requests.post(url, json=body, timeout=TIMEOUT)
     # pylint: disable=no-member
     if request.status_code != requests.codes.created:
         raise TokenException(SCOPED_TOKEN_ERROR_MSG)
 
-    return request.headers["X-Subject-Token"], protocol
+    return (
+        request.headers["X-Subject-Token"],
+        protocol,
+        get_region_from_token(request.json()),
+    )
+
+
+def get_region_from_site(os_auth_url, access_token, project_id):
+    """
+    Get the region of a site from the service catalog of a scoped token
+
+    The region is not part of the site configuration, so this needs a Keystone
+    call. Failures are reported as warnings and not raised: the region is an
+    optional addition and must not prevent the environment from being generated.
+
+    :return: region name, or None if it cannot be determined
+    """
+    try:
+        _, _, region = get_scoped_token(os_auth_url, access_token, project_id)
+    except (TokenException, requests.exceptions.RequestException) as error:
+        print(f"[WARN] Unable to get region: {error}", file=sys.stderr)
+        return None
+    if region is None:
+        print(f"[WARN] {NO_REGION_MSG}", file=sys.stderr)
+    return region
 
 
 def retrieve_unscoped_token(os_auth_url, access_token, protocol="openid"):
@@ -347,7 +393,7 @@ def token(
     site_ep = find_endpoint(OPENSTACK_NOVA, site=site).pop()
     os_auth_url = site_ep[2]
     try:
-        scoped_token, _ = get_scoped_token(os_auth_url, access_token, project_id)
+        scoped_token, _, _ = get_scoped_token(os_auth_url, access_token, project_id)
         print_set_env_command("OS_TOKEN", scoped_token)
     except RuntimeError:
         print(f"Error: Unable to get Keystone token from site {site}")
@@ -387,11 +433,17 @@ def list_(service_type, production, monitored, site, all_sites):
 @endpoint.command()
 @site_params
 @project_id_params
+@click.option(
+    "--with-region",
+    is_flag=True,
+    help="Also export OS_REGION_NAME",
+)
 @oidc_params
 def env(
     access_token,
     site,
     project_id,
+    with_region,
 ):
     """
     Generate OS environment variables for site and project
@@ -406,9 +458,14 @@ def env(
     os_auth_url = site_ep[2]
 
     try:
-        _, protocol = get_scoped_token(os_auth_url, access_token, project_id)
+        _, protocol, region = get_scoped_token(os_auth_url, access_token, project_id)
         print(f"# environment for {site}")
         print_set_env_command("OS_PROJECT_ID", project_id)
+        if with_region:
+            if region:
+                print_set_env_command("OS_REGION_NAME", region)
+            else:
+                print(f"[WARN] {NO_REGION_MSG}", file=sys.stderr)
         print_set_env_command("OS_AUTH_URL", os_auth_url)
         print_set_env_command("OS_AUTH_TYPE", "v3oidcaccesstoken")
         print_set_env_command("OS_IDENTITY_PROVIDER", "egi.eu")

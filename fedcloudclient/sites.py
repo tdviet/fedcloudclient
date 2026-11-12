@@ -339,11 +339,17 @@ def list_(vo=None):
 
 @site.command()
 @site_vo_params
+@click.option(
+    "--with-region",
+    is_flag=True,
+    help="Also export OS_REGION_NAME (needs a Keystone call)",
+)
 @oidc_params
 def env(
     site,
     vo,
     access_token,
+    with_region,
 ):
     """
     Generate OS environment variables for site.
@@ -358,11 +364,21 @@ def env(
     if endpoint:
         if protocol is None:
             protocol = DEFAULT_PROTOCOL
+        # The region is not in the site configuration, it can only be read from
+        # the service catalog of a scoped token, so this needs a Keystone call
+        region = None
+        if with_region:
+            # Imported here to avoid a circular import: endpoint imports sites
+            from fedcloudclient.endpoint import get_region_from_site
+
+            region = get_region_from_site(endpoint, access_token, project_id)
         print_set_env_command("OS_AUTH_URL", endpoint)
         print_set_env_command("OS_AUTH_TYPE", "v3oidcaccesstoken")
         print_set_env_command("OS_IDENTITY_PROVIDER", "egi.eu")
         print_set_env_command("OS_PROTOCOL", protocol)
         print_set_env_command("OS_PROJECT_ID", project_id)
+        if region:
+            print_set_env_command("OS_REGION_NAME", region)
         print_set_env_command("OS_ACCESS_TOKEN", access_token)
     else:
         print(f"VO {vo} not found to have access to site {site}")
