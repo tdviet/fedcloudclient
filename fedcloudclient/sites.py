@@ -35,7 +35,7 @@ from fedcloudclient.shell import print_set_env_command
 DEFAULT_PROTOCOL = CONF.get("os_protocol")
 
 __REMOTE_CONFIG_FILE = (
-    "https://raw.githubusercontent.com/tdviet/fedcloudclient/master/config/sites.yaml"
+    "https://is.cloud.egi.eu/fedcloudclient/"
 )
 
 # WARNING:
